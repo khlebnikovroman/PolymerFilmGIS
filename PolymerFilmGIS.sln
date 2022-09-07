@@ -1,0 +1,16 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebAppWithReact", "WebAppWithReact\WebAppWithReact.csproj", "{FA20189F-2EFD-4033-A811-68991E164EA5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FA20189F-2EFD-4033-A811-68991E164EA5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FA20189F-2EFD-4033-A811-68991E164EA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FA20189F-2EFD-4033-A811-68991E164EA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FA20189F-2EFD-4033-A811-68991E164EA5}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
