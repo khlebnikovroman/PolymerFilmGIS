@@ -11,7 +11,7 @@
     "WebAppWithReact": {
       "commandName": "Project",
       "launchBrowser": true,
-      "applicationUrl": "https://localhost:7037;http://localhost:5037",
+      "applicationUrl": "https://localhost:7037;http://localhost:5037" ,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": "Microsoft.AspNetCore.SpaProxy"
