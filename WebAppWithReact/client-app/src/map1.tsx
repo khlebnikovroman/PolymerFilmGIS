@@ -14,7 +14,7 @@ class MapComponent extends React.Component{
         //const center2 = new LatLngTuple(center)
         // @ts-ignore
         return (
-            <MapContainer zoom={this.state.zoom} center={latLng(this.state.lat, this.state.lng)}>
+            <MapContainer zoom={this.state.zoom} center={latLng(this.state.lat, this.state.lng)} attributionControl={false}>
                 <TileLayer
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
