@@ -1,17 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import 'antd/dist/antd.css'
 // import './index.css';
-import App from './App';
 import reportWebVitals from './reportWebVitals';
-import Map1 from "./map1";
-import Test from "./test";
+import GreeatingPage from "./greeatingPage";
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
   <React.StrictMode>
-    <Map1 />
+      <GreeatingPage/>
   </React.StrictMode>
 );
 
