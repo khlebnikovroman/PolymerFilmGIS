@@ -14,7 +14,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.SpaProxy" Version="6.0.4" />
+        <PackageReference Include="Microsoft.AspNetCore.SpaProxy" Version="6.0.9"/>
     </ItemGroup>
 
     <ItemGroup>
@@ -25,9 +25,13 @@
     </ItemGroup>
 
     <ItemGroup>
-      <_ContentIncludedByDefault Remove="ClientApp\package-lock.json" />
-      <_ContentIncludedByDefault Remove="ClientApp\package.json" />
-      <_ContentIncludedByDefault Remove="ClientApp\public\manifest.json" />
+        <_ContentIncludedByDefault Remove="ClientApp\package-lock.json"/>
+        <_ContentIncludedByDefault Remove="ClientApp\package.json"/>
+        <_ContentIncludedByDefault Remove="ClientApp\public\manifest.json"/>
+        <_ContentIncludedByDefault Remove="client-app\semantic\src\theme.config"/>
+        <_ContentIncludedByDefault Remove="client-app\semantic\tasks\config\admin\templates\bower.json"/>
+        <_ContentIncludedByDefault Remove="client-app\semantic\tasks\config\admin\templates\composer.json"/>
+        <_ContentIncludedByDefault Remove="client-app\semantic\tasks\config\admin\templates\package.json"/>
     </ItemGroup>
 
     <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">

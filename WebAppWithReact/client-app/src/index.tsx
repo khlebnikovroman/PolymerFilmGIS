@@ -3,14 +3,14 @@ import ReactDOM from 'react-dom/client';
 import 'antd/dist/antd.css'
 // import './index.css';
 import reportWebVitals from './reportWebVitals';
-import GreeatingPage from "./greeatingPage";
+import Map1 from "./map1";
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
   <React.StrictMode>
-      <GreeatingPage/>
+      <Map1/>
   </React.StrictMode>
 );
 
