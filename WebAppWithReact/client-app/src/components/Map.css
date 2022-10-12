@@ -2,6 +2,8 @@
 
 body,
 #root,
+
+
 .leaflet-container {
     height: 100vw;
     width: 100vw;
@@ -9,8 +11,8 @@ body,
 }
 
 .element-on-map {
-    z-index: 1000;
+    z-index: 2;
     position: absolute;
     right: 20px;
-    top: 20px;
+    top: 40px;
 }
