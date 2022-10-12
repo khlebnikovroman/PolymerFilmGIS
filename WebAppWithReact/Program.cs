@@ -1,11 +1,17 @@
+using Microsoft.EntityFrameworkCore;
+
+
 var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
-
 builder.Services.AddControllersWithViews();
+
+var connection = builder.Configuration.GetConnectionString("DefaultConnection");
+builder.Services.AddDbContext<Context>(options => options.UseSqlServer(connection));
 
 var app = builder.Build();
 
+//var context = app.Services.GetService<Context>();
+// context?.Database.Migrate();
+//app.Services.get
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
@@ -22,6 +28,6 @@ app.MapControllerRoute(name: "default",
                        pattern: "{controller}/{action=Index}/{id?}");
 
 app.MapFallbackToFile("index.html");
-;
 
+//app.MapGet("/hello", (Context db) => db.Users.ToList());
 app.Run();
