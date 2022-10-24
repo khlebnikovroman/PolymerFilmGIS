@@ -1,12 +1,15 @@
 import React from 'react';
 import './App.css';
 import MapComponent from "./components/map";
+import {ContextMenuProvider} from "./components/context";
 
 function App() {
   return (
-    <div className="App"> 
-      <MapComponent/>
-    </div>
+      <ContextMenuProvider>
+          <div className="App">
+              <MapComponent/>
+          </div>
+      </ContextMenuProvider>
   );
 }
 

@@ -1,0 +1,21 @@
+﻿.contextMenu {
+    z-index: 3;
+    position: fixed;
+    border-radius: 5px;
+    padding: 5px;
+    background-color: #ababab;
+    border: 1px solid #777575;
+}
+
+.contextMenuItem {
+    color: #000;
+    border-radius: 5px;
+    font-size: 14px;
+    padding: 5px;
+    list-style-type: none;
+    cursor: pointer;
+}
+
+.contextMenuItem:hover {
+    background-color: #73bfde;
+}
