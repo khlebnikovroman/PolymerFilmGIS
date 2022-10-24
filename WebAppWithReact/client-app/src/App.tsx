@@ -1,15 +1,24 @@
 import React from 'react';
 import './App.css';
 import MapComponent from "./components/map";
+import {BrowserRouter, Route, Routes} from "react-router-dom";
 import {ContextMenuProvider} from "./components/context";
 
 function App() {
   return (
-      <ContextMenuProvider>
-          <div className="App">
-              <MapComponent/>
-          </div>
-      </ContextMenuProvider>
+      <BrowserRouter>
+          <Routes>
+              <Route path="/" element={
+                  <ContextMenuProvider>
+                      <div className="App">
+                          <MapComponent/>
+                      </div>
+                  </ContextMenuProvider>
+              }/>
+              <Route path="/about" element={<h1>ABOUT</h1>}/>
+          </Routes>
+      </BrowserRouter>
+
   );
 }
 

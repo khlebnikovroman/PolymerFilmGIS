@@ -1,4 +1,4 @@
-import React, {useCallback, useState, MouseEvent, useMemo} from "react";
+import React, {MouseEvent, useCallback, useMemo, useState} from "react";
 import {MapContainer, TileLayer, ZoomControl} from "react-leaflet";
 import {latLng} from "leaflet";
 import './Map.css';
@@ -48,6 +48,7 @@ export const MapComponent: React.FC = () => {
                             <Button type="primary" shape={"round"}>Primary</Button>
                             <Button shape={"round"}>Default</Button>
                             <Button type="dashed" shape={"round"}>Dashed</Button>
+                            <h1>sdasdas</h1>
                         </div>
                         <Button></Button>
                         <div onContextMenu={handleContextMenu}>
