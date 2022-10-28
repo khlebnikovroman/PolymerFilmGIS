@@ -1,4 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+
+using Models;
 
 
 namespace WebAppWithReact.Controllers
@@ -7,10 +10,20 @@ namespace WebAppWithReact.Controllers
     [Route("api/[controller]")]
     public class ObjectOnMapController : Controller
     {
-        [HttpGet]
-        public int Get()
+        private readonly Context db;
+
+        public ObjectOnMapController(Context context)
         {
-            return 1;
+            db = context;
+        }
+
+        [HttpGet]
+        public async Task<IReadOnlyCollection<ObjectOnMap>> Get()
+        {
+            await db.ObjectsOnMap.LoadAsync();
+            var l = db.ObjectsOnMap.Local.ToList();
+
+            return l;
         }
     }
 }

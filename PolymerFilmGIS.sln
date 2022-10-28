@@ -4,6 +4,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebAppWithReact", "WebAppWi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DAL", "DAL\DAL.csproj", "{860779B1-07D3-413A-8AA6-99D3282BF241}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CompanyDataParsers", "CompanyDataParsers\CompanyDataParsers.csproj", "{6147F167-7221-48F1-885A-B9D56B6B7891}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "test", "test\test.csproj", "{80F977AF-158F-4731-A09B-059CBA69B873}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +22,13 @@ Global
 		{860779B1-07D3-413A-8AA6-99D3282BF241}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{860779B1-07D3-413A-8AA6-99D3282BF241}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{860779B1-07D3-413A-8AA6-99D3282BF241}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6147F167-7221-48F1-885A-B9D56B6B7891}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6147F167-7221-48F1-885A-B9D56B6B7891}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6147F167-7221-48F1-885A-B9D56B6B7891}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6147F167-7221-48F1-885A-B9D56B6B7891}.Release|Any CPU.Build.0 = Release|Any CPU
+		{80F977AF-158F-4731-A09B-059CBA69B873}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{80F977AF-158F-4731-A09B-059CBA69B873}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{80F977AF-158F-4731-A09B-059CBA69B873}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{80F977AF-158F-4731-A09B-059CBA69B873}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
