@@ -15,16 +15,14 @@ using WebAppWithReact.DTO.User;
 
 namespace WebAppWithReact.Controllers.Auth
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class AuthController : ControllerBase
+    public class AuthController : BaseAuthorizedController
     {
         private readonly IConfiguration _configuration;
-        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly RoleManager<IdentityRole<Guid>> _roleManager;
         private readonly UserManager<AppUser> _userManager;
 
         public AuthController(UserManager<AppUser> userManager,
-                              RoleManager<IdentityRole> roleManager,
+                              RoleManager<IdentityRole<Guid>> roleManager,
                               IConfiguration configuration)
         {
             _userManager = userManager;
@@ -90,6 +88,8 @@ namespace WebAppWithReact.Controllers.Auth
                 Email = model.Email,
                 SecurityStamp = Guid.NewGuid().ToString(),
                 UserName = model.Username,
+                FirstName = model.FirstName,
+                SecondName = model.SecondName,
             };
 
             var result = await _userManager.CreateAsync(appUser, model.Password);
@@ -131,12 +131,12 @@ namespace WebAppWithReact.Controllers.Auth
 
             if (!await _roleManager.RoleExistsAsync(UserRoles.Admin))
             {
-                await _roleManager.CreateAsync(new IdentityRole(UserRoles.Admin));
+                await _roleManager.CreateAsync(new IdentityRole<Guid>(UserRoles.Admin));
             }
 
             if (!await _roleManager.RoleExistsAsync(UserRoles.User))
             {
-                await _roleManager.CreateAsync(new IdentityRole(UserRoles.User));
+                await _roleManager.CreateAsync(new IdentityRole<Guid>(UserRoles.User));
             }
 
             if (await _roleManager.RoleExistsAsync(UserRoles.Admin))
