@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using DAL.Migrations;
+
+using Microsoft.AspNetCore.Identity;
 
 
 namespace Models
@@ -17,6 +19,7 @@ namespace Models
         }
 
         public IEnumerable<ObjectOnMap> UsersObjects { get; set; }
+        public IEnumerable<Layer> Layers { get; set; }
         public string? RefreshToken { get; set; }
         public DateTime RefreshTokenExpiryTime { get; set; }
     }
