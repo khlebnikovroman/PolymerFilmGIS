@@ -14,17 +14,21 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.SpaProxy" Version="6.0.9" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.10" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.10"/>
+        <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0"/>
+        <PackageReference Include="Microsoft.AspNetCore.SpaProxy" Version="6.0.9"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.10"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.10">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.10" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.10"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer.NetTopologySuite" Version="6.0.10"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.10">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
+        <PackageReference Include="NetTopologySuite" Version="2.5.0"/>
     </ItemGroup>
 
     <ItemGroup>
@@ -35,17 +39,22 @@
     </ItemGroup>
 
     <ItemGroup>
-        <_ContentIncludedByDefault Remove="ClientApp\package-lock.json" />
-        <_ContentIncludedByDefault Remove="ClientApp\package.json" />
-        <_ContentIncludedByDefault Remove="ClientApp\public\manifest.json" />
-        <_ContentIncludedByDefault Remove="client-app\semantic\src\theme.config" />
-        <_ContentIncludedByDefault Remove="client-app\semantic\tasks\config\admin\templates\bower.json" />
-        <_ContentIncludedByDefault Remove="client-app\semantic\tasks\config\admin\templates\composer.json" />
-        <_ContentIncludedByDefault Remove="client-app\semantic\tasks\config\admin\templates\package.json" />
+        <_ContentIncludedByDefault Remove="ClientApp\package-lock.json"/>
+        <_ContentIncludedByDefault Remove="ClientApp\package.json"/>
+        <_ContentIncludedByDefault Remove="ClientApp\public\manifest.json"/>
+        <_ContentIncludedByDefault Remove="client-app\semantic\src\theme.config"/>
+        <_ContentIncludedByDefault Remove="client-app\semantic\tasks\config\admin\templates\bower.json"/>
+        <_ContentIncludedByDefault Remove="client-app\semantic\tasks\config\admin\templates\composer.json"/>
+        <_ContentIncludedByDefault Remove="client-app\semantic\tasks\config\admin\templates\package.json"/>
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\DAL\DAL.csproj" />
+        <ProjectReference Include="..\CompanyDataParsers\CompanyDataParsers.csproj"/>
+        <ProjectReference Include="..\DAL\DAL.csproj"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Folder Include="DTO"/>
     </ItemGroup>
 
     <ItemGroup>
@@ -55,11 +64,11 @@
     <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
         <!-- Ensure Node.js is installed -->
         <Exec Command="node --version" ContinueOnError="true">
-            <Output TaskParameter="ExitCode" PropertyName="ErrorCode" />
+            <Output TaskParameter="ExitCode" PropertyName="ErrorCode"/>
         </Exec>
-        <Error Condition="'$(ErrorCode)' != '0'" Text="Node.js is required to build and run this project. To continue, please install Node.js from https://nodejs.org/, and then restart your command prompt or IDE." />
-        <Message Importance="high" Text="Restoring dependencies using 'npm'. This may take several minutes..." />
-        <Exec WorkingDirectory="$(SpaRoot)" Command="npm install" />
+        <Error Condition="'$(ErrorCode)' != '0'" Text="Node.js is required to build and run this project. To continue, please install Node.js from https://nodejs.org/, and then restart your command prompt or IDE."/>
+        <Message Importance="high" Text="Restoring dependencies using 'npm'. This may take several minutes..."/>
+        <Exec WorkingDirectory="$(SpaRoot)" Command="npm install"/>
     </Target>
 
     <Target Name="PublishRunWebpack" AfterTargets="ComputeFilesToPublish">
