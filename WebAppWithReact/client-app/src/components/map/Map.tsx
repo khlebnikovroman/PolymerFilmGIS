@@ -8,7 +8,7 @@ import {Button, Layout} from 'antd';
 import 'antd/dist/antd.css'
 import {Content} from "antd/es/layout/layout";
 import MenuSider from "../menu/menuSider/MenuSider";
-import {useContextMenu, useMenuLayers} from "../../hooks";
+import {useContextMenu} from "../../hooks";
 import MenuLayers from "../menu/menuLayers/MenuLayers";
 
 L.Icon.Default.imagePath = "https://unpkg.com/browse/leaflet@1.9.2/dist/images/";
@@ -18,27 +18,8 @@ export const MapComponent: React.FC = () => {
     const [lng, setlng] = useState(30.319212156536604);
     
     const { setContextMenu } = useContextMenu();
-    const { setMenuLayers } = useMenuLayers();
     
     const center = [lat, lng];
-    
-    const menuLayers = useMemo(() => [
-        {
-            label: 'Layer #1',
-            key: 1,
-            onChange: () => {}
-        },
-        {
-            label: 'Layer #2',
-            key: 2,
-            onChange: () => {}
-        },
-        {
-            label: 'Layer #3',
-            key: 3,
-            onChange: () => {}
-        },
-    ], [])
 
     const contextMenu = useMemo(() => [
         {

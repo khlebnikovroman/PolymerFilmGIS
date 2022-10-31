@@ -2,7 +2,7 @@ import React from 'react';
 import './App.css';
 import MapComponent from "./components/map/Map";
 import {BrowserRouter, Route, Routes} from "react-router-dom";
-import {ContextMenuProvider, MenuLayersProvider} from "./components/context";
+import {ContextMenuProvider} from "./components/context";
 
 function App() {
   return (
@@ -11,7 +11,7 @@ function App() {
               <Route path="/" element={
                   <ContextMenuProvider>
                       <div className="App">
-                              <MapComponent/>
+                          <MapComponent/>
                       </div>
                   </ContextMenuProvider>
               }/>

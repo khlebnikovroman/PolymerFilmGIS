@@ -10,15 +10,15 @@ interface ItemLayersProps {
 
 const ItemLayer = ({name, key}:ItemLayersProps) => {
     const onChange = (e: CheckboxChangeEvent) => {
-        console.log(e.target.name);
+        console.log(key);
         console.log(`checked = ${e.target.checked}`);
         console.log(`target name = ${e.target.id}`);
     };
     return (
-        <div >
+        <div>
             {/*{name}*/}
             {/*<input type="checkbox" onClick={setModal}></input>*/}
-            <Checkbox onChange={onChange}>{name}</Checkbox>
+            <Checkbox id={key} onChange={onChange}>{name} {key}</Checkbox>
         </div>
     );
 };

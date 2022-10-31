@@ -1,10 +1,7 @@
 ﻿import React, {useState} from "react";
-import {AppstoreOutlined, MailOutlined, SettingOutlined, VerticalAlignBottomOutlined} from '@ant-design/icons';
-import type { MenuProps, ListProps } from 'antd';
-import {Button, List, Menu, Modal} from 'antd';
-import { Divider, Typography } from 'antd';
-import ListT from './MyList';
+import {Button, Checkbox, List, Modal} from 'antd';
 import ItemLayer from "../../items/ItemLayers";
+import {CheckboxChangeEvent} from "antd/es/checkbox";
 
 const MenuLayers = () => {
     const [isShown, setIsShown] = useState(false);
@@ -57,30 +54,29 @@ const MenuLayers = () => {
     const onClick = () => {
         setIsShown(true);
     };
+    const onChange = (e: CheckboxChangeEvent) => {
+        console.log(`checked = ${e.target.checked}`);
+        console.log(`target name = ${e.target.id}`);
+    };
     return(
         <>
-            {/*<Menu*/}
-            {/*    onClick={onClick}*/}
-            {/*    style={{ width: 256 }}*/}
-            {/*    defaultSelectedKeys={['1']}*/}
-            {/*    defaultOpenKeys={['sub1']}*/}
-            {/*    mode="inline"*/}
-            {/*    items={layers}*/}
-            {/*/>*/}
-            
             <List
                 style={{backgroundColor: 'white'}}
                 size="small"
                 header={<div>Header</div>}
                 bordered
                 dataSource={items}
-                renderItem={item => <List.Item style={{ width: 256 }}><ItemLayer name={item.label} key={item.key}/></List.Item>}
+                renderItem={(item: ItemType, index: number) =>
+                    <List.Item style={{ width: 256 }}>
+                        <Checkbox
+                            onChange={onChange}
+                            id={item.key}
+                            name={item.label}
+                        >
+                            {item.label}
+                        </Checkbox>
+                    </List.Item>}
             />
-            {/*<ListT dataSource={items} renderItem={item =>*/}
-            {/*    <ListT.Item style={{ width: 256 }}>*/}
-            {/*        <ItemLayers name={item.label} key={item.key}/>*/}
-            {/*    </ListT.Item>}*/}
-            {/*/>*/}
             <Button type="primary" shape={"default"} style={{width: 256}} onClick={onClick}>Создать свой слой</Button>
             <Modal title="Basic Modal" open={isShown} onOk={handleOk} onCancel={handleCancel}>
                 <p>Some contents...</p>
