@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import MapComponent from "./components/map";
+import MapComponent from "./components/map/Map";
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import {ContextMenuProvider} from "./components/context";
 

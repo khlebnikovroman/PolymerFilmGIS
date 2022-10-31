@@ -1,18 +1,25 @@
 import React, {MouseEvent, useCallback, useMemo, useState} from "react";
-import {MapContainer, TileLayer, ZoomControl} from "react-leaflet";
+import {MapContainer, Marker, Popup, TileLayer, ZoomControl} from "react-leaflet";
 import {latLng} from "leaflet";
+import L from 'leaflet';
+import SelectLayers from 'leaflet';
 import './Map.css';
 import {Button, Layout} from 'antd';
 import 'antd/dist/antd.css'
 import {Content} from "antd/es/layout/layout";
-import MenuSider from "./menuSider/menuSider";
-import {useContextMenu} from "../hooks";
+import MenuSider from "../menu/menuSider/MenuSider";
+import {useContextMenu} from "../../hooks";
+import MenuLayers from "../menu/menuLayers/MenuLayers";
+
+L.Icon.Default.imagePath = "https://unpkg.com/browse/leaflet@1.9.2/dist/images/";
 
 export const MapComponent: React.FC = () => {
     const [lat, setLat] = useState(59.918711823015684);
     const [lng, setlng] = useState(30.319212156536604);
     
     const { setContextMenu } = useContextMenu();
+    
+    const center = [lat, lng];
     
     const contextMenu = useMemo(() => [
         {
@@ -48,7 +55,7 @@ export const MapComponent: React.FC = () => {
                             <Button type="primary" shape={"round"}>Primary</Button>
                             <Button shape={"round"}>Default</Button>
                             <Button type="dashed" shape={"round"}>Dashed</Button>
-                            <h1>sdasdas</h1>
+                            <MenuLayers></MenuLayers>
                         </div>
                         <Button></Button>
                         <div onContextMenu={handleContextMenu}>
@@ -60,6 +67,11 @@ export const MapComponent: React.FC = () => {
                                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                                 />
+                                <Marker position = {latLng(lat, lng)}>
+                                    <Popup>
+                                        Зачем сюда жмешь Э?
+                                    </Popup>
+                                </Marker>
                             </MapContainer>
                         </div>
                     </Content>

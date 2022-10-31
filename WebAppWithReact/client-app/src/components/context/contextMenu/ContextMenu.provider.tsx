@@ -3,7 +3,7 @@ import {ContextMenu, ContextMenuItem} from "./ContextMenu.context";
 import styles from './ContextMenu.module.css';
 
 
-export  const ContextMenuProvider: FC<PropsWithChildren<{}>> = ({ children }) => {
+export const ContextMenuProvider: FC<PropsWithChildren<{}>> = ({ children }) => {
     const [contextMenuItems, setContextMenuItems] = useState<ContextMenuItem[]>([]);
     const [position, setPosition] = useState<number[]>();
     
