@@ -1,23 +1,21 @@
-using System.Security.Claims;
-
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+
+using Models;
 
 
 namespace WebAppWithReact.Controllers
 {
     [Authorize]
     [ApiController]
-    [Route("api/[controller]/[action]")]
+    [Route("api/[controller]")]
     public abstract class BaseAuthorizedController : ControllerBase
     {
-        public Guid UserId
+        public bool IsUserAdmin
         {
             get
             {
-                return !User.Identity.IsAuthenticated
-                           ? Guid.Empty
-                           : Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+                return User.IsInRole(UserRoles.Admin);
             }
         }
     }

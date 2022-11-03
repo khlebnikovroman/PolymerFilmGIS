@@ -12,7 +12,6 @@ using Microsoft.IdentityModel.Tokens;
 
 using Models;
 
-using WebAppWithReact.Misc;
 using WebAppWithReact.Misc.Middleware;
 
 using IHostingEnvironment = Microsoft.Extensions.Hosting.IHostingEnvironment;
@@ -63,8 +62,6 @@ namespace WebAppWithReact
                     ValidateIssuer = false,
                 };
             });
-
-            services.AddScoped<IJwtGenerator, JwtGenerator>();
         }
 
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)

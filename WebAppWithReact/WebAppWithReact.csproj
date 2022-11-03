@@ -53,10 +53,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="DTO" />
-    </ItemGroup>
-
-    <ItemGroup>
       <Folder Include="client-app\src\components\forms" />
     </ItemGroup>
 

@@ -15,7 +15,9 @@ using WebAppWithReact.DTO.User;
 
 namespace WebAppWithReact.Controllers.Auth
 {
-    public class AuthController : BaseAuthorizedController
+    [Route("api/[controller]")]
+    [ApiController]
+    public class AuthController : ControllerBase
     {
         private readonly IConfiguration _configuration;
         private readonly RoleManager<IdentityRole<Guid>> _roleManager;
@@ -43,6 +45,7 @@ namespace WebAppWithReact.Controllers.Auth
                 var authClaims = new List<Claim>
                 {
                     new(ClaimTypes.Name, user.UserName),
+                    new(ClaimTypes.NameIdentifier, user.Id.ToString()),
                     new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 };
 

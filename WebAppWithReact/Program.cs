@@ -15,6 +15,7 @@ var configuration = builder.Configuration;
 
 // For Entity Framework
 builder.Services.AddDbContext<Context>(options => options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddHttpContextAccessor();
 
 // For Identity
 builder.Services.AddIdentity<AppUser, IdentityRole<Guid>>()
@@ -42,6 +43,7 @@ builder.Services.AddAuthentication(options =>
                ValidateLifetime = true,
                ValidateIssuerSigningKey = true,
                ClockSkew = TimeSpan.Zero,
+
 
                ValidAudience = configuration["JWT:ValidAudience"],
                ValidIssuer = configuration["JWT:ValidIssuer"],

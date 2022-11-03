@@ -18,11 +18,22 @@ namespace Models
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<AppUser>().HasData(new AppUser
-                                                       {Id = Guid.NewGuid(), FirstName = "Vasya", SecondName = "Petrov",});
+            var user1 = new AppUser
+                {Id = Guid.NewGuid(), FirstName = "Vasya", SecondName = "Petrov",};
+
+            modelBuilder.Entity<AppUser>().HasData(user1);
 
             modelBuilder.Entity<ObjectOnMap>().HasData(new ObjectOnMap
-                                                           {Id = Guid.NewGuid(), Capacity = 1000, Lati = 50, Long = 50, Name = "Тест данные",});
+            {
+                Id = Guid.NewGuid(),
+                Capacity = 1000,
+                Lati = 50,
+                Long = 50,
+                Name = "Тест данные Vasya petrov",
+
+                //AppUser =  user1,
+                AppUserId = user1.Id,
+            });
         }
     }
 }
