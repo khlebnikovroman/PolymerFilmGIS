@@ -1,57 +1,56 @@
 using System.Security.Claims;
 
 
-namespace WebAppWithReact.Extensions
+namespace WebAppWithReact.Extensions;
+
+public static class ClaimsPrincipalExtensions
 {
-    public static class ClaimsPrincipalExtensions
+    public static T GetLoggedInUserId<T>(this ClaimsPrincipal principal)
     {
-        public static T GetLoggedInUserId<T>(this ClaimsPrincipal principal)
+        if (principal == null)
         {
-            if (principal == null)
-            {
-                throw new ArgumentNullException(nameof(principal));
-            }
-
-            var loggedInUserId = principal.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            if (typeof(T) == typeof(string))
-            {
-                return (T) Convert.ChangeType(loggedInUserId, typeof(T));
-            }
-
-            if (typeof(T) == typeof(int) || typeof(T) == typeof(long))
-            {
-                return loggedInUserId != null ? (T) Convert.ChangeType(loggedInUserId, typeof(T)) : (T) Convert.ChangeType(0, typeof(T));
-            }
-
-            if (typeof(T) == typeof(Guid))
-            {
-                var guid = loggedInUserId != null ? new Guid(loggedInUserId) : Guid.Empty;
-
-                return (T) Convert.ChangeType(guid, typeof(T));
-            }
-
-            throw new Exception("Invalid type provided");
+            throw new ArgumentNullException(nameof(principal));
         }
 
-        public static string GetLoggedInUserName(this ClaimsPrincipal principal)
-        {
-            if (principal == null)
-            {
-                throw new ArgumentNullException(nameof(principal));
-            }
+        var loggedInUserId = principal.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            return principal.FindFirstValue(ClaimTypes.Name);
+        if (typeof(T) == typeof(string))
+        {
+            return (T) Convert.ChangeType(loggedInUserId, typeof(T));
         }
 
-        public static string GetLoggedInUserEmail(this ClaimsPrincipal principal)
+        if (typeof(T) == typeof(int) || typeof(T) == typeof(long))
         {
-            if (principal == null)
-            {
-                throw new ArgumentNullException(nameof(principal));
-            }
-
-            return principal.FindFirstValue(ClaimTypes.Email);
+            return loggedInUserId != null ? (T) Convert.ChangeType(loggedInUserId, typeof(T)) : (T) Convert.ChangeType(0, typeof(T));
         }
+
+        if (typeof(T) == typeof(Guid))
+        {
+            var guid = loggedInUserId != null ? new Guid(loggedInUserId) : Guid.Empty;
+
+            return (T) Convert.ChangeType(guid, typeof(T));
+        }
+
+        throw new Exception("Invalid type provided");
+    }
+
+    public static string GetLoggedInUserName(this ClaimsPrincipal principal)
+    {
+        if (principal == null)
+        {
+            throw new ArgumentNullException(nameof(principal));
+        }
+
+        return principal.FindFirstValue(ClaimTypes.Name);
+    }
+
+    public static string GetLoggedInUserEmail(this ClaimsPrincipal principal)
+    {
+        if (principal == null)
+        {
+            throw new ArgumentNullException(nameof(principal));
+        }
+
+        return principal.FindFirstValue(ClaimTypes.Email);
     }
 }

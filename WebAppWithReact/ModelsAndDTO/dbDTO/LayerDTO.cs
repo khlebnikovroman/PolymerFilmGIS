@@ -1,7 +1,6 @@
-namespace WebAppWithReact.DTO.dbDTO
+namespace WebAppWithReact.ModelsAndDTO.dbDTO;
+
+public record LayerDTO
 {
-    public record LayerDTO
-    {
-        //public IEnumerable<ObjectOnMapDTO> ObjectsOnMapDTOs { get; init; }
-    }
+    //public IEnumerable<ObjectOnMapDTO> ObjectsOnMapDTOs { get; init; }
 }

@@ -1,8 +1,7 @@
-namespace WebAppWithReact.ModelsAndDTO.ObjectOnMap.DTO
+namespace WebAppWithReact.ModelsAndDTO.ObjectOnMap.DTO;
+
+public class ObjectOnMapDetailsDto : ObjectOnMapDto
 {
-    public class ObjectOnMapDetailsDto : ObjectOnMapDto
-    {
-        public Guid Id { get; set; }
-        public Guid AppUserId { get; set; }
-    }
+    public Guid Id { get; set; }
+    public Guid AppUserId { get; set; }
 }

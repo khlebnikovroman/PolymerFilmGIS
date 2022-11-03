@@ -17,58 +17,57 @@ using WebAppWithReact.Misc.Middleware;
 using IHostingEnvironment = Microsoft.Extensions.Hosting.IHostingEnvironment;
 
 
-namespace WebAppWithReact
+namespace WebAppWithReact;
+
+public class Startup
 {
-    public class Startup
+    public Startup(IConfiguration configuration)
     {
-        public Startup(IConfiguration configuration)
+        Configuration = configuration;
+    }
+
+    public IConfiguration Configuration { get; }
+
+    public void ConfigureServices(IServiceCollection services)
+    {
+        services.AddDbContext<Context>(opt => opt.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
+        services.AddMvc(option =>
         {
-            Configuration = configuration;
-        }
+            option.EnableEndpointRouting = false;
 
-        public IConfiguration Configuration { get; }
+            var policy = new AuthorizationPolicyBuilder()
+                         .RequireAuthenticatedUser()
+                         .Build();
 
-        public void ConfigureServices(IServiceCollection services)
+            option.Filters.Add(new AuthorizeFilter(policy));
+        }).SetCompatibilityVersion(CompatibilityVersion.Latest);
+
+        services.TryAddSingleton<ISystemClock, SystemClock>();
+
+        var builder = services.AddIdentityCore<AppUser>();
+        var identityBuilder = new IdentityBuilder(builder.UserType, builder.Services);
+        identityBuilder.AddEntityFrameworkStores<Context>();
+        identityBuilder.AddSignInManager<SignInManager<AppUser>>();
+
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["TokenKey"]));
+
+        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(opt =>
         {
-            services.AddDbContext<Context>(opt => opt.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-
-            services.AddMvc(option =>
+            opt.TokenValidationParameters = new TokenValidationParameters
             {
-                option.EnableEndpointRouting = false;
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = key,
+                ValidateAudience = false,
+                ValidateIssuer = false,
+            };
+        });
+    }
 
-                var policy = new AuthorizationPolicyBuilder()
-                             .RequireAuthenticatedUser()
-                             .Build();
-
-                option.Filters.Add(new AuthorizeFilter(policy));
-            }).SetCompatibilityVersion(CompatibilityVersion.Latest);
-
-            services.TryAddSingleton<ISystemClock, SystemClock>();
-
-            var builder = services.AddIdentityCore<AppUser>();
-            var identityBuilder = new IdentityBuilder(builder.UserType, builder.Services);
-            identityBuilder.AddEntityFrameworkStores<Context>();
-            identityBuilder.AddSignInManager<SignInManager<AppUser>>();
-
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["TokenKey"]));
-
-            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(opt =>
-            {
-                opt.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = key,
-                    ValidateAudience = false,
-                    ValidateIssuer = false,
-                };
-            });
-        }
-
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
-        {
-            app.UseMiddleware<ErrorHandlingMiddleware>();
-            app.UseAuthentication();
-            app.UseMvcWithDefaultRoute();
-        }
+    public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+    {
+        app.UseMiddleware<ErrorHandlingMiddleware>();
+        app.UseAuthentication();
+        app.UseMvcWithDefaultRoute();
     }
 }

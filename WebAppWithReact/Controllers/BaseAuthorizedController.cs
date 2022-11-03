@@ -4,19 +4,12 @@ using Microsoft.AspNetCore.Mvc;
 using Models;
 
 
-namespace WebAppWithReact.Controllers
+namespace WebAppWithReact.Controllers;
+
+[Authorize]
+[ApiController]
+[Route("api/[controller]")]
+public abstract class BaseAuthorizedController : ControllerBase
 {
-    [Authorize]
-    [ApiController]
-    [Route("api/[controller]")]
-    public abstract class BaseAuthorizedController : ControllerBase
-    {
-        public bool IsUserAdmin
-        {
-            get
-            {
-                return User.IsInRole(UserRoles.Admin);
-            }
-        }
-    }
+    public bool IsUserAdmin => User.IsInRole(UserRoles.Admin);
 }
