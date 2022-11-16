@@ -1,4 +1,4 @@
-namespace WebAppWithReact.ModelsAndDTO.User;
+namespace WebAppWithReact.Features.Auth;
 
 public class Response
 {

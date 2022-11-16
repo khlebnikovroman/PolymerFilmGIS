@@ -3,17 +3,15 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 
+using DAL;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 
-using Models;
 
-using WebAppWithReact.ModelsAndDTO.User;
-
-
-namespace WebAppWithReact.Controllers.Auth;
+namespace WebAppWithReact.Features.Auth;
 
 [Route("api/[controller]")]
 [ApiController]

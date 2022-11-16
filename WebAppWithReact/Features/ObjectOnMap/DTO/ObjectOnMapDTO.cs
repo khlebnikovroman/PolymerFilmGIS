@@ -1,6 +1,6 @@
-namespace WebAppWithReact.ModelsAndDTO.ObjectOnMap.DTO;
+namespace WebAppWithReact.Features.ObjectOnMap.DTO;
 
-public class ObjectOnMapDto
+public record ObjectOnMapDto
 {
     public string Name { get; set; }
     public double Lati { get; set; }

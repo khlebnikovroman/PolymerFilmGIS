@@ -1,4 +1,4 @@
-namespace Models
+namespace DAL
 {
     public static class UserRoles
     {

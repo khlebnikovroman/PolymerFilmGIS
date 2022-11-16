@@ -1,9 +1,7 @@
-﻿using DAL.Migrations;
-
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 
 
-namespace Models
+namespace DAL
 {
     public class AppUser : IdentityUser<Guid>
     {

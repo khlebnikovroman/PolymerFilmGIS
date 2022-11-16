@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 
-namespace Models
+namespace DAL
 {
     public class Context : IdentityDbContext<AppUser, IdentityRole<Guid>, Guid>
     {
@@ -13,6 +13,7 @@ namespace Models
 
         public DbSet<AppUser> AppUsers { get; set; }
         public DbSet<ObjectOnMap> ObjectsOnMap { get; set; }
+        public DbSet<Layer> Layers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

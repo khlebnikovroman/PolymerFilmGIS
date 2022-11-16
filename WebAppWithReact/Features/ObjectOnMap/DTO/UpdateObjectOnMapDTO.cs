@@ -1,9 +1,9 @@
 using System.ComponentModel.DataAnnotations;
 
 
-namespace WebAppWithReact.ModelsAndDTO.ObjectOnMap.Quarries;
+namespace WebAppWithReact.Features.ObjectOnMap.DTO;
 
-public class UpdateObjectOnMapDto
+public record UpdateObjectOnMapDto
 {
     [Required(ErrorMessage = "Id is required")]
     public Guid? Id { get; set; }

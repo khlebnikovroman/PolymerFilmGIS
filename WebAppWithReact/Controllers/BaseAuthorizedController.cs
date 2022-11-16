@@ -1,7 +1,9 @@
+using DAL;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-using Models;
+using WebAppWithReact.Extensions;
 
 
 namespace WebAppWithReact.Controllers;
@@ -12,4 +14,5 @@ namespace WebAppWithReact.Controllers;
 public abstract class BaseAuthorizedController : ControllerBase
 {
     public bool IsUserAdmin => User.IsInRole(UserRoles.Admin);
+    protected Guid UserId => User.GetLoggedInUserId<Guid>();
 }

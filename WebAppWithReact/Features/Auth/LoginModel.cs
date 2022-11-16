@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 
 
-namespace WebAppWithReact.ModelsAndDTO.User;
+namespace WebAppWithReact.Features.Auth;
 
 public class LoginModel
 {

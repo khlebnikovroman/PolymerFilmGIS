@@ -1,9 +1,9 @@
 using System.ComponentModel.DataAnnotations;
 
 
-namespace WebAppWithReact.ModelsAndDTO.ObjectOnMap.Quarries;
+namespace WebAppWithReact.Features.ObjectOnMap.DTO;
 
-public class CreateObjectOnMapDto
+public record CreateObjectOnMapDto
 {
     [Required(ErrorMessage = "Name is required")]
     public string? Name { get; set; }

@@ -1,11 +1,11 @@
 using System.Text;
 
+using DAL;
+
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-
-using Models;
 
 
 var builder = WebApplication.CreateBuilder(args);

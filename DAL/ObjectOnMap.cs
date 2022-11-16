@@ -1,4 +1,4 @@
-namespace Models
+namespace DAL
 {
     public class ObjectOnMap : BaseModel
     {
