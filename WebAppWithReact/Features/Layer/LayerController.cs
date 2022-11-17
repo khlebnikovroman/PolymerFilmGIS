@@ -11,10 +11,13 @@ namespace WebAppWithReact.Features.Layer;
 public class LayerController : BaseAuthorizedController
 {
     private readonly Context _db;
+    private readonly LayerService _layerService;
 
-    public LayerController(Context context)
+    public LayerController(Context context, LayerService layerService)
     {
         _db = context;
+        _layerService = layerService;
+        _layerService.User = User;
     }
 
     [HttpGet]
@@ -48,5 +51,51 @@ public class LayerController : BaseAuthorizedController
         }
 
         return NotFound();
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Create([FromBody] CreateLayerDto dto)
+    {
+        var id = await _layerService.Create(dto);
+
+        return Ok(id);
+    }
+
+    [HttpPut]
+    public async Task<IActionResult> Update([FromBody] UpdateLayerDto dto)
+    {
+        try
+        {
+            await _layerService.Update(dto);
+
+            return Ok();
+        }
+        catch (KeyNotFoundException)
+        {
+            return NotFound();
+        }
+        catch (UnauthorizedAccessException)
+        {
+            return Forbid();
+        }
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(Guid id)
+    {
+        try
+        {
+            await _layerService.Delete(id);
+
+            return Ok();
+        }
+        catch (KeyNotFoundException)
+        {
+            return NotFound();
+        }
+        catch (UnauthorizedAccessException)
+        {
+            return Forbid();
+        }
     }
 }

@@ -18,6 +18,7 @@ public class ObjectsOnMapController : BaseAuthorizedController
     {
         _db = context;
         _objectOnMapService = objectOnMapService;
+        _objectOnMapService.User = User;
     }
 
 
@@ -82,9 +83,9 @@ public class ObjectsOnMapController : BaseAuthorizedController
         }
     }
 
-    [HttpDelete]
+    [HttpDelete("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ObjectOnMapDetailsDto))]
-    public async Task<IActionResult> Delete([FromBody] Guid id)
+    public async Task<IActionResult> Delete(Guid id)
     {
         try
         {

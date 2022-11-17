@@ -12,17 +12,18 @@ namespace WebAppWithReact.Features.ObjectOnMap;
 public class ObjectOnMapService
 {
     private readonly IGenericRepository<DAL.ObjectOnMap> _objectOnMapRepository;
-    private readonly ClaimsPrincipal _user;
 
     public ObjectOnMapService(IGenericRepository<DAL.ObjectOnMap> objectOnMapRepository, ClaimsPrincipal user)
     {
         _objectOnMapRepository = objectOnMapRepository;
-        _user = user;
+        User = user;
     }
 
-    private bool IsAdmin => _user.IsInRole(UserRoles.Admin);
+    public ClaimsPrincipal User { get; set; }
 
-    private Guid UserId => _user.GetLoggedInUserId<Guid>();
+    private bool IsAdmin => User.IsInRole(UserRoles.Admin);
+
+    private Guid UserId => User.GetLoggedInUserId<Guid>();
 
     //todo правильные ли исключения?
     // todo структура очень похожа для многих методов и сервисов, мб ее обернуть в страгегию/шаблонный метод

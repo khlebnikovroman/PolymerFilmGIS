@@ -3,6 +3,7 @@ import './App.css';
 import MapComponent from "./components/map/Map";
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import {ContextMenuProvider} from "./components/context";
+import
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
                   </ContextMenuProvider>
               }/>
               <Route path="/about" element={<h1>ABOUT</h1>}/>
+              <Route path="/login" component={Login}></Route>
           </Routes>
       </BrowserRouter>
 

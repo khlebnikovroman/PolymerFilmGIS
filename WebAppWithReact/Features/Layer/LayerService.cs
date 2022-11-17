@@ -13,19 +13,20 @@ public class LayerService
 {
     private readonly IGenericRepository<DAL.Layer> _layerRepository;
     private readonly IGenericRepository<DAL.ObjectOnMap> _objectOnMapRepository;
-    private readonly ClaimsPrincipal _user;
 
     public LayerService(IGenericRepository<DAL.Layer> layerRepository, ClaimsPrincipal user,
                         IGenericRepository<DAL.ObjectOnMap> objectOnMapRepository)
     {
         _layerRepository = layerRepository;
-        _user = user;
+        User = user;
         _objectOnMapRepository = objectOnMapRepository;
     }
 
-    private bool IsAdmin => _user.IsInRole(UserRoles.Admin);
+    public ClaimsPrincipal User { get; set; }
 
-    private Guid UserId => _user.GetLoggedInUserId<Guid>();
+    private bool IsAdmin => User.IsInRole(UserRoles.Admin);
+
+    private Guid UserId => User.GetLoggedInUserId<Guid>();
 
     public async Task<GetLayerDto> Get(Guid id)
     {
@@ -75,6 +76,25 @@ public class LayerService
             {
                 layer.Name = dto.Name;
                 await _layerRepository.Update(layer);
+
+                return;
+            }
+
+            throw new UnauthorizedAccessException();
+        }
+
+        throw new KeyNotFoundException();
+    }
+
+    public async Task Delete(Guid id)
+    {
+        var l = await _layerRepository.FindById(id);
+
+        if (l is not null)
+        {
+            if (CanUserAccess(l))
+            {
+                await _layerRepository.Remove(l);
 
                 return;
             }
