@@ -1,6 +1,5 @@
 ﻿import React, {useState} from "react";
 import {Button, Checkbox, List, Modal} from 'antd';
-import ItemLayer from "../../items/ItemLayers";
 import {CheckboxChangeEvent} from "antd/es/checkbox";
 
 const MenuLayers = () => {
@@ -48,8 +47,6 @@ const MenuLayers = () => {
             key: '5',
         }
     ]
-    
-    const layers = items.map(item => <ItemLayer name={item.label} key={item.key}/>);
     
     const onClick = () => {
         setIsShown(true);

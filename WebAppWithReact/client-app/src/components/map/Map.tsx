@@ -52,9 +52,6 @@ export const MapComponent: React.FC = () => {
                 <div>
                     <Content>
                         <div className="element-on-map">
-                            <Button type="primary" shape={"round"}>Primary</Button>
-                            <Button shape={"round"}>Default</Button>
-                            <Button type="dashed" shape={"round"}>Dashed</Button>
                             <MenuLayers></MenuLayers>
                         </div>
                         <Button></Button>
