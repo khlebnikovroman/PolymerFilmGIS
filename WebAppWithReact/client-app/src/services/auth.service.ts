@@ -1,25 +1,29 @@
 ﻿import axios from "axios";
+import {LoginModel} from "./loginModel";
 
-const API_URL = "http://localhost:44412/api/auth/";
+const API_URL = "https://localhost:44412/api/auth/";
+
 
 class AuthService {
-    login(username: string, password: string) {
+    login(loginModel: LoginModel) {
+        const password = loginModel.password;
+        const username = loginModel.username;
         return axios
+
             .post(API_URL + "login", {
-                username,
-                password
+                username, password
             })
             .then(response => {
-                if (response.data.accessToken) {
+                if (response.data.token) {
                     localStorage.setItem("user", JSON.stringify(response.data));
                 }
-
                 return response.data;
             });
     }
 
     logout() {
         localStorage.removeItem("user");
+        console.log("выход")
     }
 
     register(username: string, email: string, password: string, firstname: string, secondname: string) {

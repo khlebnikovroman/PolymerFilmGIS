@@ -1,25 +1,35 @@
-﻿import { Component } from "react";
-import { Navigate } from "react-router-dom";
-import { Button, Checkbox, Form, Input } from 'antd';
+﻿import {Component, FC} from "react";
+import {Navigate, NavigateFunction, useLocation, useNavigate} from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
+import {Button, Checkbox, Form, Input} from 'antd';
 import AuthService from "../../services/auth.service";
+import {LoginModel} from "../../services/loginModel";
 
-type Props = {};
+type Props = {
+    navigation: NavigateFunction,
+    fromPage: string
+};
 
 type State = {
-    redirect: string | null,
+    isAuthorized: boolean,
     username: string,
     password: string,
     loading: boolean,
     message: string
 };
+export const Login2: FC = () => {
+    const navigation = useNavigate();
+    const location = useLocation()
+    const fromPage = location.state?.from?.pathname || "/"
+    return <Login navigation={navigation} fromPage={fromPage}/>
+}
 
-export default class Login extends Component<Props, State> {
+class Login extends Component<Props, State> {
     constructor(props: Props) {
         super(props);
-        this.handleLogin = this.handleLogin.bind(this);
-
+        // const location = useLocation()
         this.state = {
-            redirect: null,
+            isAuthorized: false,
             username: "",
             password: "",
             loading: false,
@@ -31,35 +41,27 @@ export default class Login extends Component<Props, State> {
         const currentUser = AuthService.getCurrentUser();
 
         if (currentUser) {
-            this.setState({ redirect: "/profile" });
-        };
+            this.setState({isAuthorized: true});
+        }
     }
 
-    componentWillUnmount() {
-        window.location.reload();
-    }
-
-    // validationSchema() {
-    //     return Yup.object().shape({
-    //         username: Yup.string().required("This field is required!"),
-    //         password: Yup.string().required("This field is required!"),
-    //     });
-    // }
-
-    handleLogin(formValue: { username: string; password: string }) {
-        const { username, password } = formValue;
-
+    handleLogin(values: any) {
+        const username = values.username;
+        const password = values.password;
+        console.log(username, password)
         this.setState({
             message: "",
             loading: true
         });
 
+        const loginModel: LoginModel = {
+            username: username,
+            password: password
+        };
 
-        AuthService.login(username, password).then(
+        AuthService.login(loginModel).then(
             () => {
-                this.setState({
-                    redirect: "/profile"
-                });
+                this.props.navigation(this.props.fromPage)
             },
             error => {
                 const resMessage =
@@ -78,53 +80,58 @@ export default class Login extends Component<Props, State> {
     }
 
     render() {
-        if (this.state.redirect) {
-            return <Navigate to={this.state.redirect} />
+        if (this.state.isAuthorized) {
+            return <Navigate to={this.props.fromPage}/>
         }
 
-        const { loading, message } = this.state;
+        const {loading, message} = this.state;
 
-        const initialValues = {
-            username: "",
-            password: "",
+        const onFinish = (values: any) => {
+            this.handleLogin(values)
+            console.log('Success:', values); //todo delete
         };
 
+        const onFinishFailed = (errorInfo: any) => {
+            console.log('Failed:', errorInfo);
+        };
         return (
-            <div>
-                <div>
-                    
+            <Form
+                name="basic"
+                labelCol={{span: 8}}
+                wrapperCol={{span: 16}}
+                initialValues={{remember: true}}
+                onFinish={onFinish}
+                onFinishFailed={onFinishFailed}
+                autoComplete="off"
+            >
+                <Form.Item
+                    label="Username"
+                    name="username"
+                    rules={[{required: true, message: 'Please input your username!'}]}
+                >
+                    <Input/>
+                </Form.Item>
 
-                    
-                        <Form>
-                            <div className="form-group">
-                                <label htmlFor="username">Username</label>
-                                <Input name="username" type="text" className="form-control" />
-                            </div>
+                <Form.Item
+                    label="Password"
+                    name="password"
+                    rules={[{required: true, message: 'Please input your password!'}]}
+                >
+                    <Input.Password/>
+                </Form.Item>
 
-                            <div className="form-group">
-                                <label htmlFor="password">Password</label>
-                                <Input name="password" type="password" className="form-control" />
-                            </div>
+                <Form.Item name="remember" valuePropName="checked" wrapperCol={{offset: 8, span: 16}}>
+                    <Checkbox>Remember me</Checkbox>
+                </Form.Item>
 
-                            <div className="form-group">
-                                <button type="submit" className="btn btn-primary btn-block" disabled={loading}>
-                                    {loading && (
-                                        <span className="spinner-border spinner-border-sm"></span>
-                                    )}
-                                    <span>Login</span>
-                                </button>
-                            </div>
-
-                            {message && (
-                                <div className="form-group">
-                                    <div className="alert alert-danger" role="alert">
-                                        {message}
-                                    </div>
-                                </div>
-                            )}
-                        </Form>
-                </div>
-            </div>
+                <Form.Item wrapperCol={{offset: 8, span: 16}}>
+                    <Button type="primary" htmlType="submit">
+                        Submit
+                    </Button>
+                </Form.Item>
+            </Form>
         );
     }
 }
+
+export default Login2;
