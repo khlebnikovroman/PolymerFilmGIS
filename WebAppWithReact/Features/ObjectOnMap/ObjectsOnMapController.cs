@@ -1,24 +1,26 @@
-using DAL;
-
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 using WebAppWithReact.Controllers;
 using WebAppWithReact.Features.ObjectOnMap.DTO;
+using WebAppWithReact.Misc.AuthHandlers;
+using WebAppWithReact.Repositories;
 
 
 namespace WebAppWithReact.Features.ObjectOnMap;
 
 public class ObjectsOnMapController : BaseAuthorizedController
 {
-    private readonly Context _db;
+    private readonly IAuthorizationService _authorizationService;
+    private readonly IGenericRepository<DAL.ObjectOnMap> _objectOnMapRepository;
     private readonly ObjectOnMapService _objectOnMapService;
 
-    public ObjectsOnMapController(Context context, ObjectOnMapService objectOnMapService)
+    public ObjectsOnMapController(IGenericRepository<DAL.ObjectOnMap> objectOnMapRepository, ObjectOnMapService objectOnMapService,
+                                  IAuthorizationService authorizationService)
     {
-        _db = context;
+        _objectOnMapRepository = objectOnMapRepository;
         _objectOnMapService = objectOnMapService;
-        _objectOnMapService.User = User;
+        _authorizationService = authorizationService;
     }
 
 
@@ -27,39 +29,38 @@ public class ObjectsOnMapController : BaseAuthorizedController
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IReadOnlyCollection<ObjectOnMapDto>))]
     public async Task<IActionResult> Get()
     {
-        await _db.ObjectsOnMap.LoadAsync();
+        // await _db.ObjectsOnMap.LoadAsync();
+        //
+        // var l = await _db.ObjectsOnMap
+        //                  .Where(o => o.AppUserId == UserId)
+        //                  .ToListAsync();
 
-        var l = await _db.ObjectsOnMap
-                         .Where(o => o.AppUserId == UserId)
-                         .ToListAsync();
-
-        return Ok(l);
+        //return Ok(l);
+        return Ok();
     }
 
     [HttpGet("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ObjectOnMapDetailsDto))]
     public async Task<IActionResult> Get(Guid id)
     {
-        try
+        //получается делается два запроса к бд, возможно это можно как-то оптимизировать но сейчас (07.12.2022) уже нет на это времени
+        var obj = await _objectOnMapRepository.FindById(id);
+        var authorizeResult = await _authorizationService.AuthorizeAsync(User, obj, Policies.IsObjectOwnByUser);
+
+        if (authorizeResult.Succeeded)
         {
             var o = await _objectOnMapService.Get(id);
 
             return Ok(o);
         }
-        catch (KeyNotFoundException)
-        {
-            return NotFound();
-        }
-        catch (UnauthorizedAccessException)
-        {
-            return Forbid();
-        }
+
+        return Forbid();
     }
 
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] CreateObjectOnMapDto dto)
     {
-        var id = await _objectOnMapService.Create(dto);
+        var id = await _objectOnMapService.Create(dto, UserId);
 
         return Ok(id);
     }
@@ -67,39 +68,33 @@ public class ObjectsOnMapController : BaseAuthorizedController
     [HttpPut]
     public async Task<IActionResult> Update([FromBody] UpdateObjectOnMapDto dto)
     {
-        try
+        var obj = await _objectOnMapRepository.FindById((Guid) dto.Id);
+        var authorizeResult = await _authorizationService.AuthorizeAsync(User, obj, Policies.IsObjectOwnByUser);
+
+        if (authorizeResult.Succeeded)
         {
             await _objectOnMapService.Update(dto);
 
             return Ok();
         }
-        catch (KeyNotFoundException)
-        {
-            return NotFound();
-        }
-        catch (UnauthorizedAccessException)
-        {
-            return Forbid();
-        }
+
+        return Forbid();
     }
 
     [HttpDelete("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ObjectOnMapDetailsDto))]
     public async Task<IActionResult> Delete(Guid id)
     {
-        try
+        var obj = await _objectOnMapRepository.FindById(id);
+        var authorizeResult = await _authorizationService.AuthorizeAsync(User, obj, Policies.IsObjectOwnByUser);
+
+        if (authorizeResult.Succeeded)
         {
             await _objectOnMapService.Delete(id);
 
             return Ok();
         }
-        catch (KeyNotFoundException)
-        {
-            return NotFound();
-        }
-        catch (UnauthorizedAccessException)
-        {
-            return Forbid();
-        }
+
+        return Forbid();
     }
 }

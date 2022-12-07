@@ -1,8 +1,5 @@
-using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
-using DAL;
-
-using WebAppWithReact.Extensions;
 using WebAppWithReact.Features.Layer.DTO;
 using WebAppWithReact.Repositories;
 
@@ -11,52 +8,38 @@ namespace WebAppWithReact.Features.Layer;
 
 public class LayerService
 {
+    private readonly IAuthorizationService _authorizationService;
     private readonly IGenericRepository<DAL.Layer> _layerRepository;
     private readonly IGenericRepository<DAL.ObjectOnMap> _objectOnMapRepository;
 
-    public LayerService(IGenericRepository<DAL.Layer> layerRepository, ClaimsPrincipal user,
-                        IGenericRepository<DAL.ObjectOnMap> objectOnMapRepository)
+    public LayerService(IGenericRepository<DAL.Layer> layerRepository, IGenericRepository<DAL.ObjectOnMap> objectOnMapRepository,
+                        IAuthorizationService authorizationService)
     {
         _layerRepository = layerRepository;
-        User = user;
         _objectOnMapRepository = objectOnMapRepository;
+        _authorizationService = authorizationService;
     }
 
-    public ClaimsPrincipal User { get; set; }
-
-    private bool IsAdmin => User.IsInRole(UserRoles.Admin);
-
-    private Guid UserId => User.GetLoggedInUserId<Guid>();
 
     public async Task<GetLayerDto> Get(Guid id)
     {
         var l = await _layerRepository.FindById(id);
 
-        if (l is not null)
+        var oDto = new GetLayerDto
         {
-            if (CanUserAccess(l))
-            {
-                var oDto = new GetLayerDto
-                {
-                    Id = l.Id,
-                    Name = l.Name,
-                    Objects = l.ObjectsOnMap.Select(o => o.Id),
-                };
+            Id = l.Id,
+            Name = l.Name,
+            Objects = l.ObjectsOnMap.Select(o => o.Id),
+        };
 
-                return oDto;
-            }
-
-            throw new UnauthorizedAccessException();
-        }
-
-        throw new KeyNotFoundException();
+        return oDto;
     }
 
-    public async Task<Guid> Create(CreateLayerDto dto)
+    public async Task<Guid> Create(CreateLayerDto dto, Guid userId)
     {
         var layer = new DAL.Layer
         {
-            AppUserId = UserId,
+            AppUserId = userId,
             Name = dto.Name!,
             ObjectsOnMap = new List<DAL.ObjectOnMap>(),
         };
@@ -69,49 +52,37 @@ public class LayerService
     public async Task Update(UpdateLayerDto dto)
     {
         var layer = await _layerRepository.FindById((Guid) dto.Id);
-
-        if (layer is not null)
-        {
-            if (CanUserAccess(layer))
-            {
-                layer.Name = dto.Name;
-                await _layerRepository.Update(layer);
-
-                return;
-            }
-
-            throw new UnauthorizedAccessException();
-        }
-
-        throw new KeyNotFoundException();
+        layer.Name = dto.Name;
+        await _layerRepository.Update(layer);
     }
 
     public async Task Delete(Guid id)
     {
         var l = await _layerRepository.FindById(id);
+        await _layerRepository.Remove(l);
+    }
 
-        if (l is not null)
+    public async Task AddObjectToLayer(AddObjectToLayerDTO dto)
+    {
+        var objectToAdd = await _objectOnMapRepository.FindById(dto.ObjectId);
+        var layerToAdd = await _layerRepository.FindById(dto.LayerId);
+
+        if (layerToAdd != null && objectToAdd != null)
         {
-            if (CanUserAccess(l))
-            {
-                await _layerRepository.Remove(l);
-
-                return;
-            }
-
-            throw new UnauthorizedAccessException();
+            layerToAdd.ObjectsOnMap.Add(objectToAdd);
+            await _layerRepository.Update(layerToAdd);
         }
-
-        throw new KeyNotFoundException();
     }
 
-    private bool CanUserAccess(DAL.Layer l)
+    public async Task DeleteObjectFromLayer(DeleteObjectFromLayerDTO dto)
     {
-        return IsAdmin || IsOwnByUser(l);
-    }
+        var objectToDelete = await _objectOnMapRepository.FindById(dto.ObjectId);
+        var layerToDelete = await _layerRepository.FindById(dto.LayerId);
 
-    private bool IsOwnByUser(DAL.Layer l)
-    {
-        return l.AppUserId == UserId;
+        if (layerToDelete != null && objectToDelete != null)
+        {
+            layerToDelete.ObjectsOnMap.Remove(objectToDelete);
+            await _layerRepository.Update(layerToDelete);
+        }
     }
 }

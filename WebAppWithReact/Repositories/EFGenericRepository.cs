@@ -1,3 +1,5 @@
+using DAL;
+
 using Microsoft.EntityFrameworkCore;
 
 
@@ -8,7 +10,7 @@ public class EFGenericRepository<TEntity> : IGenericRepository<TEntity> where TE
     private readonly DbContext _context;
     private readonly DbSet<TEntity> _dbSet;
 
-    public EFGenericRepository(DbContext context)
+    public EFGenericRepository(Context context)
     {
         _context = context;
         _dbSet = context.Set<TEntity>();

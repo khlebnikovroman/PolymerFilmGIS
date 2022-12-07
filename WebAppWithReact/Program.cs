@@ -3,9 +3,15 @@ using System.Text;
 using DAL;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+
+using WebAppWithReact.Features.Layer;
+using WebAppWithReact.Features.ObjectOnMap;
+using WebAppWithReact.Misc.AuthHandlers;
+using WebAppWithReact.Repositories;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -50,12 +56,24 @@ builder.Services.AddAuthentication(options =>
            };
        });
 
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy(Policies.IsObjectOwnByUser, policy =>
+    {
+        policy.AddRequirements(new OwnByUserRequirement());
+    });
+});
+
+builder.Services.AddSingleton<IAuthorizationHandler, OwnByUserHandler>();
+
 builder.Services.AddControllers();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
+builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(EFGenericRepository<>));
+builder.Services.AddTransient<ObjectOnMapService>();
+builder.Services.AddTransient<LayerService>();
 
 var app = builder.Build();
 

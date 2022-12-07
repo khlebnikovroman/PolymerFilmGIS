@@ -16,8 +16,8 @@ namespace DAL
             }
         }
 
-        public IEnumerable<ObjectOnMap> UsersObjects { get; set; }
-        public IEnumerable<Layer> Layers { get; set; }
+        public List<ObjectOnMap> UsersObjects { get; set; }
+        public List<Layer> Layers { get; set; }
         public string? RefreshToken { get; set; }
         public DateTime RefreshTokenExpiryTime { get; set; }
     }
