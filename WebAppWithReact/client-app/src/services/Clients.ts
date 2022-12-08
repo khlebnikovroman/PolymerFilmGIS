@@ -8,15 +8,37 @@
 /* eslint-disable */
 // ReSharper disable InconsistentNaming
 
-import type {AxiosInstance, AxiosRequestConfig, AxiosResponse, CancelToken} from 'axios';
-import axios, {AxiosError} from 'axios';
+import UserService from "./UserService";
 
-export class AuthClient {
-    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+import type {AxiosInstance, AxiosRequestConfig, AxiosResponse, CancelToken} from 'axios';
+import axios, {AxiosError} from "axios";
+
+export class ApiBase {
+    authToken: string | undefined = '';
+
+    protected constructor() {
+        this.setAuthToken(UserService.getCurrentUser()?.token)
+    }
+
+    setAuthToken(token: string | undefined) {
+        this.authToken = token;
+    }
+
+    protected transformOptions(options: AxiosRequestConfig): Promise<AxiosRequestConfig> {
+        // @ts-ignore
+        options.headers["authorization"] = `Bearer ${this.authToken}`
+        return Promise.resolve(options);
+    }
+}
+
+export class AuthClient extends ApiBase {
     private instance: AxiosInstance;
     private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
 
     constructor(baseUrl?: string, instance?: AxiosInstance) {
+
+        super();
 
         this.instance = instance ? instance : axios.create();
 
@@ -45,7 +67,9 @@ export class AuthClient {
             cancelToken
         };
 
-        return this.instance.request(options_).catch((_error: any) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.instance.request(transformedOptions_);
+        }).catch((_error: any) => {
             if (isAxiosError(_error) && _error.response) {
                 return _error.response;
             } else {
@@ -77,7 +101,9 @@ export class AuthClient {
             cancelToken
         };
 
-        return this.instance.request(options_).catch((_error: any) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.instance.request(transformedOptions_);
+        }).catch((_error: any) => {
             if (isAxiosError(_error) && _error.response) {
                 return _error.response;
             } else {
@@ -109,7 +135,9 @@ export class AuthClient {
             cancelToken
         };
 
-        return this.instance.request(options_).catch((_error: any) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.instance.request(transformedOptions_);
+        }).catch((_error: any) => {
             if (isAxiosError(_error) && _error.response) {
                 return _error.response;
             } else {
@@ -141,7 +169,9 @@ export class AuthClient {
             cancelToken
         };
 
-        return this.instance.request(options_).catch((_error: any) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.instance.request(transformedOptions_);
+        }).catch((_error: any) => {
             if (isAxiosError(_error) && _error.response) {
                 return _error.response;
             } else {
@@ -169,7 +199,9 @@ export class AuthClient {
             cancelToken
         };
 
-        return this.instance.request(options_).catch((_error: any) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.instance.request(transformedOptions_);
+        }).catch((_error: any) => {
             if (isAxiosError(_error) && _error.response) {
                 return _error.response;
             } else {
@@ -194,7 +226,9 @@ export class AuthClient {
             cancelToken
         };
 
-        return this.instance.request(options_).catch((_error: any) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.instance.request(transformedOptions_);
+        }).catch((_error: any) => {
             if (isAxiosError(_error) && _error.response) {
                 return _error.response;
             } else {
@@ -344,12 +378,14 @@ export class AuthClient {
     }
 }
 
-export class LayerClient {
-    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+export class LayerClient extends ApiBase {
     private instance: AxiosInstance;
     private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
 
     constructor(baseUrl?: string, instance?: AxiosInstance) {
+
+        super();
 
         this.instance = instance ? instance : axios.create();
 
@@ -360,25 +396,29 @@ export class LayerClient {
     /**
      * @return Success
      */
-    layerGET(cancelToken?: CancelToken | undefined): Promise<void> {
+    layerAll(cancelToken?: CancelToken | undefined): Promise<GetLayerDto[]> {
         let url_ = this.baseUrl + "/api/Layer";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_: AxiosRequestConfig = {
             method: "GET",
             url: url_,
-            headers: {},
+            headers: {
+                "Accept": "text/plain"
+            },
             cancelToken
         };
 
-        return this.instance.request(options_).catch((_error: any) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.instance.request(transformedOptions_);
+        }).catch((_error: any) => {
             if (isAxiosError(_error) && _error.response) {
                 return _error.response;
             } else {
                 throw _error;
             }
         }).then((_response: AxiosResponse) => {
-            return this.processLayerGET(_response);
+            return this.processLayerAll(_response);
         });
     }
 
@@ -403,7 +443,9 @@ export class LayerClient {
             cancelToken
         };
 
-        return this.instance.request(options_).catch((_error: any) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.instance.request(transformedOptions_);
+        }).catch((_error: any) => {
             if (isAxiosError(_error) && _error.response) {
                 return _error.response;
             } else {
@@ -434,7 +476,9 @@ export class LayerClient {
             cancelToken
         };
 
-        return this.instance.request(options_).catch((_error: any) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.instance.request(transformedOptions_);
+        }).catch((_error: any) => {
             if (isAxiosError(_error) && _error.response) {
                 return _error.response;
             } else {
@@ -448,7 +492,7 @@ export class LayerClient {
     /**
      * @return Success
      */
-    layerGET2(id: string, cancelToken?: CancelToken | undefined): Promise<GetLayerDto> {
+    layerGET(id: string, cancelToken?: CancelToken | undefined): Promise<GetLayerDto> {
         let url_ = this.baseUrl + "/api/Layer/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -464,14 +508,16 @@ export class LayerClient {
             cancelToken
         };
 
-        return this.instance.request(options_).catch((_error: any) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.instance.request(transformedOptions_);
+        }).catch((_error: any) => {
             if (isAxiosError(_error) && _error.response) {
                 return _error.response;
             } else {
                 throw _error;
             }
         }).then((_response: AxiosResponse) => {
-            return this.processLayerGET2(_response);
+            return this.processLayerGET(_response);
         });
     }
 
@@ -492,7 +538,9 @@ export class LayerClient {
             cancelToken
         };
 
-        return this.instance.request(options_).catch((_error: any) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.instance.request(transformedOptions_);
+        }).catch((_error: any) => {
             if (isAxiosError(_error) && _error.response) {
                 return _error.response;
             } else {
@@ -507,38 +555,7 @@ export class LayerClient {
      * @param body (optional)
      * @return Success
      */
-    objectsPOST(body: DeleteObjectFromLayerDTO | undefined, cancelToken?: CancelToken | undefined): Promise<void> {
-        let url_ = this.baseUrl + "/api/Layer/objects";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: AxiosRequestConfig = {
-            data: content_,
-            method: "POST",
-            url: url_,
-            headers: {
-                "Content-Type": "application/json",
-            },
-            cancelToken
-        };
-
-        return this.instance.request(options_).catch((_error: any) => {
-            if (isAxiosError(_error) && _error.response) {
-                return _error.response;
-            } else {
-                throw _error;
-            }
-        }).then((_response: AxiosResponse) => {
-            return this.processObjectsPOST(_response);
-        });
-    }
-
-    /**
-     * @param body (optional)
-     * @return Success
-     */
-    objectsDELETE(body: AddObjectToLayerDTO | undefined, cancelToken?: CancelToken | undefined): Promise<void> {
+    objectsDELETE(body: DeleteObjectFromLayerDTO | undefined, cancelToken?: CancelToken | undefined): Promise<void> {
         let url_ = this.baseUrl + "/api/Layer/objects";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -554,7 +571,9 @@ export class LayerClient {
             cancelToken
         };
 
-        return this.instance.request(options_).catch((_error: any) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.instance.request(transformedOptions_);
+        }).catch((_error: any) => {
             if (isAxiosError(_error) && _error.response) {
                 return _error.response;
             } else {
@@ -565,7 +584,40 @@ export class LayerClient {
         });
     }
 
-    protected processLayerGET(response: AxiosResponse): Promise<void> {
+    /**
+     * @param body (optional)
+     * @return Success
+     */
+    objectsPOST(body: AddObjectToLayerDTO | undefined, cancelToken?: CancelToken | undefined): Promise<void> {
+        let url_ = this.baseUrl + "/api/Layer/objects";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: AxiosRequestConfig = {
+            data: content_,
+            method: "POST",
+            url: url_,
+            headers: {
+                "Content-Type": "application/json",
+            },
+            cancelToken
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.instance.request(transformedOptions_);
+        }).catch((_error: any) => {
+            if (isAxiosError(_error) && _error.response) {
+                return _error.response;
+            } else {
+                throw _error;
+            }
+        }).then((_response: AxiosResponse) => {
+            return this.processObjectsPOST(_response);
+        });
+    }
+
+    protected processLayerAll(response: AxiosResponse): Promise<GetLayerDto[]> {
         const status = response.status;
         let _headers: any = {};
         if (response.headers && typeof response.headers === "object") {
@@ -577,13 +629,22 @@ export class LayerClient {
         }
         if (status === 200) {
             const _responseText = response.data;
-            return Promise.resolve<void>(null as any);
+            let result200: any = null;
+            let resultData200 = _responseText;
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(GetLayerDto.fromJS(item));
+            } else {
+                result200 = <any>null;
+            }
+            return Promise.resolve<GetLayerDto[]>(result200);
 
         } else if (status !== 200 && status !== 204) {
             const _responseText = response.data;
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
-        return Promise.resolve<void>(null as any);
+        return Promise.resolve<GetLayerDto[]>(null as any);
     }
 
     protected processLayerPOST(response: AxiosResponse): Promise<string> {
@@ -632,7 +693,7 @@ export class LayerClient {
         return Promise.resolve<void>(null as any);
     }
 
-    protected processLayerGET2(response: AxiosResponse): Promise<GetLayerDto> {
+    protected processLayerGET(response: AxiosResponse): Promise<GetLayerDto> {
         const status = response.status;
         let _headers: any = {};
         if (response.headers && typeof response.headers === "object") {
@@ -677,7 +738,7 @@ export class LayerClient {
         return Promise.resolve<void>(null as any);
     }
 
-    protected processObjectsPOST(response: AxiosResponse): Promise<void> {
+    protected processObjectsDELETE(response: AxiosResponse): Promise<void> {
         const status = response.status;
         let _headers: any = {};
         if (response.headers && typeof response.headers === "object") {
@@ -698,7 +759,7 @@ export class LayerClient {
         return Promise.resolve<void>(null as any);
     }
 
-    protected processObjectsDELETE(response: AxiosResponse): Promise<void> {
+    protected processObjectsPOST(response: AxiosResponse): Promise<void> {
         const status = response.status;
         let _headers: any = {};
         if (response.headers && typeof response.headers === "object") {
@@ -720,12 +781,14 @@ export class LayerClient {
     }
 }
 
-export class ObjectsOnMapClient {
-    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+export class ObjectsOnMapClient extends ApiBase {
     private instance: AxiosInstance;
     private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
 
     constructor(baseUrl?: string, instance?: AxiosInstance) {
+
+        super();
 
         this.instance = instance ? instance : axios.create();
 
@@ -749,7 +812,9 @@ export class ObjectsOnMapClient {
             cancelToken
         };
 
-        return this.instance.request(options_).catch((_error: any) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.instance.request(transformedOptions_);
+        }).catch((_error: any) => {
             if (isAxiosError(_error) && _error.response) {
                 return _error.response;
             } else {
@@ -781,7 +846,9 @@ export class ObjectsOnMapClient {
             cancelToken
         };
 
-        return this.instance.request(options_).catch((_error: any) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.instance.request(transformedOptions_);
+        }).catch((_error: any) => {
             if (isAxiosError(_error) && _error.response) {
                 return _error.response;
             } else {
@@ -812,7 +879,9 @@ export class ObjectsOnMapClient {
             cancelToken
         };
 
-        return this.instance.request(options_).catch((_error: any) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.instance.request(transformedOptions_);
+        }).catch((_error: any) => {
             if (isAxiosError(_error) && _error.response) {
                 return _error.response;
             } else {
@@ -842,7 +911,9 @@ export class ObjectsOnMapClient {
             cancelToken
         };
 
-        return this.instance.request(options_).catch((_error: any) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.instance.request(transformedOptions_);
+        }).catch((_error: any) => {
             if (isAxiosError(_error) && _error.response) {
                 return _error.response;
             } else {
@@ -870,7 +941,9 @@ export class ObjectsOnMapClient {
             cancelToken
         };
 
-        return this.instance.request(options_).catch((_error: any) => {
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.instance.request(transformedOptions_);
+        }).catch((_error: any) => {
             if (isAxiosError(_error) && _error.response) {
                 return _error.response;
             } else {
@@ -1016,18 +1089,18 @@ export class AddObjectToLayerDTO implements IAddObjectToLayerDTO {
         }
     }
 
-    static fromJS(data: any): AddObjectToLayerDTO {
-        data = typeof data === 'object' ? data : {};
-        let result = new AddObjectToLayerDTO();
-        result.init(data);
-        return result;
-    }
-
     init(_data?: any) {
         if (_data) {
             this.layerId = _data["layerId"];
             this.objectId = _data["objectId"];
         }
+    }
+
+    static fromJS(data: any): AddObjectToLayerDTO {
+        data = typeof data === 'object' ? data : {};
+        let result = new AddObjectToLayerDTO();
+        result.init(data);
+        return result;
     }
 
     toJSON(data?: any) {
@@ -1056,13 +1129,6 @@ export class CreateLayerDto implements ICreateLayerDto {
         }
     }
 
-    static fromJS(data: any): CreateLayerDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new CreateLayerDto();
-        result.init(data);
-        return result;
-    }
-
     init(_data?: any) {
         if (_data) {
             this.name = _data["name"];
@@ -1072,6 +1138,13 @@ export class CreateLayerDto implements ICreateLayerDto {
                     this.objects!.push(item);
             }
         }
+    }
+
+    static fromJS(data: any): CreateLayerDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateLayerDto();
+        result.init(data);
+        return result;
     }
 
     toJSON(data?: any) {
@@ -1106,13 +1179,6 @@ export class CreateObjectOnMapDto implements ICreateObjectOnMapDto {
         }
     }
 
-    static fromJS(data: any): CreateObjectOnMapDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new CreateObjectOnMapDto();
-        result.init(data);
-        return result;
-    }
-
     init(_data?: any) {
         if (_data) {
             this.name = _data["name"];
@@ -1120,6 +1186,13 @@ export class CreateObjectOnMapDto implements ICreateObjectOnMapDto {
             this.long = _data["long"];
             this.capacity = _data["capacity"];
         }
+    }
+
+    static fromJS(data: any): CreateObjectOnMapDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateObjectOnMapDto();
+        result.init(data);
+        return result;
     }
 
     toJSON(data?: any) {
@@ -1152,18 +1225,18 @@ export class DeleteObjectFromLayerDTO implements IDeleteObjectFromLayerDTO {
         }
     }
 
-    static fromJS(data: any): DeleteObjectFromLayerDTO {
-        data = typeof data === 'object' ? data : {};
-        let result = new DeleteObjectFromLayerDTO();
-        result.init(data);
-        return result;
-    }
-
     init(_data?: any) {
         if (_data) {
             this.layerId = _data["layerId"];
             this.objectId = _data["objectId"];
         }
+    }
+
+    static fromJS(data: any): DeleteObjectFromLayerDTO {
+        data = typeof data === 'object' ? data : {};
+        let result = new DeleteObjectFromLayerDTO();
+        result.init(data);
+        return result;
     }
 
     toJSON(data?: any) {
@@ -1182,7 +1255,7 @@ export interface IDeleteObjectFromLayerDTO {
 export class GetLayerDto implements IGetLayerDto {
     id!: string;
     name!: string;
-    objects?: string[] | undefined;
+    objects?: ObjectOnMapDto[] | undefined;
 
     constructor(data?: IGetLayerDto) {
         if (data) {
@@ -1207,7 +1280,7 @@ export class GetLayerDto implements IGetLayerDto {
             if (Array.isArray(_data["objects"])) {
                 this.objects = [] as any;
                 for (let item of _data["objects"])
-                    this.objects!.push(item);
+                    this.objects!.push(ObjectOnMapDto.fromJS(item));
             }
         }
     }
@@ -1219,7 +1292,7 @@ export class GetLayerDto implements IGetLayerDto {
         if (Array.isArray(this.objects)) {
             data["objects"] = [];
             for (let item of this.objects)
-                data["objects"].push(item);
+                data["objects"].push(item.toJSON());
         }
         return data;
     }
@@ -1228,7 +1301,7 @@ export class GetLayerDto implements IGetLayerDto {
 export interface IGetLayerDto {
     id: string;
     name: string;
-    objects?: string[] | undefined;
+    objects?: ObjectOnMapDto[] | undefined;
 }
 
 export class LoginModel implements ILoginModel {
@@ -1244,18 +1317,18 @@ export class LoginModel implements ILoginModel {
         }
     }
 
-    static fromJS(data: any): LoginModel {
-        data = typeof data === 'object' ? data : {};
-        let result = new LoginModel();
-        result.init(data);
-        return result;
-    }
-
     init(_data?: any) {
         if (_data) {
             this.username = _data["username"];
             this.password = _data["password"];
         }
+    }
+
+    static fromJS(data: any): LoginModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new LoginModel();
+        result.init(data);
+        return result;
     }
 
     toJSON(data?: any) {
@@ -1285,19 +1358,19 @@ export class LoginResponse implements ILoginResponse {
         }
     }
 
-    static fromJS(data: any): LoginResponse {
-        data = typeof data === 'object' ? data : {};
-        let result = new LoginResponse();
-        result.init(data);
-        return result;
-    }
-
     init(_data?: any) {
         if (_data) {
             this.token = _data["token"];
             this.refreshToken = _data["refreshToken"];
             this.expiration = _data["expiration"] ? new Date(_data["expiration"].toString()) : <any>undefined;
         }
+    }
+
+    static fromJS(data: any): LoginResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new LoginResponse();
+        result.init(data);
+        return result;
     }
 
     toJSON(data?: any) {
@@ -1332,13 +1405,6 @@ export class ObjectOnMapDetailsDto implements IObjectOnMapDetailsDto {
         }
     }
 
-    static fromJS(data: any): ObjectOnMapDetailsDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new ObjectOnMapDetailsDto();
-        result.init(data);
-        return result;
-    }
-
     init(_data?: any) {
         if (_data) {
             this.name = _data["name"];
@@ -1348,6 +1414,13 @@ export class ObjectOnMapDetailsDto implements IObjectOnMapDetailsDto {
             this.id = _data["id"];
             this.appUserId = _data["appUserId"];
         }
+    }
+
+    static fromJS(data: any): ObjectOnMapDetailsDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ObjectOnMapDetailsDto();
+        result.init(data);
+        return result;
     }
 
     toJSON(data?: any) {
@@ -1386,13 +1459,6 @@ export class ObjectOnMapDto implements IObjectOnMapDto {
         }
     }
 
-    static fromJS(data: any): ObjectOnMapDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new ObjectOnMapDto();
-        result.init(data);
-        return result;
-    }
-
     init(_data?: any) {
         if (_data) {
             this.name = _data["name"];
@@ -1400,6 +1466,13 @@ export class ObjectOnMapDto implements IObjectOnMapDto {
             this.long = _data["long"];
             this.capacity = _data["capacity"];
         }
+    }
+
+    static fromJS(data: any): ObjectOnMapDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ObjectOnMapDto();
+        result.init(data);
+        return result;
     }
 
     toJSON(data?: any) {
@@ -1435,13 +1508,6 @@ export class RegisterModel implements IRegisterModel {
         }
     }
 
-    static fromJS(data: any): RegisterModel {
-        data = typeof data === 'object' ? data : {};
-        let result = new RegisterModel();
-        result.init(data);
-        return result;
-    }
-
     init(_data?: any) {
         if (_data) {
             this.username = _data["username"];
@@ -1450,6 +1516,13 @@ export class RegisterModel implements IRegisterModel {
             this.email = _data["email"];
             this.password = _data["password"];
         }
+    }
+
+    static fromJS(data: any): RegisterModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new RegisterModel();
+        result.init(data);
+        return result;
     }
 
     toJSON(data?: any) {
@@ -1484,18 +1557,18 @@ export class Response implements IResponse {
         }
     }
 
-    static fromJS(data: any): Response {
-        data = typeof data === 'object' ? data : {};
-        let result = new Response();
-        result.init(data);
-        return result;
-    }
-
     init(_data?: any) {
         if (_data) {
             this.status = _data["status"];
             this.message = _data["message"];
         }
+    }
+
+    static fromJS(data: any): Response {
+        data = typeof data === 'object' ? data : {};
+        let result = new Response();
+        result.init(data);
+        return result;
     }
 
     toJSON(data?: any) {
@@ -1524,18 +1597,18 @@ export class TokenModel implements ITokenModel {
         }
     }
 
-    static fromJS(data: any): TokenModel {
-        data = typeof data === 'object' ? data : {};
-        let result = new TokenModel();
-        result.init(data);
-        return result;
-    }
-
     init(_data?: any) {
         if (_data) {
             this.accessToken = _data["accessToken"];
             this.refreshToken = _data["refreshToken"];
         }
+    }
+
+    static fromJS(data: any): TokenModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new TokenModel();
+        result.init(data);
+        return result;
     }
 
     toJSON(data?: any) {
@@ -1564,18 +1637,18 @@ export class UpdateLayerDto implements IUpdateLayerDto {
         }
     }
 
-    static fromJS(data: any): UpdateLayerDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new UpdateLayerDto();
-        result.init(data);
-        return result;
-    }
-
     init(_data?: any) {
         if (_data) {
             this.id = _data["id"];
             this.name = _data["name"];
         }
+    }
+
+    static fromJS(data: any): UpdateLayerDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new UpdateLayerDto();
+        result.init(data);
+        return result;
     }
 
     toJSON(data?: any) {
@@ -1607,13 +1680,6 @@ export class UpdateObjectOnMapDto implements IUpdateObjectOnMapDto {
         }
     }
 
-    static fromJS(data: any): UpdateObjectOnMapDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new UpdateObjectOnMapDto();
-        result.init(data);
-        return result;
-    }
-
     init(_data?: any) {
         if (_data) {
             this.id = _data["id"];
@@ -1622,6 +1688,13 @@ export class UpdateObjectOnMapDto implements IUpdateObjectOnMapDto {
             this.long = _data["long"];
             this.capacity = _data["capacity"];
         }
+    }
+
+    static fromJS(data: any): UpdateObjectOnMapDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new UpdateObjectOnMapDto();
+        result.init(data);
+        return result;
     }
 
     toJSON(data?: any) {
@@ -1649,7 +1722,6 @@ export class ApiException extends Error {
     response: string;
     headers: { [key: string]: any; };
     result: any;
-    protected isApiException = true;
 
     constructor(message: string, status: number, response: string, headers: { [key: string]: any; }, result: any) {
         super();
@@ -1660,6 +1732,8 @@ export class ApiException extends Error {
         this.headers = headers;
         this.result = result;
     }
+
+    protected isApiException = true;
 
     static isApiException(obj: any): obj is ApiException {
         return obj.isApiException === true;

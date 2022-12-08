@@ -1,4 +1,4 @@
-import {AuthClient, LoginModel} from "./Clients";
+import {AuthClient, LoginModel, LoginResponse} from "./Clients";
 
 class UserService {
 
@@ -7,7 +7,7 @@ class UserService {
         console.log("выход")
     }
 
-    getCurrentUser() {
+    getCurrentUser(): LoginResponse | null {
         const userStr = localStorage.getItem("user");
         if (userStr) return JSON.parse(userStr);
 

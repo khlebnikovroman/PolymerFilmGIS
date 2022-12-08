@@ -29,19 +29,23 @@ public class EFGenericRepository<TEntity> : IGenericRepository<TEntity> where TE
         return e;
     }
 
-    public async Task<IEnumerable<TEntity>?> Get()
+    public async Task<List<TEntity>?> Get()
     {
         var l = await _dbSet.AsNoTracking().ToListAsync();
 
         return l;
     }
 
-    public async Task<IEnumerable<TEntity>?> Get(Func<TEntity, bool> predicate)
+    public async Task<List<TEntity>?> Get(Func<TEntity, bool> predicate)
     {
         //TODO кажется тут что-то не так с запросом
-        var l = await _dbSet.AsNoTracking().AsEnumerable().Where(predicate).AsQueryable().ToListAsync();
+        // http://disq.us/p/1csop1o на метаните сказано что не имеет смысла отслеживать изменения, но я не знаю как сделать нормальную eager loading 
+        // здесь, поэтому пока что включу отслеживание
+        //var l = _dbSet.AsNoTracking().Where(predicate);
+        var l = _dbSet.Where(predicate);
+        var list = l.ToList();
 
-        return l;
+        return list;
     }
 
     public async Task Remove(TEntity item)

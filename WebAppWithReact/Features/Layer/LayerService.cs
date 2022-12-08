@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 
 using WebAppWithReact.Features.Layer.DTO;
+using WebAppWithReact.Features.ObjectOnMap.DTO;
 using WebAppWithReact.Repositories;
 
 
@@ -25,14 +26,29 @@ public class LayerService
     {
         var l = await _layerRepository.FindById(id);
 
-        var oDto = new GetLayerDto
+        var objects = new List<ObjectOnMapDto>();
+
+        foreach (var objectOnMap in l.ObjectsOnMap)
+        {
+            var oDto = new ObjectOnMapDto
+            {
+                Capacity = objectOnMap.Capacity,
+                Lati = objectOnMap.Lati,
+                Long = objectOnMap.Long,
+                Name = objectOnMap.Name,
+            };
+
+            objects.Add(oDto);
+        }
+
+        var lDto = new GetLayerDto
         {
             Id = l.Id,
             Name = l.Name,
-            Objects = l.ObjectsOnMap.Select(o => o.Id),
+            Objects = objects,
         };
 
-        return oDto;
+        return lDto;
     }
 
     public async Task<Guid> Create(CreateLayerDto dto, Guid userId)
@@ -69,6 +85,11 @@ public class LayerService
 
         if (layerToAdd != null && objectToAdd != null)
         {
+            if (layerToAdd.ObjectsOnMap == null)
+            {
+                layerToAdd.ObjectsOnMap = new List<DAL.ObjectOnMap>();
+            }
+
             layerToAdd.ObjectsOnMap.Add(objectToAdd);
             await _layerRepository.Update(layerToAdd);
         }

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using WebAppWithReact.Controllers;
 using WebAppWithReact.Extensions;
 using WebAppWithReact.Features.Layer.DTO;
+using WebAppWithReact.Features.ObjectOnMap.DTO;
 using WebAppWithReact.Misc.AuthHandlers;
 using WebAppWithReact.Repositories;
 
@@ -27,19 +28,45 @@ public class LayerController : BaseAuthorizedController
     }
 
     [HttpGet]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IReadOnlyCollection<GetLayerDto>))]
+
+    //todo переписать в сервис
     public async Task<IActionResult> GetAll()
     {
-        // if (IsUserAdmin)
-        // {
-        //     var allLayers = await _db.Layers.ToListAsync();
-        //
-        //     return Ok(allLayers);
-        // }
-        //
-        // var userLayers = await _db.Layers.Where(l => l.AppUserId == UserId).ToListAsync();
-        //
-        // return Ok(userLayers);
-        return Ok();
+        var layers = await _layerRepository.Get(x => x.AppUserId == User.GetLoggedInUserId<Guid>());
+        var layersDto = new List<GetLayerDto>();
+
+        foreach (var layer in layers)
+        {
+            var objects = new List<ObjectOnMapDto>();
+
+            if (layer.ObjectsOnMap != null)
+            {
+                foreach (var objectOnMap in layer.ObjectsOnMap)
+                {
+                    var oDto = new ObjectOnMapDto
+                    {
+                        Capacity = objectOnMap.Capacity,
+                        Lati = objectOnMap.Lati,
+                        Long = objectOnMap.Long,
+                        Name = objectOnMap.Name,
+                    };
+
+                    objects.Add(oDto);
+                }
+            }
+
+            var layerDto = new GetLayerDto
+            {
+                Id = layer.Id,
+                Name = layer.Name,
+                Objects = objects,
+            };
+
+            layersDto.Add(layerDto);
+        }
+
+        return Ok(layersDto);
     }
 
     [HttpGet("{id}")]
@@ -103,7 +130,7 @@ public class LayerController : BaseAuthorizedController
         return Forbid();
     }
 
-    [HttpPost("objects")]
+    [HttpDelete("objects")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> DeleteObjectFromLayer([FromBody] DeleteObjectFromLayerDTO dto)
     {
@@ -122,7 +149,7 @@ public class LayerController : BaseAuthorizedController
         return Forbid();
     }
 
-    [HttpDelete("objects")]
+    [HttpPost("objects")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> AddObjectToLayerDTO([FromBody] AddObjectToLayerDTO dto)
     {

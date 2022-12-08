@@ -7,6 +7,6 @@ namespace DAL
         public double Long { get; set; }
         public double Capacity { get; set; }
         public Guid AppUserId { get; set; }
-        public AppUser AppUser { get; set; }
+        public virtual AppUser AppUser { get; set; }
     }
 }

@@ -57,7 +57,7 @@ export const MapComponent: React.FC = () => {
                 <div>
                     <Content>
                         <div className="element-on-map">
-                            <MenuLayers></MenuLayers>
+                            <MenuLayers/>
                         </div>
                         <Button></Button>
                         <div onContextMenu={handleContextMenu}>
