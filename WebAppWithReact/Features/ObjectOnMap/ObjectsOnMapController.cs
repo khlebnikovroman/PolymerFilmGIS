@@ -24,19 +24,56 @@ public class ObjectsOnMapController : BaseAuthorizedController
     }
 
 
+    [HttpGet]
+    [Route("GetAllWithoutLayer")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IReadOnlyCollection<ObjectOnMapDetailsDto>))]
+    public async Task<IActionResult> GetWithoutLayer()
+    {
+        var objects = await _objectOnMapRepository.Get(o => o.AppUserId == UserId && o.LayerId == null);
+        var objectDtos = new List<ObjectOnMapDetailsDto>();
+
+        foreach (var objectOnMap in objects)
+        {
+            var o = new ObjectOnMapDetailsDto
+            {
+                AppUserId = objectOnMap.AppUserId,
+                Capacity = objectOnMap.Capacity,
+                Id = objectOnMap.Id,
+                Lati = objectOnMap.Lati,
+                Long = objectOnMap.Long,
+                Name = objectOnMap.Name,
+            };
+
+            objectDtos.Add(o);
+        }
+
+        return Ok(objectDtos);
+    }
+
     // todo переписать (сейчас это заглушка(нельзя использовать для админа))
     [HttpGet]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IReadOnlyCollection<ObjectOnMapDto>))]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IReadOnlyCollection<ObjectOnMapDetailsDto>))]
     public async Task<IActionResult> Get()
     {
-        // await _db.ObjectsOnMap.LoadAsync();
-        //
-        // var l = await _db.ObjectsOnMap
-        //                  .Where(o => o.AppUserId == UserId)
-        //                  .ToListAsync();
+        var objects = await _objectOnMapRepository.Get(o => o.AppUserId == UserId);
+        var objectDtos = new List<ObjectOnMapDetailsDto>();
 
-        //return Ok(l);
-        return Ok();
+        foreach (var objectOnMap in objects)
+        {
+            var o = new ObjectOnMapDetailsDto
+            {
+                AppUserId = objectOnMap.AppUserId,
+                Capacity = objectOnMap.Capacity,
+                Id = objectOnMap.Id,
+                Lati = objectOnMap.Lati,
+                Long = objectOnMap.Long,
+                Name = objectOnMap.Name,
+            };
+
+            objectDtos.Add(o);
+        }
+
+        return Ok(objectDtos);
     }
 
     [HttpGet("{id}")]

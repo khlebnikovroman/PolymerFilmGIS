@@ -1,7 +1,8 @@
 ﻿import React, {useEffect, useState} from "react";
-import {Button, Checkbox, List, Modal} from 'antd';
+import {Button, Checkbox, List} from 'antd';
 import {CheckboxChangeEvent} from "antd/es/checkbox";
 import {GetLayerDto, LayerClient} from "../../../services/Clients";
+import CreateLayerModal from "./CreateLayerModal";
 
 const MenuLayers = (): JSX.Element => {
 
@@ -28,50 +29,16 @@ const MenuLayers = (): JSX.Element => {
 
     const [isShown, setIsShown] = useState(false);
 
-    const handleOk = () => {
-        setIsShown(false);
-    };
-
-    const handleCancel = () => {
-        setIsShown(false);
-    };
-
-    const setModal = () => {
-        setIsShown(true);
+    const setShown = (show: boolean) => {
+        setIsShown(show);
+        const layerClient = new LayerClient();
+        layerClient.layerAll().then(res => {
+            setInitLoading(false);
+            setLayers(res);
+            setList(res);
+        })
     }
 
-    interface ItemType {
-        label: string
-        key: string
-    }
-
-
-    const items: ItemType[] = [
-        {
-            label: 'Слой 1',
-            key: '0',
-        },
-        {
-            label: 'Слой 2',
-            key: '1',
-        },
-        {
-            label: 'Слой 3',
-            key: '2',
-        },
-        {
-            label: 'Слой 4',
-            key: '3',
-        },
-        {
-            label: 'Слой 5',
-            key: '4',
-        },
-        {
-            label: 'Слой 6',
-            key: '5',
-        }
-    ]
 
     const onClick = () => {
         setIsShown(true);
@@ -85,7 +52,7 @@ const MenuLayers = (): JSX.Element => {
             <List
                 style={{backgroundColor: 'white'}}
                 size="small"
-                header={<div>Header</div>}
+                header={<div>Слои</div>}
                 bordered
                 dataSource={list}
                 renderItem={(item: GetLayerDto, index: number) =>
@@ -99,12 +66,8 @@ const MenuLayers = (): JSX.Element => {
                         </Checkbox>
                     </List.Item>}
             />
-            <Button type="primary" shape={"default"} style={{width: 256}} onClick={onClick}>Создать свой слой</Button>
-            <Modal title="Basic Modal" open={isShown} onOk={handleOk} onCancel={handleCancel}>
-                <p>Some contents...</p>
-                <p>Some contents...</p>
-                <p>Some contents...</p>
-            </Modal>
+            <Button type="primary" shape={"default"} style={{width: 256}} onClick={onClick}>Создать новый слой</Button>
+            <CreateLayerModal open={isShown} setShown={setShown}/>
         </>
     );
 }

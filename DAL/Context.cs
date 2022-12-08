@@ -19,22 +19,31 @@ namespace DAL
         {
             base.OnModelCreating(modelBuilder);
 
+            modelBuilder.Entity<Layer>()
+                        .HasMany(c => c.ObjectsOnMap)
+                        .WithOne(e => e.Layer)
+                        .OnDelete(DeleteBehavior.SetNull);
+
+            // modelBuilder.Entity<ObjectOnMap>()
+            //             .HasOne(c => c.Layer)
+            //             .WithMany(c=> c.ObjectsOnMap)
+            //             .OnDelete(DeleteBehavior.NoAction);
             var user1 = new AppUser
                 {Id = Guid.NewGuid(), FirstName = "Vasya", SecondName = "Petrov",};
 
-            modelBuilder.Entity<AppUser>().HasData(user1);
-
-            modelBuilder.Entity<ObjectOnMap>().HasData(new ObjectOnMap
-            {
-                Id = Guid.NewGuid(),
-                Capacity = 1000,
-                Lati = 50,
-                Long = 50,
-                Name = "Тест данные Vasya petrov",
-
-                //AppUser =  user1,
-                AppUserId = user1.Id,
-            });
+            // modelBuilder.Entity<AppUser>().HasData(user1);
+            //
+            // modelBuilder.Entity<ObjectOnMap>().HasData(new ObjectOnMap
+            // {
+            //     Id = Guid.NewGuid(),
+            //     Capacity = 1000,
+            //     Lati = 50,
+            //     Long = 50,
+            //     Name = "Тест данные Vasya petrov",
+            //
+            //     //AppUser =  user1,
+            //     AppUserId = user1.Id,
+            // });
         }
     }
 }

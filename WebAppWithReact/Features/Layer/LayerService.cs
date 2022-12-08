@@ -60,6 +60,11 @@ public class LayerService
             ObjectsOnMap = new List<DAL.ObjectOnMap>(),
         };
 
+        foreach (var id in dto.Objects)
+        {
+            layer.ObjectsOnMap.Add(await _objectOnMapRepository.FindById(id));
+        }
+
         await _layerRepository.Create(layer);
 
         return layer.Id;
