@@ -1,11 +1,11 @@
 import React from "react";
-import AuthService from "../../services/auth.service";
+import UserService from "../../services/UserService";
 import {useNavigate} from "react-router-dom";
 
 export const LogoutComponent: React.FC = () => {
     const navigate = useNavigate();
     const navigateToHome = () => {
-        AuthService.logout()
+        UserService.logout()
         navigate("/")
     }
         

@@ -2,8 +2,8 @@
 import {Navigate, NavigateFunction, useLocation, useNavigate} from "react-router-dom";
 // import { useNavigate } from "react-router-dom";
 import {Button, Checkbox, Form, Input} from 'antd';
-import AuthService from "../../services/auth.service";
-import {LoginModel} from "../../services/loginModel";
+import {ILoginModel, LoginModel} from "../../services/Clients";
+import UserService from "../../services/UserService";
 
 type Props = {
     navigation: NavigateFunction,
@@ -38,7 +38,7 @@ class Login extends Component<Props, State> {
     }
 
     componentDidMount() {
-        const currentUser = AuthService.getCurrentUser();
+        const currentUser = UserService.getCurrentUser();
 
         if (currentUser) {
             this.setState({isAuthorized: true});
@@ -54,12 +54,12 @@ class Login extends Component<Props, State> {
             loading: true
         });
 
-        const loginModel: LoginModel = {
-            username: username,
-            password: password
-        };
-
-        AuthService.login(loginModel).then(
+        const loginModel = new LoginModel(new class implements ILoginModel {
+            username = username;
+            password = password
+        });
+        //const authClient = new AuthClient();
+        UserService.login(loginModel).then(
             () => {
                 this.props.navigation(this.props.fromPage)
             },

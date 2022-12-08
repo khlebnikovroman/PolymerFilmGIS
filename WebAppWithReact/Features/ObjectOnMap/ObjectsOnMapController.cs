@@ -58,6 +58,7 @@ public class ObjectsOnMapController : BaseAuthorizedController
     }
 
     [HttpPost]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Guid))]
     public async Task<IActionResult> Create([FromBody] CreateObjectOnMapDto dto)
     {
         var id = await _objectOnMapService.Create(dto, UserId);
@@ -66,6 +67,7 @@ public class ObjectsOnMapController : BaseAuthorizedController
     }
 
     [HttpPut]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> Update([FromBody] UpdateObjectOnMapDto dto)
     {
         var obj = await _objectOnMapRepository.FindById((Guid) dto.Id);
@@ -82,7 +84,7 @@ public class ObjectsOnMapController : BaseAuthorizedController
     }
 
     [HttpDelete("{id}")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ObjectOnMapDetailsDto))]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> Delete(Guid id)
     {
         var obj = await _objectOnMapRepository.FindById(id);

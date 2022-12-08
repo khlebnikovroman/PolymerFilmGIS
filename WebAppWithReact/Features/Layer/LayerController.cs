@@ -43,6 +43,7 @@ public class LayerController : BaseAuthorizedController
     }
 
     [HttpGet("{id}")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetLayerDto))]
     public async Task<IActionResult> Get(Guid id)
     {
         var l = await _layerRepository.FindById(id);
@@ -60,6 +61,7 @@ public class LayerController : BaseAuthorizedController
     }
 
     [HttpPost]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Guid))]
     public async Task<IActionResult> Create([FromBody] CreateLayerDto dto)
     {
         var id = await _layerService.Create(dto, User.GetLoggedInUserId<Guid>());
@@ -68,6 +70,7 @@ public class LayerController : BaseAuthorizedController
     }
 
     [HttpPut]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> Update([FromBody] UpdateLayerDto dto)
     {
         var layer = await _layerRepository.FindById((Guid) dto.Id);
@@ -84,6 +87,7 @@ public class LayerController : BaseAuthorizedController
     }
 
     [HttpDelete("{id}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> Delete(Guid id)
     {
         var layer = await _layerRepository.FindById(id);
@@ -100,6 +104,7 @@ public class LayerController : BaseAuthorizedController
     }
 
     [HttpPost("objects")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> DeleteObjectFromLayer([FromBody] DeleteObjectFromLayerDTO dto)
     {
         var layer = await _layerRepository.FindById(dto.LayerId);
@@ -118,6 +123,7 @@ public class LayerController : BaseAuthorizedController
     }
 
     [HttpDelete("objects")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> AddObjectToLayerDTO([FromBody] AddObjectToLayerDTO dto)
     {
         var layer = await _layerRepository.FindById(dto.LayerId);

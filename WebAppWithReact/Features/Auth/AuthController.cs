@@ -32,6 +32,7 @@ public class AuthController : ControllerBase
 
     [HttpPost]
     [Route("login")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(LoginResponse))]
     public async Task<IActionResult> Login([FromBody] LoginModel model)
     {
         var user = await _userManager.FindByNameAsync(model.Username);
@@ -62,7 +63,7 @@ public class AuthController : ControllerBase
 
             await _userManager.UpdateAsync(user);
 
-            return Ok(new
+            return Ok(new LoginResponse
             {
                 Token = new JwtSecurityTokenHandler().WriteToken(token),
                 RefreshToken = refreshToken,
@@ -75,6 +76,7 @@ public class AuthController : ControllerBase
 
     [HttpPost]
     [Route("register")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Response))]
     public async Task<IActionResult> Register([FromBody] RegisterModel model)
     {
         var userExists = await _userManager.FindByNameAsync(model.Username);
@@ -106,6 +108,7 @@ public class AuthController : ControllerBase
 
     [HttpPost]
     [Route("register-admin")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Response))]
     public async Task<IActionResult> RegisterAdmin([FromBody] RegisterModel model)
     {
         var userExists = await _userManager.FindByNameAsync(model.Username);
@@ -155,6 +158,7 @@ public class AuthController : ControllerBase
 
     [HttpPost]
     [Route("refresh-token")]
+    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(TokenModel))]
     public async Task<IActionResult> RefreshToken(TokenModel tokenModel)
     {
         if (tokenModel is null)
@@ -191,10 +195,10 @@ public class AuthController : ControllerBase
         user.RefreshToken = newRefreshToken;
         await _userManager.UpdateAsync(user);
 
-        return new ObjectResult(new
+        return new ObjectResult(new TokenModel
         {
-            accessToken = new JwtSecurityTokenHandler().WriteToken(newAccessToken),
-            refreshToken = newRefreshToken,
+            AccessToken = new JwtSecurityTokenHandler().WriteToken(newAccessToken),
+            RefreshToken = newRefreshToken,
         });
     }
 
