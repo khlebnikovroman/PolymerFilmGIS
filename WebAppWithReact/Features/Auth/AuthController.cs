@@ -13,6 +13,9 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace WebAppWithReact.Features.Auth;
 
+/// <summary>
+///     Контроллер авторизации
+/// </summary>
 [Route("api/[controller]")]
 [ApiController]
 public class AuthController : ControllerBase
@@ -30,6 +33,11 @@ public class AuthController : ControllerBase
         _configuration = configuration;
     }
 
+    /// <summary>
+    ///     Аутентифицирует пользователя
+    /// </summary>
+    /// <param name="model">DTO для аутетентификации</param>
+    /// <returns></returns>
     [HttpPost]
     [Route("login")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(LoginResponse))]
@@ -74,6 +82,11 @@ public class AuthController : ControllerBase
         return Unauthorized();
     }
 
+    /// <summary>
+    ///     Регистрирует пользователя
+    /// </summary>
+    /// <param name="model">DTO для регистрации</param>
+    /// <returns></returns>
     [HttpPost]
     [Route("register")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Response))]
@@ -106,6 +119,11 @@ public class AuthController : ControllerBase
         return Ok(new Response {Status = "Success", Message = "User created successfully!",});
     }
 
+    /// <summary>
+    ///     Регистрирует администратора
+    /// </summary>
+    /// <param name="model">DTO для регистрации</param>
+    /// <returns></returns>
     [HttpPost]
     [Route("register-admin")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Response))]
@@ -156,6 +174,11 @@ public class AuthController : ControllerBase
         return Ok(new Response {Status = "Success", Message = "User created successfully!",});
     }
 
+    /// <summary>
+    ///     Обновляет JWT токен
+    /// </summary>
+    /// <param name="tokenModel">DTO для токена</param>
+    /// <returns></returns>
     [HttpPost]
     [Route("refresh-token")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(TokenModel))]
@@ -202,6 +225,11 @@ public class AuthController : ControllerBase
         });
     }
 
+    /// <summary>
+    ///     Отзывает токен у пользователя
+    /// </summary>
+    /// <param name="username">Имя пользователя, у которого надо отозвать токен</param>
+    /// <returns></returns>
     [Authorize]
     [HttpPost]
     [Route("revoke/{username}")]
@@ -220,6 +248,10 @@ public class AuthController : ControllerBase
         return NoContent();
     }
 
+    /// <summary>
+    ///     Отзывает все токены
+    /// </summary>
+    /// <returns></returns>
     [Authorize]
     [HttpPost]
     [Route("revoke-all")]
@@ -236,6 +268,7 @@ public class AuthController : ControllerBase
         return NoContent();
     }
 
+
     private JwtSecurityToken CreateToken(List<Claim> authClaims)
     {
         var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]));
@@ -249,6 +282,7 @@ public class AuthController : ControllerBase
 
         return token;
     }
+
 
     private static string GenerateRefreshToken()
     {
@@ -282,3 +316,4 @@ public class AuthController : ControllerBase
         return principal;
     }
 }
+

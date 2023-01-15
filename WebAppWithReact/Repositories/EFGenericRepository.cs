@@ -5,6 +5,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace WebAppWithReact.Repositories;
 
+/// <summary>
+///     Репозиторий для работы с EF
+/// </summary>
+/// <typeparam name="TEntity">Тип Dbset</typeparam>
 public class EFGenericRepository<TEntity> : IGenericRepository<TEntity> where TEntity : class
 {
     private readonly DbContext _context;
@@ -60,3 +64,4 @@ public class EFGenericRepository<TEntity> : IGenericRepository<TEntity> where TE
         await _context.SaveChangesAsync();
     }
 }
+

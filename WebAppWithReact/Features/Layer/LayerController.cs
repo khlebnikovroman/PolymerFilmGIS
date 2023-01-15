@@ -11,6 +11,9 @@ using WebAppWithReact.Repositories;
 
 namespace WebAppWithReact.Features.Layer;
 
+/// <summary>
+///     Контроллер для работы со слоями
+/// </summary>
 public class LayerController : BaseAuthorizedController
 {
     private readonly IAuthorizationService _authorizationService;
@@ -27,6 +30,9 @@ public class LayerController : BaseAuthorizedController
         _authorizationService = authorizationService;
     }
 
+    /// <summary>
+    ///     Получает все слои
+    /// </summary>
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IReadOnlyCollection<GetLayerDto>))]
 
@@ -69,6 +75,10 @@ public class LayerController : BaseAuthorizedController
         return Ok(layersDto);
     }
 
+    /// <summary>
+    ///     Получает слой по ID
+    /// </summary>
+    /// <param name="id">ID слоя</param>
     [HttpGet("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetLayerDto))]
     public async Task<IActionResult> Get(Guid id)
@@ -87,6 +97,10 @@ public class LayerController : BaseAuthorizedController
         return Forbid();
     }
 
+    /// <summary>
+    ///     Создает слой
+    /// </summary>
+    /// <param name="dto">DTO с информацией о слое</param>
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Guid))]
     public async Task<IActionResult> Create([FromBody] CreateLayerDto dto)
@@ -96,6 +110,10 @@ public class LayerController : BaseAuthorizedController
         return Ok(id);
     }
 
+    /// <summary>
+    ///     Обновляет слой
+    /// </summary>
+    /// <param name="dto">DTO с информацией о слое</param>
     [HttpPut]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> Update([FromBody] UpdateLayerDto dto)
@@ -113,6 +131,11 @@ public class LayerController : BaseAuthorizedController
         return Forbid();
     }
 
+    /// <summary>
+    ///     Удаляет слой по ID
+    /// </summary>
+    /// <param name="id">ID слоя</param>
+    /// <returns></returns>
     [HttpDelete("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> Delete(Guid id)
@@ -130,6 +153,10 @@ public class LayerController : BaseAuthorizedController
         return Forbid();
     }
 
+    /// <summary>
+    ///     Удаляет объект со слоя
+    /// </summary>
+    /// <param name="dto">DTO с информацией об объекте</param>
     [HttpDelete("objects")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> DeleteObjectFromLayer([FromBody] DeleteObjectFromLayerDTO dto)
@@ -149,6 +176,10 @@ public class LayerController : BaseAuthorizedController
         return Forbid();
     }
 
+    /// <summary>
+    ///     Добавляет объект на слой
+    /// </summary>
+    /// <param name="dto">DTO с информацией об объекте</param>
     [HttpPost("objects")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> AddObjectToLayerDTO([FromBody] AddObjectToLayerDTO dto)
@@ -168,3 +199,4 @@ public class LayerController : BaseAuthorizedController
         return Forbid();
     }
 }
+

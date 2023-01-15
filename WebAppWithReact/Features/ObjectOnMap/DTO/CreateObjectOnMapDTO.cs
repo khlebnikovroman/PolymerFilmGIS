@@ -3,6 +3,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace WebAppWithReact.Features.ObjectOnMap.DTO;
 
+/// <summary>
+///     DTO для создания объекта
+/// </summary>
 public record CreateObjectOnMapDto
 {
     [Required(ErrorMessage = "Name is required")]
@@ -17,3 +20,4 @@ public record CreateObjectOnMapDto
     [Required(ErrorMessage = "Capacity is required")]
     public double? Capacity { get; set; }
 }
+

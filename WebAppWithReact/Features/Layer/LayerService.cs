@@ -22,6 +22,11 @@ public class LayerService
     }
 
 
+    /// <summary>
+    ///     Получает слой по ID
+    /// </summary>
+    /// <param name="id">ID слоя</param>
+    /// <returns>Информация о найденном слое</returns>
     public async Task<GetLayerDto> Get(Guid id)
     {
         var l = await _layerRepository.FindById(id);
@@ -51,6 +56,12 @@ public class LayerService
         return lDto;
     }
 
+    /// <summary>
+    ///     Создает слой
+    /// </summary>
+    /// <param name="dto">DTO с информацией о создаваемом объекте</param>
+    /// <param name="userId"> ID пользователя</param>
+    /// <returns>ID созданного слоя</returns>
     public async Task<Guid> Create(CreateLayerDto dto, Guid userId)
     {
         var layer = new DAL.Layer
@@ -70,6 +81,10 @@ public class LayerService
         return layer.Id;
     }
 
+    /// <summary>
+    ///     Обнолвяет информацию о слое
+    /// </summary>
+    /// <param name="dto">DTO с информацией о слое</param>
     public async Task Update(UpdateLayerDto dto)
     {
         var layer = await _layerRepository.FindById((Guid) dto.Id);
@@ -77,12 +92,20 @@ public class LayerService
         await _layerRepository.Update(layer);
     }
 
+    /// <summary>
+    ///     Удаляет слой по ID
+    /// </summary>
+    /// <param name="id">ID слоя</param>
     public async Task Delete(Guid id)
     {
         var l = await _layerRepository.FindById(id);
         await _layerRepository.Remove(l);
     }
 
+    /// <summary>
+    ///     Добавляет объект на слой
+    /// </summary>
+    /// <param name="dto"> DTO с информацией о добавляемом объекте</param>
     public async Task AddObjectToLayer(AddObjectToLayerDTO dto)
     {
         var objectToAdd = await _objectOnMapRepository.FindById(dto.ObjectId);
@@ -100,6 +123,10 @@ public class LayerService
         }
     }
 
+    /// <summary>
+    ///     Удаляет объект со слоя
+    /// </summary>
+    /// <param name="dto"> DTO с информацией об удаляемом объекте</param>
     public async Task DeleteObjectFromLayer(DeleteObjectFromLayerDTO dto)
     {
         var objectToDelete = await _objectOnMapRepository.FindById(dto.ObjectId);
@@ -112,3 +139,4 @@ public class LayerService
         }
     }
 }
+

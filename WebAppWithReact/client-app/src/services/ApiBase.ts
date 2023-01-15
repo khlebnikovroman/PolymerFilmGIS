@@ -5,7 +5,7 @@ export class ApiBase {
     authToken: string | undefined = '';
 
     protected constructor() {
-        this.setAuthToken(UserService.getCurrentUser()?.token)
+        this.setAuthToken(UserService.getCurrentUserToken()?.token)
     }
 
     setAuthToken(token: string | undefined) {

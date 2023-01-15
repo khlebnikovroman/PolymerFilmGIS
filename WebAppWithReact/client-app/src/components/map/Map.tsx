@@ -2,14 +2,14 @@ import React, {MouseEvent, useCallback, useMemo, useState} from "react";
 import {MapContainer, Marker, Popup, TileLayer, ZoomControl} from "react-leaflet";
 import L, {latLng} from "leaflet";
 import './Map.css';
-import {Button, Layout} from 'antd';
+import {Layout} from 'antd';
 import 'antd/dist/antd.css'
 import {Content} from "antd/es/layout/layout";
-import MenuSider from "../menu/menuSider/MenuSider";
 import {useContextMenu} from "../../hooks";
-import MenuLayers from "../menu/menuLayers/MenuLayers";
 import {HeatmapLayer} from "react-leaflet-heatmap-layer-v3/lib";
 import {addressPoints} from "./exampleData";
+import {addressPoints2} from "./exampleData2";
+import {Mapelements} from "../menu/mapelements";
 
 L.Icon.Default.imagePath = "https://unpkg.com/browse/leaflet@1.9.2/dist/images/";
 
@@ -53,13 +53,13 @@ export const MapComponent: React.FC = () => {
     return (
         <div>
             <Layout className="site-layout">
-                <MenuSider/>
+                {/*<MenuSider/>*/}
                 <div>
                     <Content>
                         <div className="element-on-map">
-                            <MenuLayers/>
+                            <Mapelements/>
                         </div>
-                        <Button></Button>
+                        {/*<Button></Button>*/}
                         <div onContextMenu={handleContextMenu}>
                             <MapContainer zoomControl={false} zoom={100} center={latLng(lat, lng)} className="big-map"
                                           attributionControl={false}
@@ -69,6 +69,16 @@ export const MapComponent: React.FC = () => {
                                     fitBoundsOnLoad
                                     fitBoundsOnUpdate
                                     points={addressPoints}
+                                    // @ts-ignore
+                                    longitudeExtractor={m => m[1]}
+                                    // @ts-ignore
+                                    latitudeExtractor={m => m[0]}
+                                    // @ts-ignore
+                                    intensityExtractor={m => parseFloat(m[2])}/>
+                                <HeatmapLayer
+                                    fitBoundsOnLoad
+                                    fitBoundsOnUpdate
+                                    points={addressPoints2}
                                     // @ts-ignore
                                     longitudeExtractor={m => m[1]}
                                     // @ts-ignore

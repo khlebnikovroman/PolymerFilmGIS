@@ -9,6 +9,9 @@ using WebAppWithReact.Repositories;
 
 namespace WebAppWithReact.Features.ObjectOnMap;
 
+/// <summary>
+///     Контроллер объектов
+/// </summary>
 public class ObjectsOnMapController : BaseAuthorizedController
 {
     private readonly IAuthorizationService _authorizationService;
@@ -24,6 +27,9 @@ public class ObjectsOnMapController : BaseAuthorizedController
     }
 
 
+    /// <summary>
+    ///     Получает все объекты, которые не принадлежат ни одному слою
+    /// </summary>
     [HttpGet]
     [Route("GetAllWithoutLayer")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IReadOnlyCollection<ObjectOnMapDetailsDto>))]
@@ -49,6 +55,10 @@ public class ObjectsOnMapController : BaseAuthorizedController
 
         return Ok(objectDtos);
     }
+
+    /// <summary>
+    ///     Получает все объекты
+    /// </summary>
 
     // todo переписать (сейчас это заглушка(нельзя использовать для админа))
     [HttpGet]
@@ -76,6 +86,10 @@ public class ObjectsOnMapController : BaseAuthorizedController
         return Ok(objectDtos);
     }
 
+    /// <summary>
+    ///     Получает объект по ID
+    /// </summary>
+    /// <param name="id">ID слоя</param>
     [HttpGet("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ObjectOnMapDetailsDto))]
     public async Task<IActionResult> Get(Guid id)
@@ -94,6 +108,11 @@ public class ObjectsOnMapController : BaseAuthorizedController
         return Forbid();
     }
 
+    /// <summary>
+    ///     Создет объект
+    /// </summary>
+    /// <param name="dto">DTO с информацией об объекте</param>
+    /// <returns></returns>
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Guid))]
     public async Task<IActionResult> Create([FromBody] CreateObjectOnMapDto dto)
@@ -103,6 +122,10 @@ public class ObjectsOnMapController : BaseAuthorizedController
         return Ok(id);
     }
 
+    /// <summary>
+    ///     Обновляет объект
+    /// </summary>
+    /// <param name="dto"> DTO с обновленной информацией об объекте</param>
     [HttpPut]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> Update([FromBody] UpdateObjectOnMapDto dto)
@@ -120,6 +143,10 @@ public class ObjectsOnMapController : BaseAuthorizedController
         return Forbid();
     }
 
+    /// <summary>
+    ///     Удаляет объект по ID
+    /// </summary>
+    /// <param name="id">ID объекта</param>
     [HttpDelete("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> Delete(Guid id)
@@ -137,3 +164,4 @@ public class ObjectsOnMapController : BaseAuthorizedController
         return Forbid();
     }
 }
+

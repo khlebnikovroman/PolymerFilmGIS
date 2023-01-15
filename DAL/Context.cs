@@ -19,15 +19,18 @@ namespace DAL
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Layer>()
-                        .HasMany(c => c.ObjectsOnMap)
-                        .WithOne(e => e.Layer)
-                        .OnDelete(DeleteBehavior.SetNull);
-
+            // modelBuilder.Entity<Layer>()
+            //             .HasMany(c => c.ObjectsOnMap)
+            //             .WithOne(e => e.Layer)
+            //             .HasForeignKey(p=>p.LayerId)
+            //             .IsRequired(false)
+            //             .OnDelete(DeleteBehavior.SetNull);
             // modelBuilder.Entity<ObjectOnMap>()
             //             .HasOne(c => c.Layer)
             //             .WithMany(c=> c.ObjectsOnMap)
-            //             .OnDelete(DeleteBehavior.NoAction);
+            //             .IsRequired(false)
+            //             .HasForeignKey(p=>p.LayerId)
+            //             .OnDelete(DeleteBehavior.SetNull);
             var user1 = new AppUser
                 {Id = Guid.NewGuid(), FirstName = "Vasya", SecondName = "Petrov",};
 

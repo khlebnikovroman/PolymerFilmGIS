@@ -7,6 +7,9 @@ using WebAppWithReact.Extensions;
 
 namespace WebAppWithReact.Misc.AuthHandlers;
 
+/// <summary>
+///     Обработчик авторизации
+/// </summary>
 public class OwnByUserHandler : AuthorizationHandler<OwnByUserRequirement, IOwnByUser>
 {
     protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, OwnByUserRequirement requirement, IOwnByUser resource)
@@ -24,3 +27,4 @@ public class OwnByUserHandler : AuthorizationHandler<OwnByUserRequirement, IOwnB
 public class OwnByUserRequirement : IAuthorizationRequirement
 {
 }
+

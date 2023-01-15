@@ -38,7 +38,7 @@ class Login extends Component<Props, State> {
     }
 
     componentDidMount() {
-        const currentUser = UserService.getCurrentUser();
+        const currentUser = UserService.getCurrentUserToken();
 
         if (currentUser) {
             this.setState({isAuthorized: true});

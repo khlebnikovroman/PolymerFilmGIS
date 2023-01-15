@@ -3,6 +3,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace WebAppWithReact.Features.ObjectOnMap.DTO;
 
+/// <summary>
+///     DTO для обновления объекта
+/// </summary>
 public record UpdateObjectOnMapDto
 {
     [Required(ErrorMessage = "Id is required")]
@@ -20,3 +23,4 @@ public record UpdateObjectOnMapDto
     [Required(ErrorMessage = "Capacity is required")]
     public double? Capacity { get; set; }
 }
+

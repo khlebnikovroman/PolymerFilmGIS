@@ -56,7 +56,7 @@ const MenuLayers = (): JSX.Element => {
                 bordered
                 dataSource={list}
                 renderItem={(item: GetLayerDto, index: number) =>
-                    <List.Item style={{width: 256}}>
+                    <List.Item>
                         <Checkbox
                             onChange={onChange}
                             id={item.id}
@@ -66,7 +66,8 @@ const MenuLayers = (): JSX.Element => {
                         </Checkbox>
                     </List.Item>}
             />
-            <Button type="primary" shape={"default"} style={{width: 256}} onClick={onClick}>Создать новый слой</Button>
+            <Button type="primary" shape={"default"} style={{width: "100%"}} onClick={onClick}>Создать новый
+                слой</Button>
             <CreateLayerModal open={isShown} setShown={setShown}/>
         </>
     );

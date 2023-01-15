@@ -9,7 +9,7 @@ type requireAuthProps = {
 export const RequireAuth: FC<requireAuthProps> = ({children}: requireAuthProps): JSX.Element => {
     {
         const location = useLocation();
-        const user = UserService.getCurrentUser();
+        const user = UserService.getCurrentUserToken();
         console.log(user)
         if (!user) {
             return <Navigate to="/login" state={{from: location}}/>

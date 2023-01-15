@@ -9,3 +9,4 @@ public interface IGenericRepository<TEntity> where TEntity : class
     Task Remove(TEntity item);
     Task Update(TEntity item);
 }
+

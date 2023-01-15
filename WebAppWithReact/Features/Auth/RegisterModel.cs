@@ -3,6 +3,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace WebAppWithReact.Features.Auth;
 
+/// <summary>
+///     DTO для регистрации
+/// </summary>
 public class RegisterModel
 {
     [Required(ErrorMessage = "User Name is required")]
@@ -21,3 +24,4 @@ public class RegisterModel
     [Required(ErrorMessage = "Password is required")]
     public string? Password { get; set; }
 }
+

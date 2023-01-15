@@ -5,6 +5,9 @@ using WebAppWithReact.Features.ObjectOnMap.DTO;
 
 namespace WebAppWithReact.Features.Layer.DTO;
 
+/// <summary>
+///     DTO для получения информации о слое
+/// </summary>
 public record GetLayerDto
 {
     [Required(ErrorMessage = "Id is required")]
@@ -15,3 +18,4 @@ public record GetLayerDto
 
     public List<ObjectOnMapDto> Objects { get; set; }
 }
+
