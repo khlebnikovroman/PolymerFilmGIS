@@ -15,8 +15,11 @@ export const HeatLayer: React.FC = () => {
                 longitudeExtractor={m => m[1]}
                 // @ts-ignore
                 latitudeExtractor={m => m[0]}
+                radius={3}
+                blur={1}
                 // @ts-ignore
                 intensityExtractor={m => parseFloat(m[2])}/>
+
         </>
     )
 }

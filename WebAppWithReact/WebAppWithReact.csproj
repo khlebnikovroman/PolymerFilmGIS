@@ -37,9 +37,11 @@
 
     <ItemGroup>
         <!-- Don't publish the SPA source files, but do show them in the project files list -->
-        <Content Remove="$(SpaRoot)**" />
-        <None Remove="$(SpaRoot)**" />
-        <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
+        <Content Remove="$(SpaRoot)**"/>
+        <Content Include="client-app\libs\react-leaflet-heatmap-layer-master\package-lock.json"/>
+        <Content Include="client-app\libs\react-leaflet-heatmap-layer-master\package.json"/>
+        <None Remove="$(SpaRoot)**"/>
+        <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**"/>
     </ItemGroup>
 
     <ItemGroup>
@@ -58,6 +60,7 @@
 
     <ItemGroup>
         <Folder Include="client-app\.cert"/>
+        <Folder Include="client-app\libs"/>
     </ItemGroup>
 
     <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
