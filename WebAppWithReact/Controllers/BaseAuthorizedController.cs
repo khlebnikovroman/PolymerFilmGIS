@@ -16,3 +16,5 @@ public abstract class BaseAuthorizedController : ControllerBase
     public bool IsUserAdmin => User.IsInRole(UserRoles.Admin);
     protected Guid UserId => User.GetLoggedInUserId<Guid>();
 }
+
+

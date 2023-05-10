@@ -21,3 +21,5 @@ public record CreateObjectOnMapDto
     public double? Capacity { get; set; }
 }
 
+
+

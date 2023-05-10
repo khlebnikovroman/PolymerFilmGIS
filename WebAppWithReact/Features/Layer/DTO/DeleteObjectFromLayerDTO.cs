@@ -9,3 +9,5 @@ public record DeleteObjectFromLayerDTO
     public Guid ObjectId { get; set; }
 }
 
+
+

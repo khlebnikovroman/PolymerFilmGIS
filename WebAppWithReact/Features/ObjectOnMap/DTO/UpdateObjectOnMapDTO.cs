@@ -24,3 +24,5 @@ public record UpdateObjectOnMapDto
     public double? Capacity { get; set; }
 }
 
+
+

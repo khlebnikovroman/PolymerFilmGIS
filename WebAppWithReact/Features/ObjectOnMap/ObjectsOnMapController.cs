@@ -165,3 +165,5 @@ public class ObjectsOnMapController : BaseAuthorizedController
     }
 }
 
+
+

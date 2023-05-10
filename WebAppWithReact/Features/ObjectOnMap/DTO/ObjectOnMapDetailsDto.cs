@@ -9,3 +9,5 @@ public record ObjectOnMapDetailsDto : ObjectOnMapDto
     public Guid AppUserId { get; set; }
 }
 
+
+

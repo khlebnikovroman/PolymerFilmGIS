@@ -1,4 +1,4 @@
-export const addressPoints2 = [
+export const KleknerPointsWithCompanyName = [
     [59.918120041374166, 30.32846778701206, 1379, "Пласма спб"],
     [60.00252977464776, 30.643978505734715, 2738, "Продакшен лайн"],
     [45.07660396555999, 42.01474979553889, 2916, "Биоком"],
@@ -12,7 +12,7 @@ export const addressPoints2 = [
 
 ]
 
-export const addressPoints3 = [
+export const KleknerPoints = [
     [59.918120041374166, 30.32846778701206, 1379],
     [60.00252977464776, 30.643978505734715, 2738],
     [45.07660396555999, 42.01474979553889, 2916],
@@ -25,7 +25,7 @@ export const addressPoints3 = [
     [56.86781733447824, 60.67116594096128, 3403],
 
 ]
-export const addressPoints4 = [
+export const RandomRussiaPoints = [
     [51.5277, 46.0111, 1826],
     [54.1946, 50.1638, 3304],
     [56.4997, 84.9744, 3251],

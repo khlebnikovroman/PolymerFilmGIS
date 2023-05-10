@@ -31,9 +31,9 @@ export class ApiBase {
 }
 
 export class AuthClient extends ApiBase {
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
     private instance: AxiosInstance;
     private baseUrl: string;
-    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
 
     constructor(baseUrl?: string, instance?: AxiosInstance) {
 
@@ -79,30 +79,6 @@ export class AuthClient extends ApiBase {
         });
     }
 
-    protected processLogin(response: AxiosResponse): Promise<LoginResponse> {
-        const status = response.status;
-        let _headers: any = {};
-        if (response.headers && typeof response.headers === "object") {
-            for (let k in response.headers) {
-                if (response.headers.hasOwnProperty(k)) {
-                    _headers[k] = response.headers[k];
-                }
-            }
-        }
-        if (status === 200) {
-            const _responseText = response.data;
-            let result200: any = null;
-            let resultData200 = _responseText;
-            result200 = LoginResponse.fromJS(resultData200);
-            return Promise.resolve<LoginResponse>(result200);
-
-        } else if (status !== 200 && status !== 204) {
-            const _responseText = response.data;
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-        }
-        return Promise.resolve<LoginResponse>(null as any);
-    }
-
     /**
      * @param body (optional)
      * @return Success
@@ -135,30 +111,6 @@ export class AuthClient extends ApiBase {
         }).then((_response: AxiosResponse) => {
             return this.processRegister(_response);
         });
-    }
-
-    protected processRegister(response: AxiosResponse): Promise<Response> {
-        const status = response.status;
-        let _headers: any = {};
-        if (response.headers && typeof response.headers === "object") {
-            for (let k in response.headers) {
-                if (response.headers.hasOwnProperty(k)) {
-                    _headers[k] = response.headers[k];
-                }
-            }
-        }
-        if (status === 200) {
-            const _responseText = response.data;
-            let result200: any = null;
-            let resultData200 = _responseText;
-            result200 = Response.fromJS(resultData200);
-            return Promise.resolve<Response>(result200);
-
-        } else if (status !== 200 && status !== 204) {
-            const _responseText = response.data;
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-        }
-        return Promise.resolve<Response>(null as any);
     }
 
     /**
@@ -195,30 +147,6 @@ export class AuthClient extends ApiBase {
         });
     }
 
-    protected processRegisterAdmin(response: AxiosResponse): Promise<Response> {
-        const status = response.status;
-        let _headers: any = {};
-        if (response.headers && typeof response.headers === "object") {
-            for (let k in response.headers) {
-                if (response.headers.hasOwnProperty(k)) {
-                    _headers[k] = response.headers[k];
-                }
-            }
-        }
-        if (status === 200) {
-            const _responseText = response.data;
-            let result200: any = null;
-            let resultData200 = _responseText;
-            result200 = Response.fromJS(resultData200);
-            return Promise.resolve<Response>(result200);
-
-        } else if (status !== 200 && status !== 204) {
-            const _responseText = response.data;
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-        }
-        return Promise.resolve<Response>(null as any);
-    }
-
     /**
      * @param body (optional)
      * @return Success
@@ -253,30 +181,6 @@ export class AuthClient extends ApiBase {
         });
     }
 
-    protected processRefreshToken(response: AxiosResponse): Promise<TokenModel> {
-        const status = response.status;
-        let _headers: any = {};
-        if (response.headers && typeof response.headers === "object") {
-            for (let k in response.headers) {
-                if (response.headers.hasOwnProperty(k)) {
-                    _headers[k] = response.headers[k];
-                }
-            }
-        }
-        if (status === 200) {
-            const _responseText = response.data;
-            let result200: any = null;
-            let resultData200 = _responseText;
-            result200 = TokenModel.fromJS(resultData200);
-            return Promise.resolve<TokenModel>(result200);
-
-        } else if (status !== 200 && status !== 204) {
-            const _responseText = response.data;
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-        }
-        return Promise.resolve<TokenModel>(null as any);
-    }
-
     /**
      * @return Success
      */
@@ -307,27 +211,6 @@ export class AuthClient extends ApiBase {
         });
     }
 
-    protected processRevoke(response: AxiosResponse): Promise<void> {
-        const status = response.status;
-        let _headers: any = {};
-        if (response.headers && typeof response.headers === "object") {
-            for (let k in response.headers) {
-                if (response.headers.hasOwnProperty(k)) {
-                    _headers[k] = response.headers[k];
-                }
-            }
-        }
-        if (status === 200) {
-            const _responseText = response.data;
-            return Promise.resolve<void>(null as any);
-
-        } else if (status !== 200 && status !== 204) {
-            const _responseText = response.data;
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-        }
-        return Promise.resolve<void>(null as any);
-    }
-
     /**
      * @return Success
      */
@@ -355,6 +238,123 @@ export class AuthClient extends ApiBase {
         });
     }
 
+    protected processLogin(response: AxiosResponse): Promise<LoginResponse> {
+        const status = response.status;
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (let k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
+        }
+        if (status === 200) {
+            const _responseText = response.data;
+            let result200: any = null;
+            let resultData200 = _responseText;
+            result200 = LoginResponse.fromJS(resultData200);
+            return Promise.resolve<LoginResponse>(result200);
+
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+        }
+        return Promise.resolve<LoginResponse>(null as any);
+    }
+
+    protected processRegister(response: AxiosResponse): Promise<Response> {
+        const status = response.status;
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (let k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
+        }
+        if (status === 200) {
+            const _responseText = response.data;
+            let result200: any = null;
+            let resultData200 = _responseText;
+            result200 = Response.fromJS(resultData200);
+            return Promise.resolve<Response>(result200);
+
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+        }
+        return Promise.resolve<Response>(null as any);
+    }
+
+    protected processRegisterAdmin(response: AxiosResponse): Promise<Response> {
+        const status = response.status;
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (let k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
+        }
+        if (status === 200) {
+            const _responseText = response.data;
+            let result200: any = null;
+            let resultData200 = _responseText;
+            result200 = Response.fromJS(resultData200);
+            return Promise.resolve<Response>(result200);
+
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+        }
+        return Promise.resolve<Response>(null as any);
+    }
+
+    protected processRefreshToken(response: AxiosResponse): Promise<TokenModel> {
+        const status = response.status;
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (let k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
+        }
+        if (status === 200) {
+            const _responseText = response.data;
+            let result200: any = null;
+            let resultData200 = _responseText;
+            result200 = TokenModel.fromJS(resultData200);
+            return Promise.resolve<TokenModel>(result200);
+
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+        }
+        return Promise.resolve<TokenModel>(null as any);
+    }
+
+    protected processRevoke(response: AxiosResponse): Promise<void> {
+        const status = response.status;
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (let k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
+        }
+        if (status === 200) {
+            const _responseText = response.data;
+            return Promise.resolve<void>(null as any);
+
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
     protected processRevokeAll(response: AxiosResponse): Promise<void> {
         const status = response.status;
         let _headers: any = {};
@@ -378,9 +378,9 @@ export class AuthClient extends ApiBase {
 }
 
 export class LayerClient extends ApiBase {
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
     private instance: AxiosInstance;
     private baseUrl: string;
-    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
 
     constructor(baseUrl?: string, instance?: AxiosInstance) {
 
@@ -421,36 +421,6 @@ export class LayerClient extends ApiBase {
         });
     }
 
-    protected processLayerAll(response: AxiosResponse): Promise<GetLayerDto[]> {
-        const status = response.status;
-        let _headers: any = {};
-        if (response.headers && typeof response.headers === "object") {
-            for (let k in response.headers) {
-                if (response.headers.hasOwnProperty(k)) {
-                    _headers[k] = response.headers[k];
-                }
-            }
-        }
-        if (status === 200) {
-            const _responseText = response.data;
-            let result200: any = null;
-            let resultData200 = _responseText;
-            if (Array.isArray(resultData200)) {
-                result200 = [] as any;
-                for (let item of resultData200)
-                    result200!.push(GetLayerDto.fromJS(item));
-            } else {
-                result200 = <any>null;
-            }
-            return Promise.resolve<GetLayerDto[]>(result200);
-
-        } else if (status !== 200 && status !== 204) {
-            const _responseText = response.data;
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-        }
-        return Promise.resolve<GetLayerDto[]>(null as any);
-    }
-
     /**
      * @param body (optional)
      * @return Success
@@ -483,31 +453,6 @@ export class LayerClient extends ApiBase {
         }).then((_response: AxiosResponse) => {
             return this.processLayerPOST(_response);
         });
-    }
-
-    protected processLayerPOST(response: AxiosResponse): Promise<string> {
-        const status = response.status;
-        let _headers: any = {};
-        if (response.headers && typeof response.headers === "object") {
-            for (let k in response.headers) {
-                if (response.headers.hasOwnProperty(k)) {
-                    _headers[k] = response.headers[k];
-                }
-            }
-        }
-        if (status === 200) {
-            const _responseText = response.data;
-            let result200: any = null;
-            let resultData200 = _responseText;
-            result200 = resultData200 !== undefined ? resultData200 : <any>null;
-
-            return Promise.resolve<string>(result200);
-
-        } else if (status !== 200 && status !== 204) {
-            const _responseText = response.data;
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-        }
-        return Promise.resolve<string>(null as any);
     }
 
     /**
@@ -543,27 +488,6 @@ export class LayerClient extends ApiBase {
         });
     }
 
-    protected processLayerPUT(response: AxiosResponse): Promise<void> {
-        const status = response.status;
-        let _headers: any = {};
-        if (response.headers && typeof response.headers === "object") {
-            for (let k in response.headers) {
-                if (response.headers.hasOwnProperty(k)) {
-                    _headers[k] = response.headers[k];
-                }
-            }
-        }
-        if (status === 200) {
-            const _responseText = response.data;
-            return Promise.resolve<void>(null as any);
-
-        } else if (status !== 200 && status !== 204) {
-            const _responseText = response.data;
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-        }
-        return Promise.resolve<void>(null as any);
-    }
-
     /**
      * @return Success
      */
@@ -596,30 +520,6 @@ export class LayerClient extends ApiBase {
         });
     }
 
-    protected processLayerGET(response: AxiosResponse): Promise<GetLayerDto> {
-        const status = response.status;
-        let _headers: any = {};
-        if (response.headers && typeof response.headers === "object") {
-            for (let k in response.headers) {
-                if (response.headers.hasOwnProperty(k)) {
-                    _headers[k] = response.headers[k];
-                }
-            }
-        }
-        if (status === 200) {
-            const _responseText = response.data;
-            let result200: any = null;
-            let resultData200 = _responseText;
-            result200 = GetLayerDto.fromJS(resultData200);
-            return Promise.resolve<GetLayerDto>(result200);
-
-        } else if (status !== 200 && status !== 204) {
-            const _responseText = response.data;
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-        }
-        return Promise.resolve<GetLayerDto>(null as any);
-    }
-
     /**
      * @return Success
      */
@@ -648,27 +548,6 @@ export class LayerClient extends ApiBase {
         }).then((_response: AxiosResponse) => {
             return this.processLayerDELETE(_response);
         });
-    }
-
-    protected processLayerDELETE(response: AxiosResponse): Promise<void> {
-        const status = response.status;
-        let _headers: any = {};
-        if (response.headers && typeof response.headers === "object") {
-            for (let k in response.headers) {
-                if (response.headers.hasOwnProperty(k)) {
-                    _headers[k] = response.headers[k];
-                }
-            }
-        }
-        if (status === 200) {
-            const _responseText = response.data;
-            return Promise.resolve<void>(null as any);
-
-        } else if (status !== 200 && status !== 204) {
-            const _responseText = response.data;
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-        }
-        return Promise.resolve<void>(null as any);
     }
 
     /**
@@ -704,27 +583,6 @@ export class LayerClient extends ApiBase {
         });
     }
 
-    protected processObjectsDELETE(response: AxiosResponse): Promise<void> {
-        const status = response.status;
-        let _headers: any = {};
-        if (response.headers && typeof response.headers === "object") {
-            for (let k in response.headers) {
-                if (response.headers.hasOwnProperty(k)) {
-                    _headers[k] = response.headers[k];
-                }
-            }
-        }
-        if (status === 200) {
-            const _responseText = response.data;
-            return Promise.resolve<void>(null as any);
-
-        } else if (status !== 200 && status !== 204) {
-            const _responseText = response.data;
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-        }
-        return Promise.resolve<void>(null as any);
-    }
-
     /**
      * @param body (optional)
      * @return Success
@@ -756,6 +614,148 @@ export class LayerClient extends ApiBase {
         }).then((_response: AxiosResponse) => {
             return this.processObjectsPOST(_response);
         });
+    }
+
+    protected processLayerAll(response: AxiosResponse): Promise<GetLayerDto[]> {
+        const status = response.status;
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (let k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
+        }
+        if (status === 200) {
+            const _responseText = response.data;
+            let result200: any = null;
+            let resultData200 = _responseText;
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(GetLayerDto.fromJS(item));
+            } else {
+                result200 = <any>null;
+            }
+            return Promise.resolve<GetLayerDto[]>(result200);
+
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+        }
+        return Promise.resolve<GetLayerDto[]>(null as any);
+    }
+
+    protected processLayerPOST(response: AxiosResponse): Promise<string> {
+        const status = response.status;
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (let k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
+        }
+        if (status === 200) {
+            const _responseText = response.data;
+            let result200: any = null;
+            let resultData200 = _responseText;
+            result200 = resultData200 !== undefined ? resultData200 : <any>null;
+
+            return Promise.resolve<string>(result200);
+
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+        }
+        return Promise.resolve<string>(null as any);
+    }
+
+    protected processLayerPUT(response: AxiosResponse): Promise<void> {
+        const status = response.status;
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (let k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
+        }
+        if (status === 200) {
+            const _responseText = response.data;
+            return Promise.resolve<void>(null as any);
+
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    protected processLayerGET(response: AxiosResponse): Promise<GetLayerDto> {
+        const status = response.status;
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (let k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
+        }
+        if (status === 200) {
+            const _responseText = response.data;
+            let result200: any = null;
+            let resultData200 = _responseText;
+            result200 = GetLayerDto.fromJS(resultData200);
+            return Promise.resolve<GetLayerDto>(result200);
+
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+        }
+        return Promise.resolve<GetLayerDto>(null as any);
+    }
+
+    protected processLayerDELETE(response: AxiosResponse): Promise<void> {
+        const status = response.status;
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (let k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
+        }
+        if (status === 200) {
+            const _responseText = response.data;
+            return Promise.resolve<void>(null as any);
+
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    protected processObjectsDELETE(response: AxiosResponse): Promise<void> {
+        const status = response.status;
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (let k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
+        }
+        if (status === 200) {
+            const _responseText = response.data;
+            return Promise.resolve<void>(null as any);
+
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+        }
+        return Promise.resolve<void>(null as any);
     }
 
     protected processObjectsPOST(response: AxiosResponse): Promise<void> {
@@ -853,6 +853,135 @@ export class ObjectsOnMapClient extends ApiBase {
         });
     }
 
+    /**
+     * @param body (optional)
+     * @return Success
+     */
+    objectsOnMapPOST(body: CreateObjectOnMapDto | undefined, cancelToken?: CancelToken | undefined): Promise<string> {
+        let url_ = this.baseUrl + "/api/ObjectsOnMap";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: AxiosRequestConfig = {
+            data: content_,
+            method: "POST",
+            url: url_,
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "text/plain"
+            },
+            cancelToken
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.instance.request(transformedOptions_);
+        }).catch((_error: any) => {
+            if (isAxiosError(_error) && _error.response) {
+                return _error.response;
+            } else {
+                throw _error;
+            }
+        }).then((_response: AxiosResponse) => {
+            return this.processObjectsOnMapPOST(_response);
+        });
+    }
+
+    /**
+     * @param body (optional)
+     * @return Success
+     */
+    objectsOnMapPUT(body: UpdateObjectOnMapDto | undefined, cancelToken?: CancelToken | undefined): Promise<void> {
+        let url_ = this.baseUrl + "/api/ObjectsOnMap";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: AxiosRequestConfig = {
+            data: content_,
+            method: "PUT",
+            url: url_,
+            headers: {
+                "Content-Type": "application/json",
+            },
+            cancelToken
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.instance.request(transformedOptions_);
+        }).catch((_error: any) => {
+            if (isAxiosError(_error) && _error.response) {
+                return _error.response;
+            } else {
+                throw _error;
+            }
+        }).then((_response: AxiosResponse) => {
+            return this.processObjectsOnMapPUT(_response);
+        });
+    }
+
+    /**
+     * @return Success
+     */
+    objectsOnMapGET(id: string, cancelToken?: CancelToken | undefined): Promise<ObjectOnMapDetailsDto> {
+        let url_ = this.baseUrl + "/api/ObjectsOnMap/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: AxiosRequestConfig = {
+            method: "GET",
+            url: url_,
+            headers: {
+                "Accept": "text/plain"
+            },
+            cancelToken
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.instance.request(transformedOptions_);
+        }).catch((_error: any) => {
+            if (isAxiosError(_error) && _error.response) {
+                return _error.response;
+            } else {
+                throw _error;
+            }
+        }).then((_response: AxiosResponse) => {
+            return this.processObjectsOnMapGET(_response);
+        });
+    }
+
+    /**
+     * @return Success
+     */
+    objectsOnMapDELETE(id: string, cancelToken?: CancelToken | undefined): Promise<void> {
+        let url_ = this.baseUrl + "/api/ObjectsOnMap/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: AxiosRequestConfig = {
+            method: "DELETE",
+            url: url_,
+            headers: {},
+            cancelToken
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.instance.request(transformedOptions_);
+        }).catch((_error: any) => {
+            if (isAxiosError(_error) && _error.response) {
+                return _error.response;
+            } else {
+                throw _error;
+            }
+        }).then((_response: AxiosResponse) => {
+            return this.processObjectsOnMapDELETE(_response);
+        });
+    }
+
     protected processGetAllWithoutLayer(response: AxiosResponse): Promise<ObjectOnMapDetailsDto[]> {
         const status = response.status;
         let _headers: any = {};
@@ -913,40 +1042,6 @@ export class ObjectsOnMapClient extends ApiBase {
         return Promise.resolve<ObjectOnMapDetailsDto[]>(null as any);
     }
 
-    /**
-     * @param body (optional)
-     * @return Success
-     */
-    objectsOnMapPOST(body: CreateObjectOnMapDto | undefined, cancelToken?: CancelToken | undefined): Promise<string> {
-        let url_ = this.baseUrl + "/api/ObjectsOnMap";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: AxiosRequestConfig = {
-            data: content_,
-            method: "POST",
-            url: url_,
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "text/plain"
-            },
-            cancelToken
-        };
-
-        return this.transformOptions(options_).then(transformedOptions_ => {
-            return this.instance.request(transformedOptions_);
-        }).catch((_error: any) => {
-            if (isAxiosError(_error) && _error.response) {
-                return _error.response;
-            } else {
-                throw _error;
-            }
-        }).then((_response: AxiosResponse) => {
-            return this.processObjectsOnMapPOST(_response);
-        });
-    }
-
     protected processObjectsOnMapPOST(response: AxiosResponse): Promise<string> {
         const status = response.status;
         let _headers: any = {};
@@ -972,39 +1067,6 @@ export class ObjectsOnMapClient extends ApiBase {
         return Promise.resolve<string>(null as any);
     }
 
-    /**
-     * @param body (optional)
-     * @return Success
-     */
-    objectsOnMapPUT(body: UpdateObjectOnMapDto | undefined, cancelToken?: CancelToken | undefined): Promise<void> {
-        let url_ = this.baseUrl + "/api/ObjectsOnMap";
-        url_ = url_.replace(/[?&]$/, "");
-
-        const content_ = JSON.stringify(body);
-
-        let options_: AxiosRequestConfig = {
-            data: content_,
-            method: "PUT",
-            url: url_,
-            headers: {
-                "Content-Type": "application/json",
-            },
-            cancelToken
-        };
-
-        return this.transformOptions(options_).then(transformedOptions_ => {
-            return this.instance.request(transformedOptions_);
-        }).catch((_error: any) => {
-            if (isAxiosError(_error) && _error.response) {
-                return _error.response;
-            } else {
-                throw _error;
-            }
-        }).then((_response: AxiosResponse) => {
-            return this.processObjectsOnMapPUT(_response);
-        });
-    }
-
     protected processObjectsOnMapPUT(response: AxiosResponse): Promise<void> {
         const status = response.status;
         let _headers: any = {};
@@ -1024,38 +1086,6 @@ export class ObjectsOnMapClient extends ApiBase {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
         return Promise.resolve<void>(null as any);
-    }
-
-    /**
-     * @return Success
-     */
-    objectsOnMapGET(id: string, cancelToken?: CancelToken | undefined): Promise<ObjectOnMapDetailsDto> {
-        let url_ = this.baseUrl + "/api/ObjectsOnMap/{id}";
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: AxiosRequestConfig = {
-            method: "GET",
-            url: url_,
-            headers: {
-                "Accept": "text/plain"
-            },
-            cancelToken
-        };
-
-        return this.transformOptions(options_).then(transformedOptions_ => {
-            return this.instance.request(transformedOptions_);
-        }).catch((_error: any) => {
-            if (isAxiosError(_error) && _error.response) {
-                return _error.response;
-            } else {
-                throw _error;
-            }
-        }).then((_response: AxiosResponse) => {
-            return this.processObjectsOnMapGET(_response);
-        });
     }
 
     protected processObjectsOnMapGET(response: AxiosResponse): Promise<ObjectOnMapDetailsDto> {
@@ -1080,36 +1110,6 @@ export class ObjectsOnMapClient extends ApiBase {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
         return Promise.resolve<ObjectOnMapDetailsDto>(null as any);
-    }
-
-    /**
-     * @return Success
-     */
-    objectsOnMapDELETE(id: string, cancelToken?: CancelToken | undefined): Promise<void> {
-        let url_ = this.baseUrl + "/api/ObjectsOnMap/{id}";
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: AxiosRequestConfig = {
-            method: "DELETE",
-            url: url_,
-            headers: {},
-            cancelToken
-        };
-
-        return this.transformOptions(options_).then(transformedOptions_ => {
-            return this.instance.request(transformedOptions_);
-        }).catch((_error: any) => {
-            if (isAxiosError(_error) && _error.response) {
-                return _error.response;
-            } else {
-                throw _error;
-            }
-        }).then((_response: AxiosResponse) => {
-            return this.processObjectsOnMapDELETE(_response);
-        });
     }
 
     protected processObjectsOnMapDELETE(response: AxiosResponse): Promise<void> {
@@ -1147,18 +1147,18 @@ export class AddObjectToLayerDTO implements IAddObjectToLayerDTO {
         }
     }
 
-    init(_data?: any) {
-        if (_data) {
-            this.layerId = _data["layerId"];
-            this.objectId = _data["objectId"];
-        }
-    }
-
     static fromJS(data: any): AddObjectToLayerDTO {
         data = typeof data === 'object' ? data : {};
         let result = new AddObjectToLayerDTO();
         result.init(data);
         return result;
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.layerId = _data["layerId"];
+            this.objectId = _data["objectId"];
+        }
     }
 
     toJSON(data?: any) {
@@ -1187,6 +1187,13 @@ export class CreateLayerDto implements ICreateLayerDto {
         }
     }
 
+    static fromJS(data: any): CreateLayerDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateLayerDto();
+        result.init(data);
+        return result;
+    }
+
     init(_data?: any) {
         if (_data) {
             this.name = _data["name"];
@@ -1196,13 +1203,6 @@ export class CreateLayerDto implements ICreateLayerDto {
                     this.objects!.push(item);
             }
         }
-    }
-
-    static fromJS(data: any): CreateLayerDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new CreateLayerDto();
-        result.init(data);
-        return result;
     }
 
     toJSON(data?: any) {
@@ -1237,6 +1237,13 @@ export class CreateObjectOnMapDto implements ICreateObjectOnMapDto {
         }
     }
 
+    static fromJS(data: any): CreateObjectOnMapDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateObjectOnMapDto();
+        result.init(data);
+        return result;
+    }
+
     init(_data?: any) {
         if (_data) {
             this.name = _data["name"];
@@ -1244,13 +1251,6 @@ export class CreateObjectOnMapDto implements ICreateObjectOnMapDto {
             this.long = _data["long"];
             this.capacity = _data["capacity"];
         }
-    }
-
-    static fromJS(data: any): CreateObjectOnMapDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new CreateObjectOnMapDto();
-        result.init(data);
-        return result;
     }
 
     toJSON(data?: any) {
@@ -1283,18 +1283,18 @@ export class DeleteObjectFromLayerDTO implements IDeleteObjectFromLayerDTO {
         }
     }
 
-    init(_data?: any) {
-        if (_data) {
-            this.layerId = _data["layerId"];
-            this.objectId = _data["objectId"];
-        }
-    }
-
     static fromJS(data: any): DeleteObjectFromLayerDTO {
         data = typeof data === 'object' ? data : {};
         let result = new DeleteObjectFromLayerDTO();
         result.init(data);
         return result;
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.layerId = _data["layerId"];
+            this.objectId = _data["objectId"];
+        }
     }
 
     toJSON(data?: any) {
@@ -1375,18 +1375,18 @@ export class LoginModel implements ILoginModel {
         }
     }
 
-    init(_data?: any) {
-        if (_data) {
-            this.username = _data["username"];
-            this.password = _data["password"];
-        }
-    }
-
     static fromJS(data: any): LoginModel {
         data = typeof data === 'object' ? data : {};
         let result = new LoginModel();
         result.init(data);
         return result;
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.username = _data["username"];
+            this.password = _data["password"];
+        }
     }
 
     toJSON(data?: any) {
@@ -1416,19 +1416,19 @@ export class LoginResponse implements ILoginResponse {
         }
     }
 
+    static fromJS(data: any): LoginResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new LoginResponse();
+        result.init(data);
+        return result;
+    }
+
     init(_data?: any) {
         if (_data) {
             this.token = _data["token"];
             this.refreshToken = _data["refreshToken"];
             this.expiration = _data["expiration"] ? new Date(_data["expiration"].toString()) : <any>undefined;
         }
-    }
-
-    static fromJS(data: any): LoginResponse {
-        data = typeof data === 'object' ? data : {};
-        let result = new LoginResponse();
-        result.init(data);
-        return result;
     }
 
     toJSON(data?: any) {
@@ -1463,6 +1463,13 @@ export class ObjectOnMapDetailsDto implements IObjectOnMapDetailsDto {
         }
     }
 
+    static fromJS(data: any): ObjectOnMapDetailsDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ObjectOnMapDetailsDto();
+        result.init(data);
+        return result;
+    }
+
     init(_data?: any) {
         if (_data) {
             this.name = _data["name"];
@@ -1472,13 +1479,6 @@ export class ObjectOnMapDetailsDto implements IObjectOnMapDetailsDto {
             this.id = _data["id"];
             this.appUserId = _data["appUserId"];
         }
-    }
-
-    static fromJS(data: any): ObjectOnMapDetailsDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new ObjectOnMapDetailsDto();
-        result.init(data);
-        return result;
     }
 
     toJSON(data?: any) {
@@ -1517,6 +1517,13 @@ export class ObjectOnMapDto implements IObjectOnMapDto {
         }
     }
 
+    static fromJS(data: any): ObjectOnMapDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new ObjectOnMapDto();
+        result.init(data);
+        return result;
+    }
+
     init(_data?: any) {
         if (_data) {
             this.name = _data["name"];
@@ -1524,13 +1531,6 @@ export class ObjectOnMapDto implements IObjectOnMapDto {
             this.long = _data["long"];
             this.capacity = _data["capacity"];
         }
-    }
-
-    static fromJS(data: any): ObjectOnMapDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new ObjectOnMapDto();
-        result.init(data);
-        return result;
     }
 
     toJSON(data?: any) {
@@ -1566,6 +1566,13 @@ export class RegisterModel implements IRegisterModel {
         }
     }
 
+    static fromJS(data: any): RegisterModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new RegisterModel();
+        result.init(data);
+        return result;
+    }
+
     init(_data?: any) {
         if (_data) {
             this.username = _data["username"];
@@ -1574,13 +1581,6 @@ export class RegisterModel implements IRegisterModel {
             this.email = _data["email"];
             this.password = _data["password"];
         }
-    }
-
-    static fromJS(data: any): RegisterModel {
-        data = typeof data === 'object' ? data : {};
-        let result = new RegisterModel();
-        result.init(data);
-        return result;
     }
 
     toJSON(data?: any) {
@@ -1615,18 +1615,18 @@ export class Response implements IResponse {
         }
     }
 
-    init(_data?: any) {
-        if (_data) {
-            this.status = _data["status"];
-            this.message = _data["message"];
-        }
-    }
-
     static fromJS(data: any): Response {
         data = typeof data === 'object' ? data : {};
         let result = new Response();
         result.init(data);
         return result;
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.status = _data["status"];
+            this.message = _data["message"];
+        }
     }
 
     toJSON(data?: any) {
@@ -1655,18 +1655,18 @@ export class TokenModel implements ITokenModel {
         }
     }
 
-    init(_data?: any) {
-        if (_data) {
-            this.accessToken = _data["accessToken"];
-            this.refreshToken = _data["refreshToken"];
-        }
-    }
-
     static fromJS(data: any): TokenModel {
         data = typeof data === 'object' ? data : {};
         let result = new TokenModel();
         result.init(data);
         return result;
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.accessToken = _data["accessToken"];
+            this.refreshToken = _data["refreshToken"];
+        }
     }
 
     toJSON(data?: any) {
@@ -1695,18 +1695,18 @@ export class UpdateLayerDto implements IUpdateLayerDto {
         }
     }
 
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["id"];
-            this.name = _data["name"];
-        }
-    }
-
     static fromJS(data: any): UpdateLayerDto {
         data = typeof data === 'object' ? data : {};
         let result = new UpdateLayerDto();
         result.init(data);
         return result;
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.name = _data["name"];
+        }
     }
 
     toJSON(data?: any) {
@@ -1738,6 +1738,13 @@ export class UpdateObjectOnMapDto implements IUpdateObjectOnMapDto {
         }
     }
 
+    static fromJS(data: any): UpdateObjectOnMapDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new UpdateObjectOnMapDto();
+        result.init(data);
+        return result;
+    }
+
     init(_data?: any) {
         if (_data) {
             this.id = _data["id"];
@@ -1746,13 +1753,6 @@ export class UpdateObjectOnMapDto implements IUpdateObjectOnMapDto {
             this.long = _data["long"];
             this.capacity = _data["capacity"];
         }
-    }
-
-    static fromJS(data: any): UpdateObjectOnMapDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new UpdateObjectOnMapDto();
-        result.init(data);
-        return result;
     }
 
     toJSON(data?: any) {
@@ -1780,6 +1780,7 @@ export class ApiException extends Error {
     response: string;
     headers: { [key: string]: any; };
     result: any;
+    protected isApiException = true;
 
     constructor(message: string, status: number, response: string, headers: { [key: string]: any; }, result: any) {
         super();
@@ -1790,8 +1791,6 @@ export class ApiException extends Error {
         this.headers = headers;
         this.result = result;
     }
-
-    protected isApiException = true;
 
     static isApiException(obj: any): obj is ApiException {
         return obj.isApiException === true;

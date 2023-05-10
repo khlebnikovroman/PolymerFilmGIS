@@ -4,7 +4,7 @@ import Sider from "antd/es/layout/Sider";
 
 const MenuSider = () => {
     const [collapsed, setCollapsed] = useState(false)
-    return(
+    return (
         <Sider collapsible collapsed={collapsed} onCollapse={value => setCollapsed(value)}>
             Left Sidebar
         </Sider>

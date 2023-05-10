@@ -10,3 +10,5 @@ public interface IGenericRepository<TEntity> where TEntity : class
     Task Update(TEntity item);
 }
 
+
+

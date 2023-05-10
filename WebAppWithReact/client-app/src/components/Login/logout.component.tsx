@@ -8,7 +8,7 @@ export const LogoutComponent: React.FC = () => {
         UserService.logout()
         navigate("/")
     }
-        
+
     return (
         <div>
             <h1>ВЫХОД????????????</h1>

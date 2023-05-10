@@ -11,3 +11,5 @@ public record ObjectOnMapDto
     public double Capacity { get; set; }
 }
 
+
+

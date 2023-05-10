@@ -6,9 +6,10 @@ export interface ContextMenuItem {
 }
 
 interface ContextMenuModel {
-    setContextMenu: ( items: ContextMenuItem[] , position: number[]) => void;
+    setContextMenu: (items: ContextMenuItem[], position: number[]) => void;
 }
 
 export const ContextMenu = createContext<ContextMenuModel>({
-    setContextMenu: () => {},
+    setContextMenu: () => {
+    },
 });
