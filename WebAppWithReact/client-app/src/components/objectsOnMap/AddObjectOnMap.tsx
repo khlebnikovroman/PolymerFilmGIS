@@ -4,7 +4,7 @@ import TextArea from "antd/es/input/TextArea";
 import {CreateLayerDto, LayerClient} from "../../services/Clients";
 import addObjectOnMap from "./AddObjectOnMap";
 
-type AddObjectOnMapProps = {
+interface AddObjectOnMapProps  {
     open: boolean;
     setShown: Function;
     position: { lat: number; lng: number } | null;
@@ -36,6 +36,7 @@ const CreateObjectOnMap: React.FC<AddObjectOnMapProps> = ({open, setShown, posit
         console.log('Failed:', errorInfo);
     };
     
+    // @ts-ignore
     return (
         <>
             <Modal title="Basic Modal" open={open} onOk={handleOk} onCancel={handleCancel}>
@@ -59,9 +60,16 @@ const CreateObjectOnMap: React.FC<AddObjectOnMapProps> = ({open, setShown, posit
                         label="Координаты"
                         name="objectsCoords"
                     >
-                        <p>Latitude: {position.lat}
-                            Longitude: {position.lng}
-                        </p>
+                        {position ? (
+                            <>
+                                <p>Latitude: {position.lat}
+                                    Longitude: {position.lng}
+                                </p>
+                            </>
+                        ): (
+                            <p>Position is not set</p>
+                        )}
+                        
                     </Form.Item>
                     <Form.Item wrapperCol={{offset: 8, span: 16}}>
                         <Button type="primary" htmlType="submit">
