@@ -7,7 +7,9 @@ import {Login2} from "./components/Login/login.component";
 import {RequireAuth} from "./RequireAuth";
 import {LogoutComponent} from "./components/Login/logout.component";
 
+// {MultilineChart} from "./heatmap/testCountour";
 function App() {
+
     return (
         <BrowserRouter>
             <Routes>
@@ -23,6 +25,7 @@ function App() {
                 <Route path="/about" element={<h1>ABOUT</h1>}/>
                 <Route path="/login" element={<Login2/>}/>
                 <Route path="/logout" element={<LogoutComponent/>}/>
+                {/*<Route path="/test" element={<MultilineChart/>}/>*/}
             </Routes>
         </BrowserRouter>
 
