@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import {Button, Checkbox, ConfigProvider, Form, Input, List} from "antd";
 import {CreateLayerDto, LayerClient, ObjectOnMapDetailsDto, ObjectsOnMapClient} from "../../../services/Clients";
 import {CheckboxValueType} from "antd/es/checkbox/Group";
-import CustomizeRenderEmpty from "../../CstomEmpty";
+import CustomizeRenderEmpty from "../../CustomEmpty";
 
 const CreateLayerForm: React.FC = () => {
 
@@ -25,14 +25,14 @@ const CreateLayerForm: React.FC = () => {
         model.objects = checked
         const layerClient = new LayerClient();
         await layerClient.layerPOST(model)
-        console.log('Success:', values); //todo delete
+        console.log('Success:', values); 
     };
 
     const onFinishFailed = (errorInfo: any) => {
         console.log('Failed:', errorInfo);
     };
 
-    const renderEmty = () => (
+    const renderEmpty = () => (
         <CustomizeRenderEmpty description="Нет объектов..."/>
     );
 
@@ -56,7 +56,7 @@ const CreateLayerForm: React.FC = () => {
                 </Form.Item>
                 <Form.Item
                     label="Объекты на слое"
-                    name="layetName"
+                    name="layerName"
                 >
                     <Checkbox.Group
                         value={checked}
@@ -64,26 +64,14 @@ const CreateLayerForm: React.FC = () => {
                             console.log(checkedValues)
                             setChecked(checkedValues);
                         }}>
-                        <ConfigProvider renderEmpty={renderEmty}>
-                            <List dataSource={list}
-
-                                  renderItem={(item: ObjectOnMapDetailsDto, index: number) =>
-                                      <List.Item style={{width: 256}}>
-                                          <List.Item.Meta
-                                              avatar={<Checkbox value={item.id}/>}
-                                              title={item.name}
-                                          />
-
-
-                                          {/*<Checkbox*/}
-
-                                          {/*    id={item.id}*/}
-                                          {/*    name={item.name}*/}
-                                          {/*>*/}
-                                          {/*    {item.name}*/}
-                                          {/*</Checkbox>*/}
-                                      </List.Item>}
-
+                        <ConfigProvider renderEmpty={renderEmpty}>
+                            <List dataSource={list} renderItem={(item: ObjectOnMapDetailsDto, index: number) =>
+                                <List.Item style={{width: 256}}>
+                                    <List.Item.Meta
+                                        avatar={<Checkbox value={item.id}/>}
+                                        title={item.name}
+                                    />
+                                </List.Item>}
                             />
                         </ConfigProvider>
 

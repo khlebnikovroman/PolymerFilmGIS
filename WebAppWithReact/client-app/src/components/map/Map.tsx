@@ -1,6 +1,6 @@
 import React, {MouseEvent, useCallback, useMemo, useRef, useState} from "react";
 import {MapContainer, TileLayer, ZoomControl} from "react-leaflet";
-import L, {latLng} from "leaflet";
+import L, {LatLng, latLng} from "leaflet";
 import './Map.css';
 import {Layout} from 'antd';
 import 'antd/dist/antd.css'
@@ -10,22 +10,35 @@ import {RandomRussiaPoints} from "./exampleData2";
 import {Mapelements} from "../menu/mapelements";
 import "leaflet.webgl-temperature-map"
 import WebGlTemperatureMapLayer from "../heatmap/lib/HeatMapLayer";
+import CreateObjectOnMap from "../objectsOnMap/AddObjectOnMap";
 
 L.Icon.Default.imagePath = "https://unpkg.com/browse/leaflet@1.9.2/dist/images/";
 
 export const MapComponent: React.FC = () => {
     const [lat, setLat] = useState(59.918711823015684);
     const [lng, setlng] = useState(30.319212156536604);
-
+    const [position, setPosition] = useState(null);
+    
+    function handleClick({e}: { e: any }) {
+        setPosition(e.latlng);
+    }
+    
     const {setContextMenu} = useContextMenu();
 
     const center = [lat, lng];
     const mapRef = useRef<L.Map>(null);
     const tempMapRef = useRef<L.WebGlTemperatureMapLayer>(null);
+
+    const [isShown, setIsShown] = useState(false);
+
+    const setShown = (show: boolean) => {
+        setIsShown(show);
+    }
     const contextMenu = useMemo(() => [
         {
-            name: 'Option #1',
+            name: 'Добавить объект здесь',
             onClick: () => {
+                setIsShown(true);
             }
         },
         {
@@ -45,6 +58,7 @@ export const MapComponent: React.FC = () => {
         const {clientX, clientY} = event;
         console.log(clientX, clientY);
         setContextMenu(contextMenu, [clientX, clientY]);
+        handleClick({e: event})
     }, [setContextMenu, contextMenu])
 
     return (
@@ -72,6 +86,7 @@ export const MapComponent: React.FC = () => {
                                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                                     url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager_labels_under/{z}/{x}/{y}{r}.png"/>
                             </MapContainer>
+                            <CreateObjectOnMap open={isShown} setShown={setShown} position={position}/>
                         </div>
                     </Content>
                 </div>
