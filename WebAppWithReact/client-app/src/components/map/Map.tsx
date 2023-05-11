@@ -6,10 +6,10 @@ import {Layout} from 'antd';
 import 'antd/dist/antd.css'
 import {Content} from "antd/es/layout/layout";
 import {useContextMenu} from "../../hooks";
-import {RandomRussiaPoints} from "./exampleData2";
+import {KleknerPoints} from "./exampleData2";
 import {Mapelements} from "../menu/mapelements";
 import "leaflet.webgl-temperature-map"
-import WebGlTemperatureMapLayer from "../heatmap/lib/HeatMapLayer";
+import IdwMapLayer from "../heatmap/variant2/HeatMapLayer2";
 
 L.Icon.Default.imagePath = "https://unpkg.com/browse/leaflet@1.9.2/dist/images/";
 
@@ -61,13 +61,20 @@ export const MapComponent: React.FC = () => {
                                           attributionControl={false}
                                           style={{zIndex: 1, position: "relative", top: 0, left: 0}}>
                                 <ZoomControl position={'bottomright'}/>
-                                <WebGlTemperatureMapLayer data={RandomRussiaPoints} idwOptions={{
-                                    isNullColorized: false,
-                                    p: 5,
-                                    opacity: 0.5,
-                                    range_factor: 0.05,
-                                    gamma: 5
-                                }}/>
+
+                                <IdwMapLayer latlngs={KleknerPoints}
+                                             opacity={0.3}
+                                             maxZoom={18}
+                                             cellSize={10}
+                                             exp={3}
+                                             displayValue={{min: 0, max: 5000}}/>
+                                {/*<WebGlTemperatureMapLayer data={KleknerPoints} idwOptions={{*/}
+                                {/*    isNullColorized: true,*/}
+                                {/*    p: 5,*/}
+                                {/*    opacity: 0.5,*/}
+                                {/*    range_factor: 0.05,*/}
+                                {/*    gamma: 5*/}
+                                {/*}}/>*/}
                                 <TileLayer
                                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                                     url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager_labels_under/{z}/{x}/{y}{r}.png"/>
