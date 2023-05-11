@@ -582,7 +582,7 @@ export class LayerClient extends ApiBase {
             return this.processObjectsDELETE(_response);
         });
     }
-
+    
     /**
      * @param body (optional)
      * @return Success

@@ -3,14 +3,9 @@ import {Button, Checkbox, List} from 'antd';
 import {CheckboxChangeEvent} from "antd/es/checkbox";
 import {GetLayerDto, LayerClient} from "../../../services/Clients";
 import CreateLayerModal from "./CreateLayerModal";
+import {EditOutlined} from "@ant-design/icons";
 
-const MenuLayers = (): JSX.Element => {
-
-    // useEffect(()=>{
-    //     const layers: GetLayerDto[] =  layerClient.layerAll()
-    //
-    // })
-
+const MenuLayers = () => {
 
     const [initLoading, setInitLoading] = useState(true);
     const [loading, setLoading] = useState(false);
@@ -64,6 +59,7 @@ const MenuLayers = (): JSX.Element => {
                         >
                             {item.name}
                         </Checkbox>
+                        <Button type="primary" shape="default" icon={<EditOutlined/>} style={{ marginLeft: '8px' }} onClick={onClick}></Button>
                     </List.Item>}
             />
             <Button type="primary" shape={"default"} style={{width: "100%"}} onClick={onClick}>Создать новый
