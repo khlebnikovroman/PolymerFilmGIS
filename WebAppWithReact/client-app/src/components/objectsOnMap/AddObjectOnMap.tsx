@@ -1,7 +1,7 @@
 ﻿import React, {useEffect, useState} from "react";
 import {Button, Form, Input, Modal} from "antd";
 import TextArea from "antd/es/input/TextArea";
-import {CreateLayerDto, LayerClient} from "../../services/Clients";
+import {CreateLayerDto, CreateObjectOnMapDto, LayerClient, ObjectsOnMapClient} from "../../services/Clients";
 import addObjectOnMap from "./AddObjectOnMap";
 
 interface AddObjectOnMapProps  {
@@ -23,13 +23,15 @@ const CreateObjectOnMap: React.FC<AddObjectOnMapProps> = ({open, setShown, posit
     };
 
     const onFinish = async (values: any) => {
-        //const model = new CreateLayerDto()
-        //model.name = values.layerName
-        ////@ts-ignore
-        //model.objects = checked
-        //const layerClient = new LayerClient();
-        //await layerClient.layerPOST(model)
-        //console.log('Success:', values); 
+        const model = new CreateObjectOnMapDto()
+        model.name = values.objectName
+        model.lati = values.objectLat
+        model.long = values.objectLng
+        model.capacity = 100
+        console.log('Success:', values);
+        const objectClient = new ObjectsOnMapClient();
+        await objectClient.objectsOnMapPOST(model)
+        console.log('Success:', values); 
     };
 
     const onFinishFailed = (errorInfo: any) => {
@@ -58,18 +60,28 @@ const CreateObjectOnMap: React.FC<AddObjectOnMapProps> = ({open, setShown, posit
                     </Form.Item>
                     <Form.Item
                         label="Координаты"
-                        name="objectsCoords"
+                        name="objectLat"
+                        rules={[{required: true, message: 'Пожалуйста, введите название объекта'}]}
                     >
                         {position ? (
                             <>
-                                <p>Latitude: {position.lat}
-                                    Longitude: {position.lng}
-                                </p>
+                                <Input value={position.lat}/>
                             </>
                         ): (
                             <p>Position is not set</p>
                         )}
-                        
+                    </Form.Item>
+                    <Form.Item
+                        name="objectLng"
+                        rules={[{required: true, message: 'Пожалуйста, введите название объекта'}]}
+                    >
+                        {position ? (
+                        <>
+                            <Input value={position.lng}/>
+                        </>
+                        ): (
+                        <p>Position is not set</p>
+                        )}
                     </Form.Item>
                     <Form.Item wrapperCol={{offset: 8, span: 16}}>
                         <Button type="primary" htmlType="submit">

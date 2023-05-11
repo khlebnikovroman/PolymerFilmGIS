@@ -1,5 +1,5 @@
 import React, {MouseEvent, useCallback, useMemo, useRef, useState} from "react";
-import {MapContainer, TileLayer, ZoomControl} from "react-leaflet";
+import {MapContainer, TileLayer, useMapEvents, ZoomControl} from "react-leaflet";
 import L, {LatLng, latLng} from "leaflet";
 import './Map.css';
 import {Layout} from 'antd';
@@ -18,10 +18,6 @@ export const MapComponent: React.FC = () => {
     const [lat, setLat] = useState(59.918711823015684);
     const [lng, setlng] = useState(30.319212156536604);
     const [position, setPosition] = useState(null);
-    
-    function handleClick({e}: { e: any }) {
-        setPosition(e.latlng);
-    }
     
     const {setContextMenu} = useContextMenu();
 
@@ -58,9 +54,18 @@ export const MapComponent: React.FC = () => {
         const {clientX, clientY} = event;
         console.log(clientX, clientY);
         setContextMenu(contextMenu, [clientX, clientY]);
-        handleClick({e: event})
     }, [setContextMenu, contextMenu])
 
+    const LocationFinderDummy = () => {
+        const map = useMapEvents({
+            contextmenu(e) {
+                // @ts-ignore
+                setPosition(e.latlng);
+            },
+        });
+        return null;
+    };
+    
     return (
         <div>
             <Layout className="site-layout">
@@ -75,7 +80,7 @@ export const MapComponent: React.FC = () => {
                                           attributionControl={false}
                                           style={{zIndex: 1, position: "relative", top: 0, left: 0}}>
                                 <ZoomControl position={'bottomright'}/>
-
+                                <LocationFinderDummy />
                                 <IdwMapLayer latlngs={KleknerPoints}
                                              opacity={0.3}
                                              maxZoom={18}
