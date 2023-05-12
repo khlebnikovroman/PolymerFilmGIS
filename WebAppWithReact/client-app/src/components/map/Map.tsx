@@ -20,10 +20,16 @@ export const MapComponent: React.FC = () => {
     const [lat, setLat] = useState(59.918711823015684);
     const [lng, setlng] = useState(30.319212156536604);
     const [position, setPosition] = useState<LatLng>();
+    
     const {layers} = useSelector((state: RootState) => state.layers);
     const [objects, setObjects] = useState<[number, number, number][]>();
+    
     const [min, setMin] = useState(0);
     const [max, setMax] = useState(0);
+    
+    const {setContextMenu} = useContextMenu();
+    
+    
     useEffect(() => {
         if (objects) {
             const min = objects.reduce((acc, cur) => Math.min(acc, cur[2]), Infinity);
@@ -32,6 +38,7 @@ export const MapComponent: React.FC = () => {
             setMax(max);
         }
     }, [objects])
+    
     useEffect(() => {
         const result = layers.flatMap((layer) =>
             layer.objects?.map(({lati, long, capacity}) => [lati, long, capacity])
@@ -39,21 +46,16 @@ export const MapComponent: React.FC = () => {
         // @ts-ignore
         setObjects(result)
     }, [layers])
-    const {setContextMenu} = useContextMenu();
-
+    
     const center = [lat, lng];
     const mapRef = useRef<L.Map>(null);
     const tempMapRef = useRef<L.WebGlTemperatureMapLayer>(null);
-
-    const [isShown, setIsShown] = useState(false);
-
-    const setShown = (show: boolean) => {
-        setIsShown(show);
-    }
+    
     const contextMenu = useMemo(() => [
         {
             name: 'Добавить объект здесь',
             onClick: () => {
+                console.log('При нажатии кнопки', position)
                 if (position){
                     showAdd(new CreateObjectOnMapDto({lati : position.lat, long : position.lng, name : "", capacity : 0}))
                 }
@@ -69,20 +71,19 @@ export const MapComponent: React.FC = () => {
             onClick: () => {
             }
         },
-    ], [])
+    ], [position, setPosition])
 
     const handleContextMenu = useCallback((event: MouseEvent) => {
         event.preventDefault();
         const {clientX, clientY} = event;
-        console.log(clientX, clientY);
         setContextMenu(contextMenu, [clientX, clientY]);
     }, [setContextMenu, contextMenu])
 
     const LocationFinderDummy = () => {
         const map = useMapEvents({
             contextmenu(e) {
-                // @ts-ignore
                 setPosition(e.latlng);
+                console.log('При нажатии пкм', position)
             },
         });
         return null;
@@ -90,8 +91,9 @@ export const MapComponent: React.FC = () => {
 
     const {confirm} = Modal;
     const [form] = Form.useForm();
-
+    
     function showAdd(item: CreateObjectOnMapDto) {
+        
         confirm({
             title: "Создание объекта",
             icon: <div/>,
@@ -114,9 +116,15 @@ export const MapComponent: React.FC = () => {
                             values.objectLng,)
                     })
                     .catch((info) => {
-                        console.log('Validate Failed:', info);
+                        form.resetFields();
+                        console.log('Validate Failed:', position);
                     });
             },
+            onCancel: () => {
+
+                form.resetFields()
+                console.log('Clear:', item.long, item.lati);
+            }
         })
     }
     

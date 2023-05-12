@@ -45,7 +45,7 @@ const ObjectsOnMapMenu: React.FC = () => {
                           defaultActiveKey={['1']}
                           expandIcon={({ isActive }) => <CaretRightOutlined rotate={isActive ? 90 : 0} />}
                           style={{ background: token.colorBgContainer }}>
-                    <Panel header='Obj' key={1}>
+                    <Panel header='Список объектов' key={1}>
                         <List
                             style={{backgroundColor: 'white'}}
                             size="small"

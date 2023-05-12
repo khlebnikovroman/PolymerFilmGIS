@@ -9,38 +9,6 @@ interface AddObjectOnMapProps {
 }
 
 const ObjectOnMapForm: React.FC<AddObjectOnMapProps> = ({objectDto, form}: AddObjectOnMapProps) => {
-
-    //const [isShown, setLoading] = useState(open);
-
-    const handleOk = () => {
-        form
-            .validateFields()
-            .then(async (values) => {
-                form.resetFields();
-                const model = new CreateObjectOnMapDto({
-                    name: values.objectName,
-                    lati: values.objectLat,
-                    long: values.objectLng,
-                    capacity: 1
-                });
-                const objectClient = new ObjectsOnMapClient();
-                await objectClient.objectsOnMapPOST(model)
-            })
-            .catch((info) => {
-                console.log('Validate Failed:', info);
-            });
-    };
-
-    const handleCancel = () => {
-        form.resetFields()
-    };
-
-
-    const onFinishFailed = (errorInfo: any) => {
-        console.log('Failed:', errorInfo);
-    };
-
-    //const [form] = Form.useForm();
     return (
         <>
             <Form
