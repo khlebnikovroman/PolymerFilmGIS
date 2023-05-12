@@ -1,9 +1,9 @@
 import React, {MouseEvent, useCallback, useMemo, useRef, useState} from "react";
 import {MapContainer, TileLayer, useMapEvents, ZoomControl} from "react-leaflet";
-import L, {LatLng, latLng} from "leaflet";
+import L, {latLng} from "leaflet";
 import './Map.css';
 import {Layout} from 'antd';
-import 'antd/dist/antd.css'
+
 import {Content} from "antd/es/layout/layout";
 import {useContextMenu} from "../../hooks";
 import {KleknerPoints} from "./exampleData2";

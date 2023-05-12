@@ -1,54 +1,61 @@
-﻿import React, {useEffect, useState} from "react";
-import {Button, Form, Input, Modal} from "antd";
-import TextArea from "antd/es/input/TextArea";
-import {CreateLayerDto, CreateObjectOnMapDto, LayerClient, ObjectsOnMapClient} from "../../services/Clients";
-import addObjectOnMap from "./AddObjectOnMap";
+﻿import React, {useState} from "react";
+import {Form, Input, Modal} from "antd";
+import {CreateObjectOnMapDto, ObjectsOnMapClient} from "../../services/Clients";
 
-interface AddObjectOnMapProps  {
+interface AddObjectOnMapProps {
     open: boolean;
     setShown: Function;
     position: { lat: number; lng: number } | null;
 }
 
 const CreateObjectOnMap: React.FC<AddObjectOnMapProps> = ({open, setShown, position}: AddObjectOnMapProps) => {
-    
+
     const [isShown, setLoading] = useState(open);
 
     const handleOk = () => {
-        setShown(false);
+        form
+            .validateFields()
+            .then(async (values) => {
+                form.resetFields();
+                const model = new CreateObjectOnMapDto({
+                    name: values.objectName,
+                    lati: values.objectLat,
+                    long: values.objectLng, capacity: 1
+                });
+                const objectClient = new ObjectsOnMapClient();
+                await objectClient.objectsOnMapPOST(model)
+                setShown(false);
+            })
+            .catch((info) => {
+                console.log('Validate Failed:', info);
+            });
     };
 
     const handleCancel = () => {
+        form.resetFields()
         setShown(false);
     };
 
-    const onFinish = async (values: any) => {
-        const model = new CreateObjectOnMapDto()
-        model.name = values.objectName
-        model.lati = values.objectLat
-        model.long = values.objectLng
-        model.capacity = 100
-        console.log('Success:', values);
-        const objectClient = new ObjectsOnMapClient();
-        await objectClient.objectsOnMapPOST(model)
-        console.log('Success:', values); 
-    };
 
     const onFinishFailed = (errorInfo: any) => {
         console.log('Failed:', errorInfo);
     };
-    
-    // @ts-ignore
+
+    const [form] = Form.useForm();
     return (
         <>
-            <Modal title="Basic Modal" open={open} onOk={handleOk} onCancel={handleCancel}>
+            <Modal title="Добавление нового объекта"
+                   open={open}
+                   okText="Добавить объект"
+                   cancelText="Отмена"
+                   onOk={handleOk}
+                   onCancel={handleCancel}>
                 <Form
+                    form={form}
                     name="basic"
                     labelCol={{span: 8}}
                     wrapperCol={{span: 16}}
-                    initialValues={{remember: true}}
-                    onFinish={onFinish}
-                    onFinishFailed={onFinishFailed}
+                    initialValues={{objectLat: position?.lat, objectLng: position?.lng}}
                     autoComplete="off"
                 >
                     <Form.Item
@@ -59,34 +66,20 @@ const CreateObjectOnMap: React.FC<AddObjectOnMapProps> = ({open, setShown, posit
                         <Input/>
                     </Form.Item>
                     <Form.Item
-                        label="Координаты"
+                        label="Долгота"
                         name="objectLat"
-                        rules={[{required: true, message: 'Пожалуйста, введите название объекта'}]}
+                        rules={[{required: true, message: 'Пожалуйста, введите долготу'}]}
                     >
-                        {position ? (
-                            <>
-                                <Input value={position.lat}/>
-                            </>
-                        ): (
-                            <p>Position is not set</p>
-                        )}
+
+                        <Input/>
+
                     </Form.Item>
                     <Form.Item
+                        label="Широта"
                         name="objectLng"
-                        rules={[{required: true, message: 'Пожалуйста, введите название объекта'}]}
+                        rules={[{required: true, message: 'Пожалуйста, введите широту'}]}
                     >
-                        {position ? (
-                        <>
-                            <Input value={position.lng}/>
-                        </>
-                        ): (
-                        <p>Position is not set</p>
-                        )}
-                    </Form.Item>
-                    <Form.Item wrapperCol={{offset: 8, span: 16}}>
-                        <Button type="primary" htmlType="submit">
-                            ОК
-                        </Button>
+                        <Input/>
                     </Form.Item>
                 </Form>
             </Modal>

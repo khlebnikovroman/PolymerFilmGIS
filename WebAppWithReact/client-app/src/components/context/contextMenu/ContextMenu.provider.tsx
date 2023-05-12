@@ -1,6 +1,8 @@
 ﻿import {FC, PropsWithChildren, useCallback, useEffect, useState} from "react";
 import {ContextMenu, ContextMenuItem} from "./ContextMenu.context";
 import styles from './ContextMenu.module.css';
+import {Menu} from "antd";
+import MenuItem from "antd/lib/menu/MenuItem";
 
 
 export const ContextMenuProvider: FC<PropsWithChildren<{}>> = ({children}) => {
@@ -27,17 +29,18 @@ export const ContextMenuProvider: FC<PropsWithChildren<{}>> = ({children}) => {
     return (
         <ContextMenu.Provider value={{setContextMenu}}>
             {!!position && (
-                <ul className={styles.contextMenu}
-                    style={{left: position[0], top: position[1]}}
+
+                <Menu className={styles.contextMenu}
+                      style={{left: position[0], top: position[1]}}
                 >
                     {contextMenuItems.map((item) =>
-                        <li
+                        <MenuItem
                             key={item.name}
-                            className={styles.contextMenuItem}
+
                             onClick={item.onClick}
-                        >{item.name}</li>
+                        >{item.name}</MenuItem>
                     )}
-                </ul>
+                </Menu>
             )}
             {children}
         </ContextMenu.Provider>

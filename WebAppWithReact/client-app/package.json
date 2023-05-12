@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@ant-design/icons": "^4.7.0",
+    "@ant-design/icons": "^5.0.1",
     "@emotion/react": "^11.10.4",
     "@emotion/styled": "^11.10.4",
     "@rmp135/sql-ts": "^1.15.1",
@@ -15,7 +15,7 @@
     "@types/node": "^16.11.57",
     "@types/react": "^18.0.18",
     "@types/react-dom": "^18.0.6",
-    "antd": "^4.24.5",
+    "antd": "^5.4.7",
     "axios": "^1.1.3",
     "jose": "^4.11.1",
     "leaflet.idw": "^0.0.1",
