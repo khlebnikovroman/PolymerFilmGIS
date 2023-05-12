@@ -112,6 +112,10 @@ class simpleidw {
         return this;
     }
 
+    clear() {
+        this._ctx.clearRect(0, 0, this._width, this._height);
+    }
+
     draw(opacity) {
         if (!this._cell) this.cellSize(this.defaultCellSize);
         if (!this._grad) this.gradient(this.defaultGradient);
@@ -297,10 +301,12 @@ export const IdwLayer = L.Layer.extend({
             return;
         }
 
+        if (!this._latlngs) {
+            return;
+        }
         if (this._latlngs.length === 0) {
             return;
         }
-
         var data = [],
             r = this._idw._r,
             size = this._map.getSize(),

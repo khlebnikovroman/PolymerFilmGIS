@@ -1,18 +1,18 @@
-import React, {MouseEvent, useCallback, useMemo, useRef, useState} from "react";
-import {MapContainer, Marker, TileLayer, useMapEvents, ZoomControl} from "react-leaflet";
+import React, {MouseEvent, useCallback, useEffect, useMemo, useRef, useState} from "react";
+import {MapContainer, TileLayer, useMapEvents, ZoomControl} from "react-leaflet";
 import L, {LatLng, latLng} from "leaflet";
 import './Map.css';
 import {Form, Layout, Modal} from 'antd';
 
 import {Content} from "antd/es/layout/layout";
 import {useContextMenu} from "../../hooks";
-import {KleknerPoints} from "./exampleData2";
 import {Mapelements} from "../menu/mapelements";
 import "leaflet.webgl-temperature-map"
 import IdwMapLayer from "../heatmap/variant2/HeatMapLayer2";
 import {CreateObjectOnMapDto, ObjectsOnMapClient} from "../../services/Clients";
-import EditLayerForm from "../menu/menuLayers/EditLayerForm";
 import ObjectOnMapForm from "../objectsOnMap/ObjectOnMapForm";
+import {useSelector} from "react-redux";
+import {RootState} from "../../redux/store";
 
 L.Icon.Default.imagePath = "https://unpkg.com/browse/leaflet@1.9.2/dist/images/";
 
@@ -20,7 +20,15 @@ export const MapComponent: React.FC = () => {
     const [lat, setLat] = useState(59.918711823015684);
     const [lng, setlng] = useState(30.319212156536604);
     const [position, setPosition] = useState<LatLng>();
-    
+    const {layers} = useSelector((state: RootState) => state.layers);
+    const [objects, setObjects] = useState<[number, number, number][]>();
+    useEffect(() => {
+        const result = layers.flatMap((layer) =>
+            layer.objects?.map(({lati, long, capacity}) => [lati, long, capacity])
+        );
+        // @ts-ignore
+        setObjects(result)
+    }, [layers])
     const {setContextMenu} = useContextMenu();
 
     const center = [lat, lng];
@@ -116,8 +124,8 @@ export const MapComponent: React.FC = () => {
                                           attributionControl={false}
                                           style={{zIndex: 1, position: "relative", top: 0, left: 0}}>
                                 <ZoomControl position={'bottomright'}/>
-                                <LocationFinderDummy />
-                                <IdwMapLayer latlngs={KleknerPoints}
+                                <LocationFinderDummy/>
+                                <IdwMapLayer latlngs={objects}
                                              opacity={0.3}
                                              maxZoom={18}
                                              cellSize={10}

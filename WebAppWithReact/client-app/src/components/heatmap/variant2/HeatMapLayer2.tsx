@@ -38,13 +38,15 @@ const IdwMapLayer = createLayerComponent<IdwLayer, IdwLayerProps>(
         };
     },
     function updateIdwMapLayer(instance, props, prevProps) {
-        if (props.latlngs != null && props.latlngs !== prevProps.latlngs) {
-            instance.setLatLngs(props.latlngs);
-        }
 
+        if (instance._idw) {
+            instance._idw.clear()
+        }
+        instance.setLatLngs(props.latlngs);
         if (props != null && props !== prevProps) {
             instance.setOptions(props);
         }
+        instance._redraw();
     }
 );
 

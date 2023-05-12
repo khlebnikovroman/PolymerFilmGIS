@@ -2,6 +2,8 @@ using System.Text;
 
 using DAL;
 
+using Mapster;
+
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -10,6 +12,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
 using WebAppWithReact.Features.Layer;
+using WebAppWithReact.Features.Layer.DTO;
 using WebAppWithReact.Features.ObjectOnMap;
 using WebAppWithReact.Misc.AuthHandlers;
 using WebAppWithReact.Repositories;
@@ -22,7 +25,8 @@ var configuration = builder.Configuration;
 // For Entity Framework
 builder.Services.AddDbContext<Context>(options =>
 {
-    options.UseLazyLoadingProxies().UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
+    options.UseLazyLoadingProxies()
+           .UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
 });
 
 builder.Services.AddHttpContextAccessor();
@@ -113,6 +117,11 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(EFGenericRepository<>));
 builder.Services.AddTransient<ObjectOnMapService>();
 builder.Services.AddTransient<LayerService>();
+
+TypeAdapterConfig<GetLayerDto, Layer>
+    .NewConfig()
+    .TwoWays()
+    .Map(x => x.ObjectsOnMap, x => x.Objects);
 
 var app = builder.Build();
 

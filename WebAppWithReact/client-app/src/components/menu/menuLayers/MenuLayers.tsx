@@ -5,19 +5,19 @@ import {GetLayerDto, LayerClient} from "../../../services/Clients";
 import CreateLayerModal from "./CreateLayerModal";
 import {EditOutlined} from "@ant-design/icons";
 import EditLayerForm from "./EditLayerForm";
+import {useAppDispatch} from "../../../redux/store";
+import {addLayer, removeLayer} from "../../../redux/LayersSlice";
 
 const MenuLayers = () => {
 
     const [initLoading, setInitLoading] = useState(true);
     const [loading, setLoading] = useState(false);
-    const [layers, setLayers] = useState<GetLayerDto[]>([]);
     const [list, setList] = useState<GetLayerDto[]>([]);
-
+    const dispatch = useAppDispatch();
     useEffect(() => {
         const layerClient = new LayerClient();
         layerClient.layerAll().then(res => {
             setInitLoading(false);
-            setLayers(res);
             setList(res);
         })
     }, []);
@@ -30,7 +30,6 @@ const MenuLayers = () => {
         const layerClient = new LayerClient();
         layerClient.layerAll().then(res => {
             setInitLoading(false);
-            setLayers(res);
             setList(res);
         })
     }
@@ -53,9 +52,12 @@ const MenuLayers = () => {
 
     }
 
-    const onChange = (e: CheckboxChangeEvent) => {
-        console.log(`checked = ${e.target.checked}`);
-        console.log(`target name = ${e.target.id}`);
+    const onChange = (layer: GetLayerDto, e: CheckboxChangeEvent) => {
+        if (e.target.checked) {
+            dispatch(addLayer(layer))
+        } else {
+            dispatch(removeLayer(layer.id))
+        }
     };
     return (
         <>
@@ -68,7 +70,7 @@ const MenuLayers = () => {
                 renderItem={(item: GetLayerDto, index: number) =>
                     <List.Item>
                         <Checkbox
-                            onChange={onChange}
+                            onChange={e => onChange(item, e)}
                             id={item.id}
                             name={item.name}
                         >
