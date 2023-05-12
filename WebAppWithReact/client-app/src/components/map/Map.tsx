@@ -22,6 +22,16 @@ export const MapComponent: React.FC = () => {
     const [position, setPosition] = useState<LatLng>();
     const {layers} = useSelector((state: RootState) => state.layers);
     const [objects, setObjects] = useState<[number, number, number][]>();
+    const [min, setMin] = useState(0);
+    const [max, setMax] = useState(0);
+    useEffect(() => {
+        if (objects) {
+            const min = objects.reduce((acc, cur) => Math.min(acc, cur[2]), Infinity);
+            const max = objects.reduce((acc, cur) => Math.max(acc, cur[2]), -Infinity);
+            setMin(min);
+            setMax(max);
+        }
+    }, [objects])
     useEffect(() => {
         const result = layers.flatMap((layer) =>
             layer.objects?.map(({lati, long, capacity}) => [lati, long, capacity])
@@ -130,7 +140,7 @@ export const MapComponent: React.FC = () => {
                                              maxZoom={18}
                                              cellSize={10}
                                              exp={3}
-                                             displayValue={{min: 0, max: 5000}}/>
+                                             displayValue={{min: min, max: max}}/>
                                 {/*<WebGlTemperatureMapLayer data={KleknerPoints} idwOptions={{*/}
                                 {/*    isNullColorized: true,*/}
                                 {/*    p: 5,*/}
