@@ -1,7 +1,8 @@
+using Mapster;
+
 using Microsoft.AspNetCore.Authorization;
 
 using WebAppWithReact.Features.Layer.DTO;
-using WebAppWithReact.Features.ObjectOnMap.DTO;
 using WebAppWithReact.Repositories;
 
 
@@ -21,6 +22,13 @@ public class LayerService
         _authorizationService = authorizationService;
     }
 
+    public async Task<IReadOnlyCollection<GetLayerDto>> GetAll()
+    {
+        var l = await _layerRepository.Get();
+        var dtos = l.Adapt<List<GetLayerDto>>();
+
+        return dtos;
+    }
 
     /// <summary>
     ///     Получает слой по ID
@@ -31,29 +39,9 @@ public class LayerService
     {
         var l = await _layerRepository.FindById(id);
 
-        var objects = new List<ObjectOnMapDto>();
+        var layer = l.Adapt<GetLayerDto>();
 
-        foreach (var objectOnMap in l.ObjectsOnMap)
-        {
-            var oDto = new ObjectOnMapDto
-            {
-                Capacity = objectOnMap.Capacity,
-                Lati = objectOnMap.Lati,
-                Long = objectOnMap.Long,
-                Name = objectOnMap.Name,
-            };
-
-            objects.Add(oDto);
-        }
-
-        var lDto = new GetLayerDto
-        {
-            Id = l.Id,
-            Name = l.Name,
-            Objects = objects,
-        };
-
-        return lDto;
+        return layer;
     }
 
     /// <summary>
@@ -64,18 +52,7 @@ public class LayerService
     /// <returns>ID созданного слоя</returns>
     public async Task<Guid> Create(CreateLayerDto dto, Guid userId)
     {
-        var layer = new DAL.Layer
-        {
-            AppUserId = userId,
-            Name = dto.Name!,
-            ObjectsOnMap = new List<DAL.ObjectOnMap>(),
-        };
-
-        foreach (var id in dto.Objects)
-        {
-            layer.ObjectsOnMap.Add(await _objectOnMapRepository.FindById(id));
-        }
-
+        var layer = dto.Adapt<DAL.Layer>();
         await _layerRepository.Create(layer);
 
         return layer.Id;
@@ -88,7 +65,7 @@ public class LayerService
     public async Task Update(UpdateLayerDto dto)
     {
         var layer = await _layerRepository.FindById((Guid) dto.Id);
-        layer.Name = dto.Name;
+        dto.Adapt(layer);
         await _layerRepository.Update(layer);
     }
 
@@ -139,6 +116,7 @@ public class LayerService
         }
     }
 }
+
 
 
 

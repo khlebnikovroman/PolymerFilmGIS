@@ -1,6 +1,6 @@
 import React, {FunctionComponent, useEffect, useState} from 'react';
 import {Form, FormInstance, Input, Transfer} from "antd";
-import {IGetLayerDto, ObjectOnMapDetailsDto, ObjectsOnMapClient} from "../../../services/Clients";
+import {GetObjectOnMapDto, IGetLayerDto, ObjectsOnMapClient} from "../../../services/Clients";
 
 interface OwnProps {
     layerDto: IGetLayerDto
@@ -11,9 +11,9 @@ type Props = OwnProps;
 
 const EditLayerForm: FunctionComponent<Props> = (props) => {
 
-    const [objectOnMapDtos, setObjectOnMapDtos] = useState<ObjectOnMapDetailsDto[]>([]);
-    const [objectsOnThisLayer, setObjectsOnThisLayer] = useState<ObjectOnMapDetailsDto[]>([]);
-    const [allobjects, setAllObjects] = useState<ObjectOnMapDetailsDto[]>([]);
+    const [objectOnMapDtos, setObjectOnMapDtos] = useState<GetObjectOnMapDto[]>([]);
+    const [objectsOnThisLayer, setObjectsOnThisLayer] = useState<GetObjectOnMapDto[]>([]);
+    const [allobjects, setAllObjects] = useState<GetObjectOnMapDto[]>([]);
 
     useEffect(() => {
         const objectsOnMapClient = new ObjectsOnMapClient();
@@ -39,6 +39,7 @@ const EditLayerForm: FunctionComponent<Props> = (props) => {
                 <Form.Item label="Объекты"
                            name="layerObjects">
                     <Transfer
+
                     />
                 </Form.Item>
             </Form>

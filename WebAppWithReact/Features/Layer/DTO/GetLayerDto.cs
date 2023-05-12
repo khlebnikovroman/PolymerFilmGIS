@@ -16,8 +16,9 @@ public record GetLayerDto
     [Required(ErrorMessage = "Name is required")]
     public string? Name { get; set; }
 
-    public List<ObjectOnMapDto> Objects { get; set; }
+    public List<GetObjectOnMapDto> Objects { get; set; }
 }
+
 
 
 

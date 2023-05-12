@@ -1,3 +1,5 @@
+using Mapster;
+
 using WebAppWithReact.Features.ObjectOnMap.DTO;
 using WebAppWithReact.Repositories;
 
@@ -22,19 +24,11 @@ public class ObjectOnMapService
     /// </summary>
     /// <param name="id">ID слоя</param>
     /// <returns>DTO с информацией о найденном объекте</returns>
-    public async Task<ObjectOnMapDetailsDto> Get(Guid id)
+    public async Task<GetObjectOnMapDto> Get(Guid id)
     {
         var o = await _objectOnMapRepository.FindById(id);
 
-        var oDto = new ObjectOnMapDetailsDto
-        {
-            AppUserId = o.AppUserId,
-            Id = o.Id,
-            Name = o.Name,
-            Capacity = o.Capacity,
-            Lati = o.Lati,
-            Long = o.Long,
-        };
+        var oDto = o.Adapt<GetObjectOnMapDto>();
 
         return oDto;
     }
@@ -47,15 +41,8 @@ public class ObjectOnMapService
     /// <returns>ID созданного объекта</returns>
     public async Task<Guid> Create(CreateObjectOnMapDto dto, Guid userId)
     {
-        var o = new DAL.ObjectOnMap
-        {
-            AppUserId = userId,
-            Capacity = (double) dto.Capacity!,
-            Lati = (double) dto.Lati!,
-            Long = (double) dto.Long!,
-            Name = dto.Name!,
-        };
-
+        var o = dto.Adapt<DAL.ObjectOnMap>();
+        o.AppUserId = userId;
         await _objectOnMapRepository.Create(o);
 
         return o.Id;
@@ -68,10 +55,7 @@ public class ObjectOnMapService
     public async Task Update(UpdateObjectOnMapDto dto)
     {
         var o = await _objectOnMapRepository.FindById((Guid) dto.Id);
-
-        (o.Capacity, o.Lati, o.Long, o.Name) =
-            ((double) dto.Capacity!, (double) dto.Lati!, (double) dto.Long!, dto.Name!);
-
+        dto.Adapt(o);
         await _objectOnMapRepository.Update(o);
     }
 
@@ -85,6 +69,7 @@ public class ObjectOnMapService
         await _objectOnMapRepository.Remove(o);
     }
 }
+
 
 
 

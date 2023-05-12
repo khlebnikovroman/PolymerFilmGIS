@@ -1,14 +1,14 @@
 import React, {useEffect, useState} from "react";
 import {Checkbox, ConfigProvider, Form, Input, List} from "antd";
-import {CreateLayerDto, LayerClient, ObjectOnMapDetailsDto, ObjectsOnMapClient} from "../../../services/Clients";
+import {CreateLayerDto, GetObjectOnMapDto, LayerClient, ObjectsOnMapClient} from "../../../services/Clients";
 import {CheckboxValueType} from "antd/es/checkbox/Group";
 import CustomizeRenderEmpty from "../../CustomEmpty";
 
 const CreateLayerForm: React.FC = () => {
 
     const [checked, setChecked] = useState<CheckboxValueType[]>([]);
-    const [objectOnMapDtos, setObjectOnMapDtos] = useState<ObjectOnMapDetailsDto[]>([]);
-    const [list, setList] = useState<ObjectOnMapDetailsDto[]>([]);
+    const [objectOnMapDtos, setObjectOnMapDtos] = useState<GetObjectOnMapDto[]>([]);
+    const [list, setList] = useState<GetObjectOnMapDto[]>([]);
 
     useEffect(() => {
         const objectsOnMapClient = new ObjectsOnMapClient();
@@ -65,7 +65,7 @@ const CreateLayerForm: React.FC = () => {
                             setChecked(checkedValues);
                         }}>
                         <ConfigProvider renderEmpty={renderEmpty}>
-                            <List dataSource={list} renderItem={(item: ObjectOnMapDetailsDto, index: number) =>
+                            <List dataSource={list} renderItem={(item: GetObjectOnMapDto, index: number) =>
                                 <List.Item style={{width: 256}}>
                                     <List.Item.Meta
                                         avatar={<Checkbox value={item.id}/>}

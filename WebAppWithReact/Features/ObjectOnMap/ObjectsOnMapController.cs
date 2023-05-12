@@ -1,3 +1,5 @@
+using Mapster;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -32,26 +34,11 @@ public class ObjectsOnMapController : BaseAuthorizedController
     /// </summary>
     [HttpGet]
     [Route("GetAllWithoutLayer")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IReadOnlyCollection<ObjectOnMapDetailsDto>))]
-    public async Task<IActionResult> GetWithoutLayer()
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<ActionResult<IReadOnlyCollection<GetObjectOnMapDto>>> GetWithoutLayer()
     {
         var objects = await _objectOnMapRepository.Get(o => o.AppUserId == UserId && o.LayerId == null);
-        var objectDtos = new List<ObjectOnMapDetailsDto>();
-
-        foreach (var objectOnMap in objects)
-        {
-            var o = new ObjectOnMapDetailsDto
-            {
-                AppUserId = objectOnMap.AppUserId,
-                Capacity = objectOnMap.Capacity,
-                Id = objectOnMap.Id,
-                Lati = objectOnMap.Lati,
-                Long = objectOnMap.Long,
-                Name = objectOnMap.Name,
-            };
-
-            objectDtos.Add(o);
-        }
+        var objectDtos = objects.Adapt<List<GetObjectOnMapDto>>();
 
         return Ok(objectDtos);
     }
@@ -62,26 +49,11 @@ public class ObjectsOnMapController : BaseAuthorizedController
 
     // todo переписать (сейчас это заглушка(нельзя использовать для админа))
     [HttpGet]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IReadOnlyCollection<ObjectOnMapDetailsDto>))]
-    public async Task<IActionResult> Get()
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<ActionResult<GetObjectOnMapDto>> Get()
     {
         var objects = await _objectOnMapRepository.Get(o => o.AppUserId == UserId);
-        var objectDtos = new List<ObjectOnMapDetailsDto>();
-
-        foreach (var objectOnMap in objects)
-        {
-            var o = new ObjectOnMapDetailsDto
-            {
-                AppUserId = objectOnMap.AppUserId,
-                Capacity = objectOnMap.Capacity,
-                Id = objectOnMap.Id,
-                Lati = objectOnMap.Lati,
-                Long = objectOnMap.Long,
-                Name = objectOnMap.Name,
-            };
-
-            objectDtos.Add(o);
-        }
+        var objectDtos = objects.Adapt<List<GetObjectOnMapDto>>();
 
         return Ok(objectDtos);
     }
@@ -91,10 +63,9 @@ public class ObjectsOnMapController : BaseAuthorizedController
     /// </summary>
     /// <param name="id">ID слоя</param>
     [HttpGet("{id}")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ObjectOnMapDetailsDto))]
-    public async Task<IActionResult> Get(Guid id)
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<ActionResult<GetObjectOnMapDto>> Get(Guid id)
     {
-        //получается делается два запроса к бд, возможно это можно как-то оптимизировать но сейчас (07.12.2022) уже нет на это времени
         var obj = await _objectOnMapRepository.FindById(id);
         var authorizeResult = await _authorizationService.AuthorizeAsync(User, obj, Policies.IsObjectOwnByUser);
 
@@ -114,8 +85,8 @@ public class ObjectsOnMapController : BaseAuthorizedController
     /// <param name="dto">DTO с информацией об объекте</param>
     /// <returns></returns>
     [HttpPost]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Guid))]
-    public async Task<IActionResult> Create([FromBody] CreateObjectOnMapDto dto)
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<ActionResult<Guid>> Create([FromBody] CreateObjectOnMapDto dto)
     {
         var id = await _objectOnMapService.Create(dto, UserId);
 
@@ -128,7 +99,7 @@ public class ObjectsOnMapController : BaseAuthorizedController
     /// <param name="dto"> DTO с обновленной информацией об объекте</param>
     [HttpPut]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IActionResult> Update([FromBody] UpdateObjectOnMapDto dto)
+    public async Task<ActionResult> Update([FromBody] UpdateObjectOnMapDto dto)
     {
         var obj = await _objectOnMapRepository.FindById((Guid) dto.Id);
         var authorizeResult = await _authorizationService.AuthorizeAsync(User, obj, Policies.IsObjectOwnByUser);
@@ -149,7 +120,7 @@ public class ObjectsOnMapController : BaseAuthorizedController
     /// <param name="id">ID объекта</param>
     [HttpDelete("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<IActionResult> Delete(Guid id)
+    public async Task<ActionResult> Delete(Guid id)
     {
         var obj = await _objectOnMapRepository.FindById(id);
         var authorizeResult = await _authorizationService.AuthorizeAsync(User, obj, Policies.IsObjectOwnByUser);
@@ -164,6 +135,7 @@ public class ObjectsOnMapController : BaseAuthorizedController
         return Forbid();
     }
 }
+
 
 
 
