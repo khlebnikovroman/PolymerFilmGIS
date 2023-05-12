@@ -1,9 +1,10 @@
 ﻿import React, {useEffect, useState} from "react";
-import {Button, Checkbox, List} from 'antd';
+import {Button, Checkbox, Form, List, Modal} from 'antd';
 import {CheckboxChangeEvent} from "antd/es/checkbox";
 import {GetLayerDto, LayerClient} from "../../../services/Clients";
 import CreateLayerModal from "./CreateLayerModal";
 import {EditOutlined} from "@ant-design/icons";
+import EditLayerForm from "./EditLayerForm";
 
 const MenuLayers = () => {
 
@@ -34,10 +35,25 @@ const MenuLayers = () => {
         })
     }
 
+    const {confirm} = Modal;
+    const [form] = Form.useForm();
 
-    const onClick = () => {
-        setIsShown(true);
-    };
+    function showEdit(item: GetLayerDto) {
+        confirm({
+
+            title: "Изменение слоя",
+            icon: <div/>,
+            content: <EditLayerForm form={form} layerDto={item}/>,
+            onOk: () => {
+
+            },
+        })
+    }
+
+    function showAdd() {
+
+    }
+
     const onChange = (e: CheckboxChangeEvent) => {
         console.log(`checked = ${e.target.checked}`);
         console.log(`target name = ${e.target.id}`);
@@ -59,10 +75,14 @@ const MenuLayers = () => {
                         >
                             {item.name}
                         </Checkbox>
-                        <Button type="primary" shape="default" icon={<EditOutlined/>} style={{ marginLeft: '8px' }} onClick={onClick}></Button>
+                        <Button type="primary"
+                                shape="default"
+                                icon={<EditOutlined/>}
+                                style={{marginLeft: '8px'}}
+                                onClick={() => showEdit(item)}></Button>
                     </List.Item>}
             />
-            <Button type="primary" shape={"default"} style={{width: "100%"}} onClick={onClick}>Создать новый
+            <Button type="primary" shape={"default"} style={{width: "100%"}} onClick={showAdd}>Создать новый
                 слой</Button>
             <CreateLayerModal open={isShown} setShown={setShown}/>
         </>

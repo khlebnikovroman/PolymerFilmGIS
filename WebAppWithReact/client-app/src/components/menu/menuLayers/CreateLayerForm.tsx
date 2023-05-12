@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Button, Checkbox, ConfigProvider, Form, Input, List} from "antd";
+import {Checkbox, ConfigProvider, Form, Input, List} from "antd";
 import {CreateLayerDto, LayerClient, ObjectOnMapDetailsDto, ObjectsOnMapClient} from "../../../services/Clients";
 import {CheckboxValueType} from "antd/es/checkbox/Group";
 import CustomizeRenderEmpty from "../../CustomEmpty";
@@ -79,11 +79,11 @@ const CreateLayerForm: React.FC = () => {
 
 
                 </Form.Item>
-                <Form.Item wrapperCol={{offset: 8, span: 16}}>
-                    <Button type="primary" htmlType="submit">
-                        ОК
-                    </Button>
-                </Form.Item>
+                {/*<Form.Item wrapperCol={{offset: 8, span: 16}}>*/}
+                {/*    <Button type="primary" htmlType="submit">*/}
+                {/*        ОК*/}
+                {/*    </Button>*/}
+                {/*</Form.Item>*/}
             </Form>
         </>
     )
