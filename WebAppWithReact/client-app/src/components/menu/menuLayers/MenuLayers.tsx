@@ -59,6 +59,7 @@ const MenuLayers = () => {
             dispatch(removeLayer(layer.id))
         }
     };
+    
     return (
         <>
             <List
@@ -79,6 +80,7 @@ const MenuLayers = () => {
                         <Button type="primary"
                                 shape="default"
                                 icon={<EditOutlined/>}
+                                size={"small"}
                                 style={{marginLeft: '8px'}}
                                 onClick={() => showEdit(item)}></Button>
                     </List.Item>}
