@@ -9,7 +9,7 @@ interface OwnProps {
 
 type Props = OwnProps;
 
-const EditLayerForm: FunctionComponent<Props> = (props) => {
+const EditLayerForm: FunctionComponent<Props> = (props: OwnProps) => {
 
     const [objectOnMapDtos, setObjectOnMapDtos] = useState<GetObjectOnMapDto[]>([]);
     const [objectsOnThisLayer, setObjectsOnThisLayer] = useState<GetObjectOnMapDto[]>([]);

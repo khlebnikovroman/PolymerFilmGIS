@@ -1,8 +1,8 @@
 import React, {MouseEvent, useCallback, useMemo, useRef, useState} from "react";
-import {MapContainer, TileLayer, useMapEvents, ZoomControl} from "react-leaflet";
-import L, {latLng} from "leaflet";
+import {MapContainer, Marker, TileLayer, useMapEvents, ZoomControl} from "react-leaflet";
+import L, {LatLng, latLng} from "leaflet";
 import './Map.css';
-import {Layout} from 'antd';
+import {Form, Layout, Modal} from 'antd';
 
 import {Content} from "antd/es/layout/layout";
 import {useContextMenu} from "../../hooks";
@@ -10,14 +10,16 @@ import {KleknerPoints} from "./exampleData2";
 import {Mapelements} from "../menu/mapelements";
 import "leaflet.webgl-temperature-map"
 import IdwMapLayer from "../heatmap/variant2/HeatMapLayer2";
-import CreateObjectOnMap from "../objectsOnMap/AddObjectOnMap";
+import {CreateObjectOnMapDto, ObjectsOnMapClient} from "../../services/Clients";
+import EditLayerForm from "../menu/menuLayers/EditLayerForm";
+import ObjectOnMapForm from "../objectsOnMap/ObjectOnMapForm";
 
 L.Icon.Default.imagePath = "https://unpkg.com/browse/leaflet@1.9.2/dist/images/";
 
 export const MapComponent: React.FC = () => {
     const [lat, setLat] = useState(59.918711823015684);
     const [lng, setlng] = useState(30.319212156536604);
-    const [position, setPosition] = useState(null);
+    const [position, setPosition] = useState<LatLng>();
     
     const {setContextMenu} = useContextMenu();
 
@@ -34,7 +36,9 @@ export const MapComponent: React.FC = () => {
         {
             name: 'Добавить объект здесь',
             onClick: () => {
-                setIsShown(true);
+                if (position){
+                    showAdd(new CreateObjectOnMapDto({lati : position.lat, long : position.lng, name : "", capacity : 0}))
+                }
             }
         },
         {
@@ -65,6 +69,38 @@ export const MapComponent: React.FC = () => {
         });
         return null;
     };
+
+    const {confirm} = Modal;
+    const [form] = Form.useForm();
+
+    function showAdd(item: CreateObjectOnMapDto) {
+        confirm({
+            title: "Создание объекта",
+            icon: <div/>,
+            content: <ObjectOnMapForm form={form} objectDto={item}/>,
+            onOk: () => {
+                form
+                    .validateFields()
+                    .then(async (values) => {
+                        form.resetFields();
+                        const model = new CreateObjectOnMapDto({
+                            name: values.objectName,
+                            lati: values.objectLat,
+                            long: values.objectLng,
+                            capacity: 1
+                        });
+                        const objectClient = new ObjectsOnMapClient();
+                        await objectClient.objectsOnMapPOST(model)
+                        console.log('Success', values.objectName,
+                            values.objectLat,
+                            values.objectLng,)
+                    })
+                    .catch((info) => {
+                        console.log('Validate Failed:', info);
+                    });
+            },
+        })
+    }
     
     return (
         <div>
@@ -98,7 +134,6 @@ export const MapComponent: React.FC = () => {
                                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                                     url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager_labels_under/{z}/{x}/{y}{r}.png"/>
                             </MapContainer>
-                            <CreateObjectOnMap open={isShown} setShown={setShown} position={position}/>
                         </div>
                     </Content>
                 </div>

@@ -20,13 +20,6 @@ export const UserMenu: React.FC = () => {
 
     return (
         <>
-            {/*<Space.Compact block>*/}
-            {/*    <Button>*/}
-            {/*        <Avatar style={{ backgroundColor: '#87d068' }} icon={<UserOutlined />} />*/}
-            {/*        <h1>{username}</h1> */}
-            {/*    </Button>*/}
-            {/*    <Button type="primary">Button 1</Button>*/}
-            {/*</Space.Compact>*/}
             <Modal open={open}
                    onOk={logout}
                    onCancel={() => setOpen(false)}

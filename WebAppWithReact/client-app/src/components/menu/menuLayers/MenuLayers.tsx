@@ -45,7 +45,6 @@ const MenuLayers = () => {
             icon: <div/>,
             content: <EditLayerForm form={form} layerDto={item}/>,
             onOk: () => {
-
             },
         })
     }
