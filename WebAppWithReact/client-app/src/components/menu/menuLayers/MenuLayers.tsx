@@ -2,7 +2,7 @@
 import {Button, Checkbox, Form, List, Modal} from 'antd';
 import {CheckboxChangeEvent} from "antd/es/checkbox";
 import {CreateLayerDto, GetLayerDto, LayerClient, UpdateLayerDto} from "../../../services/Clients"
-import {AppstoreAddOutlined, EditOutlined} from "@ant-design/icons";
+import {DeleteOutlined, EditOutlined, PlusOutlined} from "@ant-design/icons";
 import LayerForm from "./LayerForm";
 import {useAppDispatch} from "../../../redux/store";
 import {addLayer, removeLayer} from "../../../redux/LayersSlice";
@@ -20,7 +20,7 @@ const MenuLayers = () => {
             setInitLoading(false);
             setList(res);
         })
-    }, []);
+    }, [deleteLayer]);
 
 
     const [isShown, setIsShown] = useState(false);
@@ -40,7 +40,7 @@ const MenuLayers = () => {
     function showEdit(item: GetLayerDto) {
         confirm({
             title: "Изменение слоя",
-            icon: <div/>,
+            icon: <EditOutlined />,
             content: <LayerForm form={form} layerDto={item}/>,
             onOk: () => {
                 form
@@ -65,15 +65,11 @@ const MenuLayers = () => {
             }
         })
     }
-    const onSubmit = (selectedKeys: string[]) => {
-        console.log('Selected keys:', selectedKeys);
-        // Do something with the selected keys
-    }
     
     function showAdd(item: CreateLayerDto) {
         confirm({
             title: "Добавление слоя",
-            icon: <AppstoreAddOutlined/>,
+            icon: <PlusOutlined />,
             content: <LayerForm form={form} layerDto={item}/>,
             onOk: () => {
                 form
@@ -99,6 +95,11 @@ const MenuLayers = () => {
         })
     }
 
+    function deleteLayer(item: GetLayerDto) {
+        const layerClient = new LayerClient();
+        layerClient.layerDELETE(item.id).then()
+    }
+    
     const onChange = (layer: GetLayerDto, e: CheckboxChangeEvent) => {
         if (e.target.checked) {
             dispatch(addLayer(layer))
@@ -124,12 +125,22 @@ const MenuLayers = () => {
                         >
                             {item.name}
                         </Checkbox>
-                        <Button type="primary"
-                                shape="default"
-                                icon={<EditOutlined/>}
-                                size={"small"}
-                                style={{marginLeft: '8px'}}
-                                onClick={() => showEdit(item)}></Button>
+                        <div style={{width: 100, paddingLeft: 30}}>
+                            <Button type="primary"
+                                    shape="default"
+                                    icon={<EditOutlined/>}
+                                    size={"small"}
+                                    style={{marginLeft: '8px'}}
+                                    onClick={() => showEdit(item)}
+                            ></Button>
+                            <Button type="primary"
+                                    shape="default"
+                                    icon={<DeleteOutlined/>}
+                                    size={"small"}
+                                    style={{marginLeft: '8px'}}
+                                    onClick={() => deleteLayer(item)}
+                            ></Button>
+                        </div>
                     </List.Item>}
             />
             <Button type="primary" shape={"default"} style={{width: "100%"}} onClick={() => showAdd(new CreateLayerDto({name: "", objects: []}))}>

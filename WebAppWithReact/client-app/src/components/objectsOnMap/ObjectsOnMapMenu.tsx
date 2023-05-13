@@ -1,8 +1,13 @@
 ﻿import React, {useEffect, useState} from 'react';
-import {EditOutlined, MailOutlined} from '@ant-design/icons';
+import {DeleteOutlined, EditOutlined, MailOutlined} from '@ant-design/icons';
 import type {ListProps, MenuProps} from 'antd';
 import {Button, Checkbox, Form, List, Menu, Modal} from 'antd';
-import {UpdateObjectOnMapDto, GetObjectOnMapDto, ObjectsOnMapClient, IUpdateObjectOnMapDto} from "../../services/Clients";
+import {
+    UpdateObjectOnMapDto,
+    GetObjectOnMapDto,
+    ObjectsOnMapClient,
+    DeleteObjectFromLayerDTO
+} from "../../services/Clients";
 import {CheckboxChangeEvent} from "antd/es/checkbox";
 import { Collapse, theme } from 'antd';
 import { CaretRightOutlined } from '@ant-design/icons';
@@ -73,6 +78,11 @@ const ObjectsOnMapMenu: React.FC = () => {
             }
         })
     }
+
+    function deleteObject(item: GetObjectOnMapDto) {
+        const objectClient = new ObjectsOnMapClient();
+        objectClient.objectsOnMapDELETE(item.id!).then()
+    }
     
     return (
         <>
@@ -98,14 +108,23 @@ const ObjectsOnMapMenu: React.FC = () => {
                                     {/*    {item.name}*/}
                                     {/*</Checkbox>*/}
                                     <text>{item.name}</text>
-                                    <Button type="primary"
-                                            shape="default"
-                                            icon={<EditOutlined/>}
-                                            size={"small"}
-                                            style={{marginLeft: '8px'}}
-                                         onClick={() => showEdit(item)}
-                                    ></Button>
-                                </List.Item>}
+                                    <div style={{width: 100, paddingLeft: 30}}>
+                                        <Button type="primary"
+                                                shape="default"
+                                                icon={<EditOutlined/>}
+                                                size={"small"}
+                                                style={{marginLeft: '8px'}}
+                                                onClick={() => showEdit(item)}
+                                        ></Button>
+                                        <Button type="primary"
+                                                shape="default"
+                                                icon={<DeleteOutlined/>}
+                                                size={"small"}
+                                                style={{marginLeft: '8px'}}
+                                                onClick={() => deleteObject(item)}
+                                        ></Button>
+                                    </div>
+                                </List.Item>} 
                         />
                     </Panel>
                 </Collapse>
