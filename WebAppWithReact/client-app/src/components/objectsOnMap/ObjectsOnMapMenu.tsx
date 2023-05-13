@@ -2,12 +2,7 @@
 import {DeleteOutlined, EditOutlined, MailOutlined} from '@ant-design/icons';
 import type {ListProps, MenuProps} from 'antd';
 import {Button, Checkbox, Form, List, Menu, Modal} from 'antd';
-import {
-    UpdateObjectOnMapDto,
-    GetObjectOnMapDto,
-    ObjectsOnMapClient,
-    DeleteObjectFromLayerDTO
-} from "../../services/Clients";
+import {UpdateObjectOnMapDto, GetObjectOnMapDto, ObjectsOnMapClient} from "../../services/Clients";
 import {CheckboxChangeEvent} from "antd/es/checkbox";
 import { Collapse, theme } from 'antd';
 import { CaretRightOutlined } from '@ant-design/icons';
@@ -34,11 +29,11 @@ const ObjectsOnMapMenu: React.FC = () => {
     };
     
     useEffect(() => {
-        const layerClient = new ObjectsOnMapClient();
-        layerClient.getAllWithoutLayer().then(res => {
+        const objectsOnMapClient = new ObjectsOnMapClient();
+        objectsOnMapClient.getAllWithoutLayer().then(res => {
             setList(res);
         })
-    }, [onChange]);
+    }, [showEdit, deleteObject]);
 
     const {confirm} = Modal;
     const [form] = Form.useForm();
