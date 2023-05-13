@@ -1,10 +1,10 @@
 ﻿import React, {useState} from "react";
 import {Form, FormInstance, Input, Modal} from "antd";
-import {CreateObjectOnMapDto, ObjectsOnMapClient, UpdateObjectOnMapDto} from "../../services/Clients";
+import {CreateObjectOnMapDto, ObjectsOnMapClient, GetObjectOnMapDto} from "../../services/Clients";
 import {Marker} from "react-leaflet";
 
 interface AddObjectOnMapProps {
-    objectDto: CreateObjectOnMapDto | UpdateObjectOnMapDto
+    objectDto: CreateObjectOnMapDto | GetObjectOnMapDto
     form: FormInstance
 }
 
