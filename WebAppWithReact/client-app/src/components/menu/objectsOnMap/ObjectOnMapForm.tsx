@@ -38,19 +38,20 @@ const ObjectOnMapForm: React.FC<AddObjectOnMapProps> = ({objectDto, form}: AddOb
                     <Input/>
                 </Form.Item>
                 <Form.Item
-                    label="Долгота"
-                    name="objectLat"
-                    rules={[{required: true, message: 'Пожалуйста, введите долготу'}]}
-                >
-                    <Input/>
-                </Form.Item>
-                <Form.Item
                     label="Широта"
-                    name="objectLng"
+                    name="objectLat"
                     rules={[{required: true, message: 'Пожалуйста, введите широту'}]}
                 >
                     <Input/>
                 </Form.Item>
+                <Form.Item
+                    label="Долгота"
+                    name="objectLng"
+                    rules={[{required: true, message: 'Пожалуйста, введите долготу'}]}
+                >
+                    <Input/>
+                </Form.Item>
+
             </Form>
         </>
     )

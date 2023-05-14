@@ -41,7 +41,8 @@ const MenuLayers = () => {
     function showEdit(item: GetLayerDto) {
         confirm({
             title: "Изменение слоя",
-            icon: <EditOutlined />,
+            icon: <EditOutlined/>,
+            width: 750,
             content: <LayerForm form={form} layerDto={item}/>,
             onOk: () => {
                 console.log(form.getFieldsValue())

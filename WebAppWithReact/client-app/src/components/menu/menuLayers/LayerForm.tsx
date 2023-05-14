@@ -54,6 +54,7 @@ const LayerForm: FunctionComponent<Props> = (props: OwnProps) => {
 
     const onChange = (nextTargetKeys: string[], direction: TransferDirection, moveKeys: string[]) => {
         switch (direction) {
+            //todo setObjectsOnThisLayer после foreach
             case "left":
                 moveKeys.forEach(key => {
                     const layerObject = objectsOnThisLayer.find((item) => item.id === key)!;
