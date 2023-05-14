@@ -1,39 +1,40 @@
-﻿import React, {useEffect, useState} from 'react';
-import {DeleteOutlined, EditOutlined, MailOutlined} from '@ant-design/icons';
-import type {ListProps, MenuProps} from 'antd';
-import {Button, Checkbox, Form, List, Menu, Modal} from 'antd';
-import {UpdateObjectOnMapDto, GetObjectOnMapDto, ObjectsOnMapClient} from "../../services/Clients";
+﻿import React, {useEffect} from 'react';
+import {CaretRightOutlined, DeleteOutlined, EditOutlined} from '@ant-design/icons';
+import {Button, Collapse, Form, List, Modal, theme} from 'antd';
+import {GetObjectOnMapDto, ObjectsOnMapClient, UpdateObjectOnMapDto} from "../../services/Clients";
 import {CheckboxChangeEvent} from "antd/es/checkbox";
-import { Collapse, theme } from 'antd';
-import { CaretRightOutlined } from '@ant-design/icons';
 import ObjectOnMapForm from "./ObjectOnMapForm";
+import {useSelector} from "react-redux";
+import {RootState, useAppDispatch} from "../../redux/store";
+import {editObject, removeObject, setObjects} from "../../redux/ObjectSlice";
 
 
 const ObjectsOnMapMenu: React.FC = () => {
-    
-    const [list, setList] = useState<GetObjectOnMapDto[]>([]);
 
-    const { token } = theme.useToken();
-    const { Panel } = Collapse;
-
+    //const [list, setList] = useState<GetObjectOnMapDto[]>([]);
+    const {token} = theme.useToken();
+    const {Panel} = Collapse;
+    const {objects} = useSelector((state: RootState) => state.objects);
     const panelStyle = {
         marginBottom: 24,
         background: token.colorFillAlter,
         borderRadius: token.borderRadiusLG,
         border: 'none',
     };
-    
+    const dispatch = useAppDispatch();
+
+
     const onChange = (e: CheckboxChangeEvent) => {
         console.log(`checked = ${e.target.checked}`);
         console.log(`target name = ${e.target.id}`);
     };
-    
+
     useEffect(() => {
         const objectsOnMapClient = new ObjectsOnMapClient();
         objectsOnMapClient.getAllWithoutLayer().then(res => {
-            setList(res);
+            dispatch(setObjects(res))
         })
-    }, [showEdit, deleteObject]);
+    }, []);
 
     const {confirm} = Modal;
     const [form] = Form.useForm();
@@ -54,13 +55,14 @@ const ObjectsOnMapMenu: React.FC = () => {
                             name: values.objectName,
                             lati: values.objectLat,
                             long: values.objectLng,
-                            capacity: 1
+                            capacity: values.objectCapacity,
                         });
                         const objectClient = new ObjectsOnMapClient();
                         await objectClient.objectsOnMapPUT(model)
                         console.log('Success', values.objectName,
                             values.objectLat,
                             values.objectLng,)
+                        dispatch(editObject(model))
                     })
                     .catch((info) => {
                         form.resetFields();
@@ -77,6 +79,7 @@ const ObjectsOnMapMenu: React.FC = () => {
     function deleteObject(item: GetObjectOnMapDto) {
         const objectClient = new ObjectsOnMapClient();
         objectClient.objectsOnMapDELETE(item.id!).then()
+        dispatch(removeObject(item.id!))
     }
     
     return (
@@ -92,17 +95,10 @@ const ObjectsOnMapMenu: React.FC = () => {
                             size="small"
                             //header={<div>Объекты</div>}
                             bordered
-                            dataSource={list}
+                            dataSource={objects}
                             renderItem={(item: GetObjectOnMapDto, index: number) =>
                                 <List.Item>
-                                    {/*<Checkbox*/}
-                                    {/*    onChange={onChange}*/}
-                                    {/*    id={item.id}*/}
-                                    {/*    name={item.name}*/}
-                                    {/*>*/}
-                                    {/*    {item.name}*/}
-                                    {/*</Checkbox>*/}
-                                    <text>{item.name}</text>
+                                    <>{item.name}</>
                                     <div style={{width: 100, paddingLeft: 30}}>
                                         <Button type="primary"
                                                 shape="default"

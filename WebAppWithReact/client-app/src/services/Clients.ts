@@ -827,35 +827,6 @@ export class ObjectsOnMapClient extends ApiBase {
     /**
      * @return Success
      */
-    objectsOnMapGET(cancelToken?: CancelToken | undefined): Promise<GetObjectOnMapDto> {
-        let url_ = this.baseUrl + "/api/ObjectsOnMap";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: AxiosRequestConfig = {
-            method: "GET",
-            url: url_,
-            headers: {
-                "Accept": "text/plain"
-            },
-            cancelToken
-        };
-
-        return this.transformOptions(options_).then(transformedOptions_ => {
-            return this.instance.request(transformedOptions_);
-        }).catch((_error: any) => {
-            if (isAxiosError(_error) && _error.response) {
-                return _error.response;
-            } else {
-                throw _error;
-            }
-        }).then((_response: AxiosResponse) => {
-            return this.processObjectsOnMapGET(_response);
-        });
-    }
-
-    /**
-     * @return Success
-     */
     objectsOnMapGET2(id: string, cancelToken?: CancelToken | undefined): Promise<GetObjectOnMapDto> {
         let url_ = this.baseUrl + "/api/ObjectsOnMap/{id}";
         if (id === undefined || id === null)
@@ -883,6 +854,65 @@ export class ObjectsOnMapClient extends ApiBase {
         }).then((_response: AxiosResponse) => {
             return this.processObjectsOnMapGET2(_response);
         });
+    }
+
+    /**
+     * @return Success
+     */
+    objectsOnMapGET(cancelToken?: CancelToken | undefined): Promise<GetObjectOnMapDto> {
+        let url_ = this.baseUrl + "/api/ObjectsOnMap";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: AxiosRequestConfig = {
+            method: "GET",
+            url: url_,
+            headers: {
+                "Accept": "text/plain"
+            },
+            cancelToken
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.instance.request(transformedOptions_);
+        }).catch((_error: any) => {
+            if (isAxiosError(_error) && _error.response) {
+                return _error.response;
+            } else {
+                throw _error;
+            }
+        }).then((_response: AxiosResponse) => {
+            return this.processObjectsOnMapGET(_response);
+        });
+    }
+
+    protected processGetAllWithoutLayer(response: AxiosResponse): Promise<GetObjectOnMapDto[]> {
+        const status = response.status;
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (let k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
+        }
+        if (status === 200) {
+            const _responseText = response.data;
+            let result200: any = null;
+            let resultData200 = _responseText;
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(GetObjectOnMapDto.fromJS(item));
+            } else {
+                result200 = <any>null;
+            }
+            return Promise.resolve<GetObjectOnMapDto[]>(result200);
+
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+        }
+        return Promise.resolve<GetObjectOnMapDto[]>(null as any);
     }
 
     /**
@@ -919,6 +949,30 @@ export class ObjectsOnMapClient extends ApiBase {
         });
     }
 
+    protected processObjectsOnMapGET(response: AxiosResponse): Promise<GetObjectOnMapDto> {
+        const status = response.status;
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (let k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
+        }
+        if (status === 200) {
+            const _responseText = response.data;
+            let result200: any = null;
+            let resultData200 = _responseText;
+            result200 = GetObjectOnMapDto.fromJS(resultData200);
+            return Promise.resolve<GetObjectOnMapDto>(result200);
+
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+        }
+        return Promise.resolve<GetObjectOnMapDto>(null as any);
+    }
+
     /**
      * @param body (optional)
      * @return Success
@@ -952,7 +1006,7 @@ export class ObjectsOnMapClient extends ApiBase {
         });
     }
 
-    protected processGetAllWithoutLayer(response: AxiosResponse): Promise<GetObjectOnMapDto[]> {
+    protected processObjectsOnMapPUT(response: AxiosResponse): Promise<void> {
         const status = response.status;
         let _headers: any = {};
         if (response.headers && typeof response.headers === "object") {
@@ -964,46 +1018,13 @@ export class ObjectsOnMapClient extends ApiBase {
         }
         if (status === 200) {
             const _responseText = response.data;
-            let result200: any = null;
-            let resultData200 = _responseText;
-            if (Array.isArray(resultData200)) {
-                result200 = [] as any;
-                for (let item of resultData200)
-                    result200!.push(GetObjectOnMapDto.fromJS(item));
-            } else {
-                result200 = <any>null;
-            }
-            return Promise.resolve<GetObjectOnMapDto[]>(result200);
+            return Promise.resolve<void>(null as any);
 
         } else if (status !== 200 && status !== 204) {
             const _responseText = response.data;
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
-        return Promise.resolve<GetObjectOnMapDto[]>(null as any);
-    }
-
-    protected processObjectsOnMapGET(response: AxiosResponse): Promise<GetObjectOnMapDto> {
-        const status = response.status;
-        let _headers: any = {};
-        if (response.headers && typeof response.headers === "object") {
-            for (let k in response.headers) {
-                if (response.headers.hasOwnProperty(k)) {
-                    _headers[k] = response.headers[k];
-                }
-            }
-        }
-        if (status === 200) {
-            const _responseText = response.data;
-            let result200: any = null;
-            let resultData200 = _responseText;
-            result200 = GetObjectOnMapDto.fromJS(resultData200);
-            return Promise.resolve<GetObjectOnMapDto>(result200);
-
-        } else if (status !== 200 && status !== 204) {
-            const _responseText = response.data;
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-        }
-        return Promise.resolve<GetObjectOnMapDto>(null as any);
+        return Promise.resolve<void>(null as any);
     }
 
     protected processObjectsOnMapPOST(response: AxiosResponse): Promise<string> {
@@ -1029,27 +1050,6 @@ export class ObjectsOnMapClient extends ApiBase {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
         return Promise.resolve<string>(null as any);
-    }
-
-    protected processObjectsOnMapPUT(response: AxiosResponse): Promise<void> {
-        const status = response.status;
-        let _headers: any = {};
-        if (response.headers && typeof response.headers === "object") {
-            for (let k in response.headers) {
-                if (response.headers.hasOwnProperty(k)) {
-                    _headers[k] = response.headers[k];
-                }
-            }
-        }
-        if (status === 200) {
-            const _responseText = response.data;
-            return Promise.resolve<void>(null as any);
-
-        } else if (status !== 200 && status !== 204) {
-            const _responseText = response.data;
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-        }
-        return Promise.resolve<void>(null as any);
     }
 
     protected processObjectsOnMapGET2(response: AxiosResponse): Promise<GetObjectOnMapDto> {
@@ -1318,13 +1318,6 @@ export class GetLayerDto implements IGetLayerDto {
         }
     }
 
-    static fromJS(data: any): GetLayerDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new GetLayerDto();
-        result.init(data);
-        return result;
-    }
-
     init(_data?: any) {
         if (_data) {
             this.id = _data["id"];
@@ -1335,6 +1328,13 @@ export class GetLayerDto implements IGetLayerDto {
                     this.objects!.push(GetObjectOnMapDto.fromJS(item));
             }
         }
+    }
+
+    static fromJS(data: any): GetLayerDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetLayerDto();
+        result.init(data);
+        return result;
     }
 
     toJSON(data?: any) {
@@ -1373,13 +1373,6 @@ export class GetObjectOnMapDto implements IGetObjectOnMapDto {
         }
     }
 
-    static fromJS(data: any): GetObjectOnMapDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new GetObjectOnMapDto();
-        result.init(data);
-        return result;
-    }
-
     init(_data?: any) {
         if (_data) {
             this.id = _data["id"];
@@ -1389,6 +1382,13 @@ export class GetObjectOnMapDto implements IGetObjectOnMapDto {
             this.long = _data["long"];
             this.capacity = _data["capacity"];
         }
+    }
+
+    static fromJS(data: any): GetObjectOnMapDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetObjectOnMapDto();
+        result.init(data);
+        return result;
     }
 
     toJSON(data?: any) {
@@ -1631,6 +1631,7 @@ export interface ITokenModel {
 export class UpdateLayerDto implements IUpdateLayerDto {
     id!: string;
     name!: string;
+    objects?: string[] | undefined;
 
     constructor(data?: IUpdateLayerDto) {
         if (data) {
@@ -1645,6 +1646,11 @@ export class UpdateLayerDto implements IUpdateLayerDto {
         if (_data) {
             this.id = _data["id"];
             this.name = _data["name"];
+            if (Array.isArray(_data["objects"])) {
+                this.objects = [] as any;
+                for (let item of _data["objects"])
+                    this.objects!.push(item);
+            }
         }
     }
 
@@ -1659,6 +1665,11 @@ export class UpdateLayerDto implements IUpdateLayerDto {
         data = typeof data === 'object' ? data : {};
         data["id"] = this.id;
         data["name"] = this.name;
+        if (Array.isArray(this.objects)) {
+            data["objects"] = [];
+            for (let item of this.objects)
+                data["objects"].push(item);
+        }
         return data;
     }
 }
@@ -1666,6 +1677,7 @@ export class UpdateLayerDto implements IUpdateLayerDto {
 export interface IUpdateLayerDto {
     id: string;
     name: string;
+    objects?: string[] | undefined;
 }
 
 export class UpdateObjectOnMapDto implements IUpdateObjectOnMapDto {

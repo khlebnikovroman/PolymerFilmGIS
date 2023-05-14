@@ -20,7 +20,7 @@ const MenuLayers = () => {
             setInitLoading(false);
             setList(res);
         })
-    }, [deleteLayer]);
+    }, []);
 
 
     const [isShown, setIsShown] = useState(false);
@@ -50,7 +50,8 @@ const MenuLayers = () => {
 
                         const model = new UpdateLayerDto({
                             id: item.id,                                // ЧЗХ ваще
-                            name: values.layerName
+                            name: values.layerName,
+                            objects: values.layerObjects
                         });
                         const layerClient = new LayerClient();
                         await layerClient.layerPUT(model)

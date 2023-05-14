@@ -25,6 +25,16 @@ class UserService {
         return null
     }
 
+    getCurrentUserId(): string | null {
+        const token = this.getCurrentUserToken()
+        if (token != null) {
+
+            const claims = jose.decodeJwt(token.token!)
+            return (<string | null>claims["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/id"])
+        }
+        return null
+    }
+
     async login(model: LoginModel) {
         const authClient = new AuthClient()
         const response = await authClient.login(model)

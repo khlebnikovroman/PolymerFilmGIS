@@ -1,11 +1,13 @@
 import {configureStore} from '@reduxjs/toolkit'
 import {useDispatch} from 'react-redux'
 import layersSlice from './LayersSlice'
+import objectSlice from "./ObjectSlice";
 
 
 const store = configureStore({
     reducer: {
-        layers: layersSlice
+        layers: layersSlice,
+        objects: objectSlice
     }
 })
 

@@ -14,7 +14,8 @@ public class LayerService
     private readonly IGenericRepository<DAL.Layer> _layerRepository;
     private readonly IGenericRepository<DAL.ObjectOnMap> _objectOnMapRepository;
 
-    public LayerService(IGenericRepository<DAL.Layer> layerRepository, IGenericRepository<DAL.ObjectOnMap> objectOnMapRepository,
+    public LayerService(IGenericRepository<DAL.Layer> layerRepository,
+                        IGenericRepository<DAL.ObjectOnMap> objectOnMapRepository,
                         IAuthorizationService authorizationService)
     {
         _layerRepository = layerRepository;
@@ -66,6 +67,16 @@ public class LayerService
     {
         var layer = await _layerRepository.FindById((Guid) dto.Id);
         dto.Adapt(layer);
+
+        if (dto.Objects is not null)
+        {
+            foreach (var oId in dto.Objects)
+            {
+                var o = await _objectOnMapRepository.FindById(oId);
+                layer.ObjectsOnMap.Add(o);
+            }
+        }
+
         await _layerRepository.Update(layer);
     }
 
@@ -116,7 +127,3 @@ public class LayerService
         }
     }
 }
-
-
-
-

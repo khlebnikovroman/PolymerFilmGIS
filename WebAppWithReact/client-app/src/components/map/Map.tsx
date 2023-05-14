@@ -9,10 +9,12 @@ import {useContextMenu} from "../../hooks";
 import {Mapelements} from "../menu/mapelements";
 import "leaflet.webgl-temperature-map"
 import IdwMapLayer from "../heatmap/variant2/HeatMapLayer2";
-import {CreateObjectOnMapDto, ObjectsOnMapClient} from "../../services/Clients";
+import {CreateObjectOnMapDto, GetObjectOnMapDto, ObjectsOnMapClient} from "../../services/Clients";
 import ObjectOnMapForm from "../objectsOnMap/ObjectOnMapForm";
 import {useSelector} from "react-redux";
-import {RootState} from "../../redux/store";
+import {RootState, useAppDispatch} from "../../redux/store";
+import {addObject} from "../../redux/ObjectSlice";
+import UserService from "../../services/UserService";
 
 L.Icon.Default.imagePath = "https://unpkg.com/browse/leaflet@1.9.2/dist/images/";
 
@@ -20,14 +22,15 @@ export const MapComponent: React.FC = () => {
     const [lat, setLat] = useState(59.918711823015684);
     const [lng, setlng] = useState(30.319212156536604);
     const [position, setPosition] = useState<LatLng>();
-    
+
     const {layers} = useSelector((state: RootState) => state.layers);
     const [objects, setObjects] = useState<[number, number, number][]>();
     
     const [min, setMin] = useState(0);
     const [max, setMax] = useState(0);
-    
+
     const {setContextMenu} = useContextMenu();
+    const dispatch = useAppDispatch();
     
     
     useEffect(() => {
@@ -55,23 +58,13 @@ export const MapComponent: React.FC = () => {
         {
             name: 'Добавить объект здесь',
             onClick: () => {
-                console.log('При нажатии кнопки', position)
-                if (position){
-                    showAdd(new CreateObjectOnMapDto({lati : position.lat, long : position.lng, name : "", capacity : 0}))
+                if (position) {
+                    showAdd(new CreateObjectOnMapDto({lati: position.lat, long: position.lng, name: "", capacity: 0}))
                 }
             }
         },
-        {
-            name: 'Option #2',
-            onClick: () => {
-            }
-        },
-        {
-            name: 'Option #3',
-            onClick: () => {
-            }
-        },
-    ], [position, setPosition])
+
+    ], [position])
 
     const handleContextMenu = useCallback((event: MouseEvent) => {
         event.preventDefault();
@@ -79,11 +72,10 @@ export const MapComponent: React.FC = () => {
         setContextMenu(contextMenu, [clientX, clientY]);
     }, [setContextMenu, contextMenu])
 
-    const LocationFinderDummy = () => {
+    const LocationFinder = () => {
         const map = useMapEvents({
             contextmenu(e) {
                 setPosition(e.latlng);
-                console.log('При нажатии пкм', position)
             },
         });
         return null;
@@ -110,10 +102,16 @@ export const MapComponent: React.FC = () => {
                             capacity: 1
                         });
                         const objectClient = new ObjectsOnMapClient();
-                        await objectClient.objectsOnMapPOST(model)
-                        console.log('Success', values.objectName,
-                            values.objectLat,
-                            values.objectLng,)
+                        const id = await objectClient.objectsOnMapPOST(model)
+                        const createdObject = new GetObjectOnMapDto({
+                            lati: model.lati,
+                            long: model.long,
+                            capacity: model.capacity,
+                            name: model.name,
+                            appUserId: UserService.getCurrentUserId()!,
+                            id: id
+                        })
+                        dispatch(addObject(createdObject))
                     })
                     .catch((info) => {
                         form.resetFields();
@@ -142,7 +140,7 @@ export const MapComponent: React.FC = () => {
                                           attributionControl={false}
                                           style={{zIndex: 1, position: "relative", top: 0, left: 0}}>
                                 <ZoomControl position={'bottomright'}/>
-                                <LocationFinderDummy/>
+                                <LocationFinder/>
                                 <IdwMapLayer latlngs={objects}
                                              opacity={0.3}
                                              maxZoom={18}

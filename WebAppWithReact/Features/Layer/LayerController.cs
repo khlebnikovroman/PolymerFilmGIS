@@ -73,6 +73,19 @@ public class LayerController : BaseAuthorizedController
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult<Guid>> Create([FromBody] CreateLayerDto dto)
     {
+        var authorizeResult = true;
+
+        foreach (var oId in dto.Objects)
+        {
+            var obj = await _objectOnMapRepository.FindById(oId);
+            authorizeResult = authorizeResult && _authorizationService.AuthorizeAsync(User, obj, Policies.IsObjectOwnByUser).Result.Succeeded;
+
+            if (!authorizeResult)
+            {
+                break;
+            }
+        }
+
         var id = await _layerService.Create(dto, User.GetLoggedInUserId<Guid>());
 
         return Ok(id);
@@ -87,9 +100,23 @@ public class LayerController : BaseAuthorizedController
     public async Task<ActionResult> Update([FromBody] UpdateLayerDto dto)
     {
         var layer = await _layerRepository.FindById((Guid) dto.Id);
-        var authorizeResult = await _authorizationService.AuthorizeAsync(User, layer, Policies.IsObjectOwnByUser);
+        var layerAuthorizeResult = _authorizationService.AuthorizeAsync(User, layer, Policies.IsObjectOwnByUser).Result.Succeeded;
+        var objectsAuthorizeResult = true;
 
-        if (authorizeResult.Succeeded)
+        foreach (var oId in dto.Objects)
+        {
+            var obj = await _objectOnMapRepository.FindById(oId);
+
+            objectsAuthorizeResult = objectsAuthorizeResult &&
+                                     _authorizationService.AuthorizeAsync(User, obj, Policies.IsObjectOwnByUser).Result.Succeeded;
+
+            if (!objectsAuthorizeResult)
+            {
+                break;
+            }
+        }
+
+        if (objectsAuthorizeResult && layerAuthorizeResult)
         {
             await _layerService.Update(dto);
 
@@ -167,7 +194,3 @@ public class LayerController : BaseAuthorizedController
         return Forbid();
     }
 }
-
-
-
-

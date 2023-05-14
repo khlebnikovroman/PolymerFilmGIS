@@ -11,7 +11,7 @@ const initialState: InitialStateType = {
 }
 
 const layersSlice = createSlice({
-    name: 'test',
+    name: 'layers',
     initialState,
     reducers: {
         addLayer(state, action) {

@@ -1,7 +1,6 @@
-﻿import React, {useState} from "react";
-import {Form, FormInstance, Input, Modal} from "antd";
-import {CreateObjectOnMapDto, ObjectsOnMapClient, GetObjectOnMapDto} from "../../services/Clients";
-import {Marker} from "react-leaflet";
+﻿import React from "react";
+import {Form, FormInstance, Input} from "antd";
+import {CreateObjectOnMapDto, GetObjectOnMapDto} from "../../services/Clients";
 
 interface AddObjectOnMapProps {
     objectDto: CreateObjectOnMapDto | GetObjectOnMapDto
@@ -16,12 +15,24 @@ const ObjectOnMapForm: React.FC<AddObjectOnMapProps> = ({objectDto, form}: AddOb
                 name="basic"
                 labelCol={{span: 8}}
                 wrapperCol={{span: 16}}
-                initialValues={{objectLat: objectDto.lati, objectLng: objectDto.long}}
+                initialValues={{
+                    objectName: objectDto.name,
+                    objectLat: objectDto.lati,
+                    objectLng: objectDto.long,
+                    objectCapacity: objectDto.capacity
+                }}
                 autoComplete="off"
             >
                 <Form.Item
                     label="Название объекта"
                     name="objectName"
+                    rules={[{required: true, message: 'Пожалуйста, введите название объекта'}]}
+                >
+                    <Input/>
+                </Form.Item>
+                <Form.Item
+                    label="Мощность"
+                    name="objectCapacity"
                     rules={[{required: true, message: 'Пожалуйста, введите название объекта'}]}
                 >
                     <Input/>

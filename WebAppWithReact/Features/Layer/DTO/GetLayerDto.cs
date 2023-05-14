@@ -11,14 +11,10 @@ namespace WebAppWithReact.Features.Layer.DTO;
 public record GetLayerDto
 {
     [Required(ErrorMessage = "Id is required")]
-    public Guid? Id { get; set; }
+    public Guid Id { get; set; }
 
     [Required(ErrorMessage = "Name is required")]
-    public string? Name { get; set; }
+    public string Name { get; set; }
 
     public List<GetObjectOnMapDto> Objects { get; set; }
 }
-
-
-
-
