@@ -1,4 +1,4 @@
-import {createSlice} from "@reduxjs/toolkit";
+import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {GetLayerDto} from "../services/Clients";
 
 type InitialStateType = {
@@ -10,10 +10,22 @@ const initialState: InitialStateType = {
     layers: []
 }
 
+interface setSelectionOptions {
+    selection: boolean,
+    id: string
+}
 const layersSlice = createSlice({
     name: 'layers',
     initialState,
     reducers: {
+        setLayers(state, action: PayloadAction<GetLayerDto[]>) {
+            state.layers = action.payload;
+        },
+        setSelection(state, action: PayloadAction<setSelectionOptions>) {
+            const index = state.layers.findIndex((item) => item.id === action.payload.id);
+            state.layers[index].isSelectedByUser = action.payload.selection;
+
+        },
         addLayer(state, action) {
             state.layers.push(action.payload)
         },
@@ -23,6 +35,6 @@ const layersSlice = createSlice({
     }
 });
 
-export const {addLayer, removeLayer} = layersSlice.actions;
+export const {addLayer, removeLayer, setLayers, setSelection} = layersSlice.actions;
 
 export default layersSlice.reducer;

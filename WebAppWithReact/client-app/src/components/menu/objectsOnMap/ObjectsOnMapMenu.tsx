@@ -1,12 +1,12 @@
 ﻿import React, {useEffect} from 'react';
 import {CaretRightOutlined, DeleteOutlined, EditOutlined} from '@ant-design/icons';
 import {Button, Collapse, Form, List, Modal, theme} from 'antd';
-import {GetObjectOnMapDto, ObjectsOnMapClient, UpdateObjectOnMapDto} from "../../services/Clients";
+import {GetObjectOnMapDto, ObjectsOnMapClient, UpdateObjectOnMapDto} from "../../../services/Clients";
 import {CheckboxChangeEvent} from "antd/es/checkbox";
 import ObjectOnMapForm from "./ObjectOnMapForm";
 import {useSelector} from "react-redux";
-import {RootState, useAppDispatch} from "../../redux/store";
-import {editObject, removeObject, setObjects} from "../../redux/ObjectSlice";
+import {RootState, useAppDispatch} from "../../../redux/store";
+import {editObject, removeObject, setObjects} from "../../../redux/ObjectSlice";
 
 
 const ObjectsOnMapMenu: React.FC = () => {
@@ -40,7 +40,7 @@ const ObjectsOnMapMenu: React.FC = () => {
     const [form] = Form.useForm();
 
     function showEdit(item: GetObjectOnMapDto) {
-
+//todo починить, при вызове формы, появляются старые данные в форме а не новые
         confirm({
             title: "Изменение объекта",
             icon: <div/>,
@@ -59,9 +59,6 @@ const ObjectsOnMapMenu: React.FC = () => {
                         });
                         const objectClient = new ObjectsOnMapClient();
                         await objectClient.objectsOnMapPUT(model)
-                        console.log('Success', values.objectName,
-                            values.objectLat,
-                            values.objectLng,)
                         dispatch(editObject(model))
                     })
                     .catch((info) => {
@@ -69,9 +66,7 @@ const ObjectsOnMapMenu: React.FC = () => {
                     });
             },
             onCancel: () => {
-
                 form.resetFields()
-                console.log('Clear:', item.long, item.lati);
             }
         })
     }

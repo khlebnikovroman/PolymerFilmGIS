@@ -758,7 +758,61 @@ export class LayerClient extends ApiBase {
         });
     }
 
+    /**
+     * @param body (optional)
+     * @return Success
+     */
+    selection(body: SetLayerSelectionDto | undefined, cancelToken?: CancelToken | undefined): Promise<void> {
+        let url_ = this.baseUrl + "/api/Layer/selection";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: AxiosRequestConfig = {
+            data: content_,
+            method: "PUT",
+            url: url_,
+            headers: {
+                "Content-Type": "application/json",
+            },
+            cancelToken
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.instance.request(transformedOptions_);
+        }).catch((_error: any) => {
+            if (isAxiosError(_error) && _error.response) {
+                return _error.response;
+            } else {
+                throw _error;
+            }
+        }).then((_response: AxiosResponse) => {
+            return this.processSelection(_response);
+        });
+    }
+
     protected processObjectsPOST(response: AxiosResponse): Promise<void> {
+        const status = response.status;
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (let k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
+        }
+        if (status === 200) {
+            const _responseText = response.data;
+            return Promise.resolve<void>(null as any);
+
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    protected processSelection(response: AxiosResponse): Promise<void> {
         const status = response.status;
         let _headers: any = {};
         if (response.headers && typeof response.headers === "object") {
@@ -781,9 +835,9 @@ export class LayerClient extends ApiBase {
 }
 
 export class ObjectsOnMapClient extends ApiBase {
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
     private instance: AxiosInstance;
     private baseUrl: string;
-    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
 
     constructor(baseUrl?: string, instance?: AxiosInstance) {
 
@@ -1307,7 +1361,8 @@ export interface IDeleteObjectFromLayerDTO {
 export class GetLayerDto implements IGetLayerDto {
     id!: string;
     name!: string;
-    objects?: GetObjectOnMapDto[] | undefined;
+    objects!: GetObjectOnMapDto[];
+    isSelectedByUser!: boolean;
 
     constructor(data?: IGetLayerDto) {
         if (data) {
@@ -1315,6 +1370,9 @@ export class GetLayerDto implements IGetLayerDto {
                 if (data.hasOwnProperty(property))
                     (<any>this)[property] = (<any>data)[property];
             }
+        }
+        if (!data) {
+            this.objects = [];
         }
     }
 
@@ -1327,6 +1385,7 @@ export class GetLayerDto implements IGetLayerDto {
                 for (let item of _data["objects"])
                     this.objects!.push(GetObjectOnMapDto.fromJS(item));
             }
+            this.isSelectedByUser = _data["isSelectedByUser"];
         }
     }
 
@@ -1346,6 +1405,7 @@ export class GetLayerDto implements IGetLayerDto {
             for (let item of this.objects)
                 data["objects"].push(item.toJSON());
         }
+        data["isSelectedByUser"] = this.isSelectedByUser;
         return data;
     }
 }
@@ -1353,7 +1413,8 @@ export class GetLayerDto implements IGetLayerDto {
 export interface IGetLayerDto {
     id: string;
     name: string;
-    objects?: GetObjectOnMapDto[] | undefined;
+    objects: GetObjectOnMapDto[];
+    isSelectedByUser: boolean;
 }
 
 export class GetObjectOnMapDto implements IGetObjectOnMapDto {
@@ -1588,6 +1649,46 @@ export interface IResponse {
     message?: string | undefined;
 }
 
+export class SetLayerSelectionDto implements ISetLayerSelectionDto {
+    layerId!: string;
+    selection!: boolean;
+
+    constructor(data?: ISetLayerSelectionDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    static fromJS(data: any): SetLayerSelectionDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new SetLayerSelectionDto();
+        result.init(data);
+        return result;
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.layerId = _data["layerId"];
+            this.selection = _data["selection"];
+        }
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["layerId"] = this.layerId;
+        data["selection"] = this.selection;
+        return data;
+    }
+}
+
+export interface ISetLayerSelectionDto {
+    layerId: string;
+    selection: boolean;
+}
+
 export class TokenModel implements ITokenModel {
     accessToken?: string | undefined;
     refreshToken?: string | undefined;
@@ -1631,7 +1732,8 @@ export interface ITokenModel {
 export class UpdateLayerDto implements IUpdateLayerDto {
     id!: string;
     name!: string;
-    objects?: string[] | undefined;
+    isSelectedByUser!: boolean;
+    objects!: string[];
 
     constructor(data?: IUpdateLayerDto) {
         if (data) {
@@ -1640,12 +1742,16 @@ export class UpdateLayerDto implements IUpdateLayerDto {
                     (<any>this)[property] = (<any>data)[property];
             }
         }
+        if (!data) {
+            this.objects = [];
+        }
     }
 
     init(_data?: any) {
         if (_data) {
             this.id = _data["id"];
             this.name = _data["name"];
+            this.isSelectedByUser = _data["isSelectedByUser"];
             if (Array.isArray(_data["objects"])) {
                 this.objects = [] as any;
                 for (let item of _data["objects"])
@@ -1665,6 +1771,7 @@ export class UpdateLayerDto implements IUpdateLayerDto {
         data = typeof data === 'object' ? data : {};
         data["id"] = this.id;
         data["name"] = this.name;
+        data["isSelectedByUser"] = this.isSelectedByUser;
         if (Array.isArray(this.objects)) {
             data["objects"] = [];
             for (let item of this.objects)
@@ -1677,7 +1784,8 @@ export class UpdateLayerDto implements IUpdateLayerDto {
 export interface IUpdateLayerDto {
     id: string;
     name: string;
-    objects?: string[] | undefined;
+    isSelectedByUser: boolean;
+    objects: string[];
 }
 
 export class UpdateObjectOnMapDto implements IUpdateObjectOnMapDto {

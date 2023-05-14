@@ -10,8 +10,8 @@ import {Mapelements} from "../menu/mapelements";
 import "leaflet.webgl-temperature-map"
 import IdwMapLayer from "../heatmap/variant2/HeatMapLayer2";
 import {CreateObjectOnMapDto, GetObjectOnMapDto, ObjectsOnMapClient} from "../../services/Clients";
-import ObjectOnMapForm from "../objectsOnMap/ObjectOnMapForm";
-import {useSelector} from "react-redux";
+import ObjectOnMapForm from "../menu/objectsOnMap/ObjectOnMapForm";
+import {shallowEqual, useSelector} from "react-redux";
 import {RootState, useAppDispatch} from "../../redux/store";
 import {addObject} from "../../redux/ObjectSlice";
 import UserService from "../../services/UserService";
@@ -23,16 +23,16 @@ export const MapComponent: React.FC = () => {
     const [lng, setlng] = useState(30.319212156536604);
     const [position, setPosition] = useState<LatLng>();
 
-    const {layers} = useSelector((state: RootState) => state.layers);
+
+    const {layers} = useSelector((state: RootState) => state.layers, shallowEqual);
     const [objects, setObjects] = useState<[number, number, number][]>();
-    
+
     const [min, setMin] = useState(0);
     const [max, setMax] = useState(0);
 
     const {setContextMenu} = useContextMenu();
     const dispatch = useAppDispatch();
-    
-    
+
     useEffect(() => {
         if (objects) {
             const min = objects.reduce((acc, cur) => Math.min(acc, cur[2]), Infinity);
@@ -43,9 +43,10 @@ export const MapComponent: React.FC = () => {
     }, [objects])
     
     useEffect(() => {
-        const result = layers.flatMap((layer) =>
-            layer.objects?.map(({lati, long, capacity}) => [lati, long, capacity])
-        );
+        const result = layers.filter((l) => l.isSelectedByUser)
+            .flatMap((layer) =>
+                layer.objects?.map(({lati, long, capacity}) => [lati, long, capacity])
+            );
         // @ts-ignore
         setObjects(result)
     }, [layers])

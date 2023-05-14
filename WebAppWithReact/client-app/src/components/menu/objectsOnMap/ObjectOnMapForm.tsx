@@ -1,6 +1,6 @@
 ﻿import React from "react";
 import {Form, FormInstance, Input} from "antd";
-import {CreateObjectOnMapDto, GetObjectOnMapDto} from "../../services/Clients";
+import {CreateObjectOnMapDto, GetObjectOnMapDto} from "../../../services/Clients";
 
 interface AddObjectOnMapProps {
     objectDto: CreateObjectOnMapDto | GetObjectOnMapDto
@@ -13,8 +13,8 @@ const ObjectOnMapForm: React.FC<AddObjectOnMapProps> = ({objectDto, form}: AddOb
             <Form
                 form={form}
                 name="basic"
-                labelCol={{span: 8}}
-                wrapperCol={{span: 16}}
+                labelCol={{span: 4}}
+                wrapperCol={{span: 25}}
                 initialValues={{
                     objectName: objectDto.name,
                     objectLat: objectDto.lati,

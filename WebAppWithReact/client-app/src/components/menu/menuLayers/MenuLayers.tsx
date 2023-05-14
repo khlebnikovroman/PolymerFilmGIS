@@ -1,11 +1,11 @@
 ﻿import React, {useEffect, useState} from "react";
 import {Button, Checkbox, Form, List, Modal} from 'antd';
 import {CheckboxChangeEvent} from "antd/es/checkbox";
-import {CreateLayerDto, GetLayerDto, LayerClient, UpdateLayerDto} from "../../../services/Clients"
+import {CreateLayerDto, GetLayerDto, LayerClient, SetLayerSelectionDto, UpdateLayerDto} from "../../../services/Clients"
 import {DeleteOutlined, EditOutlined, PlusOutlined} from "@ant-design/icons";
 import LayerForm from "./LayerForm";
 import {useAppDispatch} from "../../../redux/store";
-import {addLayer, removeLayer} from "../../../redux/LayersSlice";
+import {setLayers, setSelection} from "../../../redux/LayersSlice";
 
 const MenuLayers = () => {
 
@@ -19,6 +19,7 @@ const MenuLayers = () => {
         layerClient.layerAll().then(res => {
             setInitLoading(false);
             setList(res);
+            dispatch(setLayers(res))
         })
     }, []);
 
@@ -43,6 +44,7 @@ const MenuLayers = () => {
             icon: <EditOutlined />,
             content: <LayerForm form={form} layerDto={item}/>,
             onOk: () => {
+                console.log(form.getFieldsValue())
                 form
                     .validateFields()
                     .then(async (values) => {
@@ -51,7 +53,8 @@ const MenuLayers = () => {
                         const model = new UpdateLayerDto({
                             id: item.id,                                // ЧЗХ ваще
                             name: values.layerName,
-                            objects: values.layerObjects
+                            objects: values.layerObjects,
+                            isSelectedByUser: item.isSelectedByUser
                         });
                         const layerClient = new LayerClient();
                         await layerClient.layerPUT(model)
@@ -102,11 +105,11 @@ const MenuLayers = () => {
     }
     
     const onChange = (layer: GetLayerDto, e: CheckboxChangeEvent) => {
-        if (e.target.checked) {
-            dispatch(addLayer(layer))
-        } else {
-            dispatch(removeLayer(layer.id))
-        }
+        const layerClient = new LayerClient()
+        layerClient.selection(new SetLayerSelectionDto({layerId: layer.id, selection: e.target.checked}))
+            .then(() => {
+                dispatch(setSelection({selection: e.target.checked, id: layer.id}))
+            })
     };
     
     return (
@@ -122,6 +125,7 @@ const MenuLayers = () => {
                         <Checkbox
                             onChange={e => onChange(item, e)}
                             id={item.id}
+                            defaultChecked={item.isSelectedByUser}
                             name={item.name}
                         >
                             {item.name}

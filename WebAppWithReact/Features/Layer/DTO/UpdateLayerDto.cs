@@ -14,5 +14,9 @@ public record UpdateLayerDto
     [Required(ErrorMessage = "Name is required")]
     public string? Name { get; set; }
 
+    [Required(ErrorMessage = "Selection is required")]
+    public bool IsSelectedByUser { get; set; }
+
+    [Required(ErrorMessage = "Objects is required")]
     public IReadOnlyCollection<Guid> Objects { get; set; }
 }

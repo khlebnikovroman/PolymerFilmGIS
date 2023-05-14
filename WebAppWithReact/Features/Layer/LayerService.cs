@@ -70,6 +70,8 @@ public class LayerService
 
         if (dto.Objects is not null)
         {
+            layer.ObjectsOnMap.Clear();
+
             foreach (var oId in dto.Objects)
             {
                 var o = await _objectOnMapRepository.FindById(oId);
@@ -125,5 +127,12 @@ public class LayerService
             layerToDelete.ObjectsOnMap.Remove(objectToDelete);
             await _layerRepository.Update(layerToDelete);
         }
+    }
+
+    public async Task SetSelection(SetLayerSelectionDto dto)
+    {
+        var l = await _layerRepository.FindById(dto.LayerId);
+        l.IsSelectedByUser = dto.Selection;
+        await _layerRepository.Update(l);
     }
 }

@@ -4,6 +4,7 @@ namespace DAL
     {
         public string Name { get; set; }
         public virtual List<ObjectOnMap> ObjectsOnMap { get; set; }
+        public bool IsSelectedByUser { get; set; }
         public Guid AppUserId { get; set; }
         public virtual AppUser AppUser { get; set; }
     }

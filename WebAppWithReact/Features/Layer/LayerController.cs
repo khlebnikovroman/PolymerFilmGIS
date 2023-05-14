@@ -177,7 +177,7 @@ public class LayerController : BaseAuthorizedController
     /// <param name="dto">DTO с информацией об объекте</param>
     [HttpPost("objects")]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<ActionResult> AddObjectToLayerDTO([FromBody] AddObjectToLayerDTO dto)
+    public async Task<ActionResult> AddObjectToLayer([FromBody] AddObjectToLayerDTO dto)
     {
         var layer = await _layerRepository.FindById(dto.LayerId);
         var objectOnMap = await _objectOnMapRepository.FindById(dto.ObjectId);
@@ -192,5 +192,21 @@ public class LayerController : BaseAuthorizedController
         }
 
         return Forbid();
+    }
+
+    [HttpPut("selection")]
+    public async Task<ActionResult> SetSelection([FromBody] SetLayerSelectionDto dto)
+    {
+        var layer = await _layerRepository.FindById(dto.LayerId);
+        var authorizeResult = await _authorizationService.AuthorizeAsync(User, layer, Policies.IsObjectOwnByUser);
+
+        if (authorizeResult.Succeeded)
+        {
+            await _layerService.SetSelection(dto);
+
+            return Ok();
+        }
+
+        return Unauthorized();
     }
 }

@@ -16,5 +16,9 @@ public record GetLayerDto
     [Required(ErrorMessage = "Name is required")]
     public string Name { get; set; }
 
+    [Required]
     public List<GetObjectOnMapDto> Objects { get; set; }
+
+    [Required]
+    public bool IsSelectedByUser { get; set; }
 }

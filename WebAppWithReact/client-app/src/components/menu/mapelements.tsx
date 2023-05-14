@@ -1,7 +1,7 @@
 import {Space} from "antd";
 import {UserMenu} from "./usermenu";
 import MenuLayers from "./menuLayers/MenuLayers";
-import ObjectsOnMapMenu from "../objectsOnMap/ObjectsOnMapMenu";
+import ObjectsOnMapMenu from "./objectsOnMap/ObjectsOnMapMenu";
 
 export const Mapelements: React.FC = () => {
 
