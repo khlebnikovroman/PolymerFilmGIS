@@ -11,7 +11,7 @@ import "leaflet.webgl-temperature-map"
 import IdwMapLayer from "../heatmap/variant2/HeatMapLayer2";
 import {CreateObjectOnMapDto, GetObjectOnMapDto, ObjectsOnMapClient} from "../../services/Clients";
 import ObjectOnMapForm from "../menu/objectsOnMap/ObjectOnMapForm";
-import {shallowEqual, useSelector} from "react-redux";
+import {useSelector} from "react-redux";
 import {RootState, useAppDispatch} from "../../redux/store";
 import {addObject} from "../../redux/ObjectSlice";
 import UserService from "../../services/UserService";
@@ -24,7 +24,7 @@ export const MapComponent: React.FC = () => {
     const [position, setPosition] = useState<LatLng>();
 
 
-    const {layers} = useSelector((state: RootState) => state.layers, shallowEqual);
+    const {layers} = useSelector((state: RootState) => state.layers);
     const [objects, setObjects] = useState<[number, number, number][]>();
 
     const [min, setMin] = useState(0);

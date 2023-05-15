@@ -105,28 +105,28 @@ class Login extends Component<Props, State> {
                 autoComplete="off"
             >
                 <Form.Item
-                    label="Username"
+                    label="Имя пользователя"
                     name="username"
-                    rules={[{required: true, message: 'Please input your username!'}]}
+                    rules={[{required: true, message: 'Введите имя пользователя'}]}
                 >
                     <Input/>
                 </Form.Item>
 
                 <Form.Item
-                    label="Password"
+                    label="Пароль"
                     name="password"
-                    rules={[{required: true, message: 'Please input your password!'}]}
+                    rules={[{required: true, message: 'Введите пароль'}]}
                 >
                     <Input.Password/>
                 </Form.Item>
 
                 <Form.Item name="remember" valuePropName="checked" wrapperCol={{offset: 8, span: 16}}>
-                    <Checkbox>Remember me</Checkbox>
+                    <Checkbox>Запомнить меня</Checkbox>
                 </Form.Item>
 
                 <Form.Item wrapperCol={{offset: 8, span: 16}}>
                     <Button type="primary" htmlType="submit">
-                        Submit
+                        Вход
                     </Button>
                 </Form.Item>
             </Form>

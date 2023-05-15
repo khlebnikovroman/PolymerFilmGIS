@@ -22,14 +22,24 @@ const layersSlice = createSlice({
             state.layers = action.payload;
         },
         setSelection(state, action: PayloadAction<setSelectionOptions>) {
-            const index = state.layers.findIndex((item) => item.id === action.payload.id);
-            state.layers[index].isSelectedByUser = action.payload.selection;
-
+            const layers = state.layers.slice()
+            const index = layers.findIndex((item) => item.id === action.payload.id);
+            layers[index].isSelectedByUser = action.payload.selection;
+            state.layers = layers
         },
-        addLayer(state, action) {
+        // editLayer(state, action: PayloadAction<GetLayerDto|UpdateLayerDto>){
+        //     const layers = state.layers.slice()
+        //     const item = layers.find((item) => item.id === action.payload.id);
+        //     if (item){
+        //         item.name = action.payload.name
+        //         item.objects= action.payload.objects
+        //     }
+        //    
+        // },
+        addLayer(state, action: PayloadAction<GetLayerDto>) {
             state.layers.push(action.payload)
         },
-        removeLayer(state, action) {
+        removeLayer(state, action: PayloadAction<string>) {
             state.layers = state.layers.filter(layer => layer.id !== action.payload)
         }
     }

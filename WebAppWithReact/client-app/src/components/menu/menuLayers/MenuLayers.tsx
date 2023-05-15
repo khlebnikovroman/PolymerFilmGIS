@@ -1,24 +1,33 @@
 ﻿import React, {useEffect, useState} from "react";
 import {Button, Checkbox, Form, List, Modal} from 'antd';
 import {CheckboxChangeEvent} from "antd/es/checkbox";
-import {CreateLayerDto, GetLayerDto, LayerClient, SetLayerSelectionDto, UpdateLayerDto} from "../../../services/Clients"
+import {
+    CreateLayerDto,
+    GetLayerDto,
+    LayerClient,
+    ObjectsOnMapClient,
+    SetLayerSelectionDto,
+    UpdateLayerDto
+} from "../../../services/Clients"
 import {DeleteOutlined, EditOutlined, PlusOutlined} from "@ant-design/icons";
 import LayerForm from "./LayerForm";
-import {useAppDispatch} from "../../../redux/store";
+import {RootState, useAppDispatch} from "../../../redux/store";
 import {setLayers, setSelection} from "../../../redux/LayersSlice";
+import {setObjects} from "../../../redux/ObjectSlice";
+import {useSelector} from "react-redux";
 
 const MenuLayers = () => {
 
     const [initLoading, setInitLoading] = useState(true);
     const [loading, setLoading] = useState(false);
-    const [list, setList] = useState<GetLayerDto[]>([]);
+    const {layers} = useSelector((state: RootState) => state.layers);
+
     const dispatch = useAppDispatch();
-    
+
     useEffect(() => {
         const layerClient = new LayerClient();
         layerClient.layerAll().then(res => {
             setInitLoading(false);
-            setList(res);
             dispatch(setLayers(res))
         })
     }, []);
@@ -28,11 +37,6 @@ const MenuLayers = () => {
 
     const setShown = (show: boolean) => {
         setIsShown(show);
-        const layerClient = new LayerClient();
-        layerClient.layerAll().then(res => {
-            setInitLoading(false);
-            setList(res);
-        })
     }
 
     const {confirm} = Modal;
@@ -50,19 +54,24 @@ const MenuLayers = () => {
                     .validateFields()
                     .then(async (values) => {
                         form.resetFields();
-
                         const model = new UpdateLayerDto({
-                            id: item.id,                                // ЧЗХ ваще
+                            id: item.id,
                             name: values.layerName,
                             objects: values.layerObjects,
                             isSelectedByUser: item.isSelectedByUser
                         });
                         const layerClient = new LayerClient();
+                        const objectsClient = new ObjectsOnMapClient();
                         await layerClient.layerPUT(model)
+                        const layers = await layerClient.layerAll()
+                        const objectsWithoutLayers = await objectsClient.getAllWithoutLayer()
+                        //todo это возможно обновить локально, без обращения на получение к серверу, потом надо это сделать
+                        dispatch(setLayers(layers))
+                        dispatch(setObjects(objectsWithoutLayers))
+
                     })
                     .catch((info) => {
                         form.resetFields();
-                        console.log('Validate Failed:');
                     });
             },
             onCancel: () => {
@@ -120,7 +129,7 @@ const MenuLayers = () => {
                 size="small"
                 header={<div>Слои</div>}
                 bordered
-                dataSource={list}
+                dataSource={layers}
                 renderItem={(item: GetLayerDto, index: number) =>
                     <List.Item>
                         <Checkbox

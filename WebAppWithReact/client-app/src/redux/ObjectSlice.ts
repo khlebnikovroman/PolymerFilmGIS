@@ -1,5 +1,5 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
-import {GetObjectOnMapDto, ObjectsOnMapClient} from "../services/Clients";
+import {GetObjectOnMapDto} from "../services/Clients";
 
 type InitialStateType = {
     objects: GetObjectOnMapDto[]
@@ -10,7 +10,7 @@ let initialState: InitialStateType = {
     objects: []
 }
 
-const objectsSlice = createSlice({
+const objectsWithoutLayerSlice = createSlice({
     name: 'objects',
     initialState,
     reducers: {
@@ -30,12 +30,6 @@ const objectsSlice = createSlice({
     }
 });
 
-async function fetchInitialObjects() {
-    const objectsWithoutLayer = await new ObjectsOnMapClient().getAllWithoutLayer();
-    return objectsWithoutLayer;
-}
+export const {setObjects, addObject, removeObject, editObject} = objectsWithoutLayerSlice.actions;
 
-
-export const {setObjects, addObject, removeObject, editObject} = objectsSlice.actions;
-
-export default objectsSlice.reducer;
+export default objectsWithoutLayerSlice.reducer;

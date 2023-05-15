@@ -53,23 +53,25 @@ const LayerForm: FunctionComponent<Props> = (props: OwnProps) => {
     }, [objectsOnThisLayer])
 
     const onChange = (nextTargetKeys: string[], direction: TransferDirection, moveKeys: string[]) => {
+        let objectsToMove: GetObjectOnMapDto[] = []
+        let newObjectsWithoutLayer: GetObjectOnMapDto[] = []
+        let newObjectsOnThisLayer: GetObjectOnMapDto[] = []
+
         switch (direction) {
             //todo setObjectsOnThisLayer после foreach
             case "left":
-                moveKeys.forEach(key => {
-                    const layerObject = objectsOnThisLayer.find((item) => item.id === key)!;
-                    setObjectWithoutLayer([...objectWithoutLayer, layerObject])
-                    const newObjectsOnLayer = objectsOnThisLayer.filter(layer => layer.id !== key)
-                    setObjectsOnThisLayer(newObjectsOnLayer)
-                })
+                objectsToMove = objectsOnThisLayer.filter((obj) => moveKeys.includes(obj.id!))
+                newObjectsOnThisLayer = objectsOnThisLayer.filter((obj) => !objectsToMove.includes(obj))
+                newObjectsWithoutLayer = [...objectWithoutLayer, ...objectsToMove]
+                setObjectsOnThisLayer(newObjectsOnThisLayer)
+                setObjectWithoutLayer(newObjectsWithoutLayer)
                 break
             case "right":
-                moveKeys.forEach(key => {
-                    const layerObject = objectWithoutLayer.find((item) => item.id === key)!;
-                    setObjectsOnThisLayer([...objectsOnThisLayer, layerObject])
-                    const newObjectsWithoutLayer = objectWithoutLayer.filter(layer => layer.id !== key)
-                    setObjectWithoutLayer(newObjectsWithoutLayer)
-                })
+                objectsToMove = objectWithoutLayer.filter((obj) => moveKeys.includes(obj.id!))
+                newObjectsWithoutLayer = objectWithoutLayer.filter((obj) => !objectsToMove.includes(obj))
+                newObjectsOnThisLayer = [...objectsOnThisLayer, ...objectsToMove]
+                setObjectWithoutLayer(newObjectsWithoutLayer)
+                setObjectsOnThisLayer(newObjectsOnThisLayer)
                 break
         }
         setTargetKeys(nextTargetKeys);
