@@ -4,6 +4,7 @@ import {createLayerComponent, LayerProps} from '@react-leaflet/core';
 import {IdwLayer} from "./leaflet-idw";
 
 export interface IdwLayerOptions extends LayerProps {
+    maxDistance?: number;
     opacity?: number;
     maxZoom?: number;
     cellSize?: number;

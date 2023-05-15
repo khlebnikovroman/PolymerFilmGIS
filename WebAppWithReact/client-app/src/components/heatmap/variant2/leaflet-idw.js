@@ -339,9 +339,18 @@ export const IdwLayer = L.Layer.extend({
                 for (let k = 0; k < this._latlngs.length; k++) {
 
                     // Get distance between cell and point
+                    var p1 = L.latLng(this._latlngs[k][0], this._latlngs[k][1])
+
                     var p = this._map.latLngToContainerPoint(this._latlngs[k]);
                     var cp = L.point((y - cellCen), (x - cellCen));
-                    var dist = cp.distanceTo(p);
+                    var p2 = this._map.containerPointToLatLng(cp)
+                    //var dist = cp.distanceTo(p);
+                    var dist = p1.distanceTo(p2);
+                    if (this.options.maxDistance) {
+                        if (dist > this.options.maxDistance) {
+                            continue
+                        }
+                    }
 
                     if (dist === 0) {
                         zeroDist = true;
@@ -370,7 +379,7 @@ export const IdwLayer = L.Layer.extend({
                     this._idw.min(Math.min(this._idw._min, cell[2]));
                     this._idw.max(Math.max(this._idw._max, cell[2]));
                 } else {
-                    console.log(`${i}, ${j}`);
+                    //console.log(`${i}, ${j}`);
                 }
             }
         }

@@ -143,6 +143,7 @@ export const MapComponent: React.FC = () => {
                                 <ZoomControl position={'bottomright'}/>
                                 <LocationFinder/>
                                 <IdwMapLayer latlngs={objects}
+                                             maxDistance={2000000}
                                              opacity={0.3}
                                              maxZoom={18}
                                              cellSize={10}
