@@ -24,6 +24,7 @@ var configuration = builder.Configuration;
 // Add services to the container.
 // For Entity Framework
 var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+Console.WriteLine(env);
 string connectionString, jwtSecret;
 
 if (env == "Production")
