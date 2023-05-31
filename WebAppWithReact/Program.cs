@@ -26,10 +26,14 @@ var configuration = builder.Configuration;
 
 
 #if RELEASE
-var connectionString = "ProductionBase";
+var connectionString = Environment.GetEnvironmentVariable("PRODUCION_BASE");
+var jwtSecret = Environment.GetEnvironmentVariable("JWT_SECRET");
+Console.WriteLine($"con: {connectionString}");
+Console.WriteLine($"jwt: {jwtSecret}");
 #endif
 #if DEBUG
-var connectionString = "DevConnection";
+var connectionString = configuration.GetConnectionString("DevConnection");
+var jwtSecret = configuration["JWT:Secret"];
 #endif
 
 builder.Services.AddDbContext<Context>(options =>
@@ -39,7 +43,7 @@ builder.Services.AddDbContext<Context>(options =>
 });
 
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddSqlServer<Context>(configuration.GetConnectionString("DevConnection"));
+builder.Services.AddSqlServer<Context>(connectionString);
 
 // For Identity
 builder.Services.AddIdentity<AppUser, IdentityRole<Guid>>()
@@ -70,7 +74,7 @@ builder.Services.AddAuthentication(options =>
 
                ValidAudience = configuration["JWT:ValidAudience"],
                ValidIssuer = configuration["JWT:ValidIssuer"],
-               IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Secret"])),
+               IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecret)),
            };
        });
 
