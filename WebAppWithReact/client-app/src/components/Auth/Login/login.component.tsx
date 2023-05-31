@@ -2,8 +2,9 @@
 import {Navigate, NavigateFunction, useLocation, useNavigate} from "react-router-dom";
 // import { useNavigate } from "react-router-dom";
 import {Button, Checkbox, Form, Input} from 'antd';
-import {ILoginModel, LoginModel} from "../../services/Clients";
-import UserService from "../../services/UserService";
+import {ILoginModel, LoginModel} from "../../../services/Clients";
+import UserService from "../../../services/UserService";
+import RegistrationForm from "../Registration/RegistrationForm";
 
 type Props = {
     navigation: NavigateFunction,
@@ -86,6 +87,11 @@ class Login extends Component<Props, State> {
 
         const {loading, message} = this.state;
 
+        const showRegistrationForm = () => {
+            console.log("LOGGGG");
+            return <RegistrationForm/>
+        }
+        
         const onFinish = (values: any) => {
             this.handleLogin(values)
             console.log('Success:', values); //todo delete
@@ -127,6 +133,9 @@ class Login extends Component<Props, State> {
                 <Form.Item wrapperCol={{offset: 8, span: 16}}>
                     <Button type="primary" htmlType="submit">
                         Вход
+                    </Button>
+                    <Button type="primary" onClick={showRegistrationForm}>
+                        Регистрация
                     </Button>
                 </Form.Item>
             </Form>
