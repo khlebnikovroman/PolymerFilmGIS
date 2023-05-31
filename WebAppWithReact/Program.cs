@@ -30,6 +30,7 @@ builder.Services.AddDbContext<Context>(options =>
 });
 
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddSqlServer<Context>(configuration.GetConnectionString("DefaultConnection"));
 
 // For Identity
 builder.Services.AddIdentity<AppUser, IdentityRole<Guid>>()
@@ -75,6 +76,7 @@ builder.Services.AddAuthorization(options =>
 
 builder.Services.AddSingleton<IAuthorizationHandler, OwnByUserHandler>();
 
+builder.Services.AddCoreAdmin(UserRoles.Admin);
 builder.Services.AddControllers();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -141,5 +143,5 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
+app.MapDefaultControllerRoute();
 app.Run();

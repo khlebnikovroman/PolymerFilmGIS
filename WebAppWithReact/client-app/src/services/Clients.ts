@@ -41,7 +41,7 @@ export class AuthClient extends ApiBase {
 
         this.instance = instance ? instance : axios.create();
 
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:44412";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
 
     }
 
@@ -388,7 +388,7 @@ export class LayerClient extends ApiBase {
 
         this.instance = instance ? instance : axios.create();
 
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:44412";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
 
     }
 
@@ -758,6 +758,27 @@ export class LayerClient extends ApiBase {
         });
     }
 
+    protected processObjectsPOST(response: AxiosResponse): Promise<void> {
+        const status = response.status;
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (let k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
+        }
+        if (status === 200) {
+            const _responseText = response.data;
+            return Promise.resolve<void>(null as any);
+
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
     /**
      * @param body (optional)
      * @return Success
@@ -791,27 +812,6 @@ export class LayerClient extends ApiBase {
         });
     }
 
-    protected processObjectsPOST(response: AxiosResponse): Promise<void> {
-        const status = response.status;
-        let _headers: any = {};
-        if (response.headers && typeof response.headers === "object") {
-            for (let k in response.headers) {
-                if (response.headers.hasOwnProperty(k)) {
-                    _headers[k] = response.headers[k];
-                }
-            }
-        }
-        if (status === 200) {
-            const _responseText = response.data;
-            return Promise.resolve<void>(null as any);
-
-        } else if (status !== 200 && status !== 204) {
-            const _responseText = response.data;
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-        }
-        return Promise.resolve<void>(null as any);
-    }
-
     protected processSelection(response: AxiosResponse): Promise<void> {
         const status = response.status;
         let _headers: any = {};
@@ -835,9 +835,9 @@ export class LayerClient extends ApiBase {
 }
 
 export class ObjectsOnMapClient extends ApiBase {
-    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
     private instance: AxiosInstance;
     private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
 
     constructor(baseUrl?: string, instance?: AxiosInstance) {
 
@@ -845,7 +845,7 @@ export class ObjectsOnMapClient extends ApiBase {
 
         this.instance = instance ? instance : axios.create();
 
-        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "https://localhost:44412";
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
 
     }
 
@@ -1662,18 +1662,18 @@ export class SetLayerSelectionDto implements ISetLayerSelectionDto {
         }
     }
 
-    static fromJS(data: any): SetLayerSelectionDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new SetLayerSelectionDto();
-        result.init(data);
-        return result;
-    }
-
     init(_data?: any) {
         if (_data) {
             this.layerId = _data["layerId"];
             this.selection = _data["selection"];
         }
+    }
+
+    static fromJS(data: any): SetLayerSelectionDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new SetLayerSelectionDto();
+        result.init(data);
+        return result;
     }
 
     toJSON(data?: any) {
