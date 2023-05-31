@@ -1,5 +1,5 @@
 import React from "react";
-import UserService from "../../services/UserService";
+import UserService from "../../../services/UserService";
 import {useNavigate} from "react-router-dom";
 
 export const LogoutComponent: React.FC = () => {
