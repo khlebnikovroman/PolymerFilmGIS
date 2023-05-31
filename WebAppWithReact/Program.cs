@@ -23,14 +23,23 @@ var configuration = builder.Configuration;
 
 // Add services to the container.
 // For Entity Framework
+
+
+#if RELEASE
+var connectionString = "ProductionBase";
+#endif
+#if DEBUG
+var connectionString = "DevConnection";
+#endif
+
 builder.Services.AddDbContext<Context>(options =>
 {
     options.UseLazyLoadingProxies()
-           .UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
+           .UseSqlServer(configuration.GetConnectionString(connectionString));
 });
 
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddSqlServer<Context>(configuration.GetConnectionString("DefaultConnection"));
+builder.Services.AddSqlServer<Context>(configuration.GetConnectionString("DevConnection"));
 
 // For Identity
 builder.Services.AddIdentity<AppUser, IdentityRole<Guid>>()
@@ -58,7 +67,6 @@ builder.Services.AddAuthentication(options =>
                ValidateLifetime = true,
                ValidateIssuerSigningKey = true,
                ClockSkew = TimeSpan.Zero,
-
 
                ValidAudience = configuration["JWT:ValidAudience"],
                ValidIssuer = configuration["JWT:ValidIssuer"],

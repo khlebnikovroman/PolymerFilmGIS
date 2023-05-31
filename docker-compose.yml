@@ -13,3 +13,13 @@ services:
       dockerfile: Dockerfile
   proxy:
     image: nginx:mainline-alpine
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    ports:
+      - "1433:1433"
+    environment:
+      SA_PASSWORD_FILE: /run/secrets/sql_password
+      ACCEPT_EULA: "Y"
+secrets:
+  sql_password:
+    external: true
