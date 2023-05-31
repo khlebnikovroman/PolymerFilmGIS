@@ -23,14 +23,32 @@ var configuration = builder.Configuration;
 
 // Add services to the container.
 // For Entity Framework
+var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+Console.WriteLine(env);
+string connectionString, jwtSecret;
+
+if (env == "Production")
+{
+    connectionString = Environment.GetEnvironmentVariable("PRODUCION_BASE");
+    jwtSecret = Environment.GetEnvironmentVariable("JWT_SECRET");
+    Console.WriteLine($"con: {connectionString}");
+    Console.WriteLine($"jwt: {jwtSecret}");
+}
+else
+{
+    connectionString = configuration.GetConnectionString("DevConnection");
+    jwtSecret = configuration["JWT:Secret"];
+}
+
+
 builder.Services.AddDbContext<Context>(options =>
 {
     options.UseLazyLoadingProxies()
-           .UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
+           .UseSqlServer(configuration.GetConnectionString(connectionString));
 });
 
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddSqlServer<Context>(configuration.GetConnectionString("DefaultConnection"));
+builder.Services.AddSqlServer<Context>(connectionString);
 
 // For Identity
 builder.Services.AddIdentity<AppUser, IdentityRole<Guid>>()
@@ -59,10 +77,9 @@ builder.Services.AddAuthentication(options =>
                ValidateIssuerSigningKey = true,
                ClockSkew = TimeSpan.Zero,
 
-
                ValidAudience = configuration["JWT:ValidAudience"],
                ValidIssuer = configuration["JWT:ValidIssuer"],
-               IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Secret"])),
+               IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecret)),
            };
        });
 
@@ -135,8 +152,7 @@ if (app.Environment.IsDevelopment())
 
 // Configure the HTTP request pipeline.
 
-
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 // Authentication & Authorization
 app.UseAuthentication();

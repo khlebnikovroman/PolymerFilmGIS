@@ -1,0 +1,32 @@
+version: '3.4'
+
+services:
+  backend:
+    image: ${DOCKER_REGISTRY-}webappwithreact
+    build:
+      context: .
+      dockerfile: WebAppWithReact/Dockerfile
+    environment:
+      PRODUCION_BASE_FILE: /run/secrets/sql_connection
+      JWT_SECRET_FILE: /run/secrets/jwt_secret
+  client:
+    image: client
+    build:
+      context: ./WebAppWithReact/client-app
+      dockerfile: Dockerfile
+  proxy:
+    image: nginx:mainline-alpine
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    ports:
+      - "1433:1433"
+    environment:
+      SA_PASSWORD_FILE: /run/secrets/sql_password
+      ACCEPT_EULA: "Y"
+secrets:
+  jwt_secret:
+    external: true
+  sql_password:
+    external: true
+  sql_connection:
+    external: true
