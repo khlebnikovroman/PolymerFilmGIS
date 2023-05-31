@@ -1,0 +1,17 @@
+version: '3.4'
+
+services:
+  backend:
+    image: ${DOCKER_REGISTRY-}webappwithreact
+    build:
+      context: .
+      dockerfile: WebAppWithReact/Dockerfile
+  client:
+    image: client
+    build:
+      context: ./WebAppWithReact/client-app
+      dockerfile: Dockerfile
+  proxy:
+    image: nginx:mainline-alpine
+  certbot:
+    image: certbot/certbot
