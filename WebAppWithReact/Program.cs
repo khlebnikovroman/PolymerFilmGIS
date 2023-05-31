@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Text;
 
 using DAL;
@@ -23,6 +24,11 @@ var configuration = builder.Configuration;
 
 // Add services to the container.
 // For Entity Framework
+foreach (DictionaryEntry VARIABLE in Environment.GetEnvironmentVariables())
+{
+    Console.WriteLine(VARIABLE.Key + ": " + VARIABLE.Value);
+}
+
 var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 Console.WriteLine(env);
 string connectionString, jwtSecret;
@@ -44,7 +50,7 @@ else
 builder.Services.AddDbContext<Context>(options =>
 {
     options.UseLazyLoadingProxies()
-           .UseSqlServer(configuration.GetConnectionString(connectionString));
+           .UseSqlServer(connectionString);
 });
 
 builder.Services.AddHttpContextAccessor();
