@@ -7,11 +7,14 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
+#RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
+#RUN apt-get install -y nodejs
 COPY ["WebAppWithReact/WebAppWithReact.csproj", "WebAppWithReact/"]
 COPY ["DAL/DAL.csproj", "DAL/"]
 RUN dotnet restore "WebAppWithReact/WebAppWithReact.csproj"
 COPY . .
 WORKDIR "/src/WebAppWithReact"
+
 RUN dotnet build "WebAppWithReact.csproj" -c Release -o /app/build
 
 FROM build AS publish
