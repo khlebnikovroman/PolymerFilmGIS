@@ -23,18 +23,22 @@ var configuration = builder.Configuration;
 
 // Add services to the container.
 // For Entity Framework
+var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+string connectionString, jwtSecret;
 
+if (env == "Production")
+{
+    connectionString = Environment.GetEnvironmentVariable("PRODUCION_BASE");
+    jwtSecret = Environment.GetEnvironmentVariable("JWT_SECRET");
+    Console.WriteLine($"con: {connectionString}");
+    Console.WriteLine($"jwt: {jwtSecret}");
+}
+else
+{
+    connectionString = configuration.GetConnectionString("DevConnection");
+    jwtSecret = configuration["JWT:Secret"];
+}
 
-#if RELEASE
-var connectionString = Environment.GetEnvironmentVariable("PRODUCION_BASE");
-var jwtSecret = Environment.GetEnvironmentVariable("JWT_SECRET");
-Console.WriteLine($"con: {connectionString}");
-Console.WriteLine($"jwt: {jwtSecret}");
-#endif
-#if DEBUG
-var connectionString = configuration.GetConnectionString("DevConnection");
-var jwtSecret = configuration["JWT:Secret"];
-#endif
 
 builder.Services.AddDbContext<Context>(options =>
 {
