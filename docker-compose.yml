@@ -13,5 +13,3 @@ services:
       dockerfile: Dockerfile
   proxy:
     image: nginx:mainline-alpine
-  certbot:
-    image: certbot/certbot
