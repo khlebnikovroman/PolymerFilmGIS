@@ -5,20 +5,6 @@ import {ILoginModel, LoginModel} from "../../../services/Clients";
 import RegistrationForm from "../Registration/RegistrationForm";
 import {Button, Checkbox, Form, Input, Modal} from "antd";
 
-
-type Props = {
-    navigation: NavigateFunction,
-    fromPage: string
-};
-
-type State = {
-    isAuthorized: boolean,
-    username: string,
-    password: string,
-    loading: boolean,
-    message: string
-};
-
 const Login: FC = () => {
     const navigation = useNavigate();
     const location = useLocation()
@@ -29,7 +15,8 @@ const Login: FC = () => {
     const [message, setMessage] = useState("");
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-
+    const [showRegistration, setShowRegistration] = useState(false);
+    
     useEffect(() => {
         const currentUser = UserService.getCurrentUserToken();
         if (currentUser) {
@@ -37,7 +24,7 @@ const Login: FC = () => {
         }
     }, []);
 
-    const handleLogin = (values: any) => {
+    const handleLogin = () => {
         setMessage("");
         setLoading(true);
 
@@ -63,11 +50,15 @@ const Login: FC = () => {
             }
         );
     };
+    
     const showRegistrationForm = () => {
-        console.log("LOGGGG");
-        return <RegistrationForm/>;
+        setShowRegistration(true);
     };
 
+    if (showRegistration) {
+        return <RegistrationForm />;
+    }
+    
     if (isAuthorized) {
         return <Navigate to={fromPage} />;
     }
@@ -101,7 +92,7 @@ const Login: FC = () => {
             </Form.Item>
 
             <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-                <Button type="primary" onClick={() => handleLogin([])}>
+                <Button type="primary" onClick={() => handleLogin()}>
                     Вход
                 </Button>
                 <Button type="primary" onClick={showRegistrationForm}>
