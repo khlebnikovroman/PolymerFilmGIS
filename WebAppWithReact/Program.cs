@@ -31,19 +31,19 @@ foreach (DictionaryEntry VARIABLE in Environment.GetEnvironmentVariables())
 
 var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 Console.WriteLine(env);
-string connectionString, jwtSecret;
+string connectionString;
 
 if (env == "Production")
 {
     connectionString = Environment.GetEnvironmentVariable("PRODUCION_BASE");
-    jwtSecret = Environment.GetEnvironmentVariable("JWT_SECRET");
+    var secret = Environment.GetEnvironmentVariable("JWT_SECRET");
+    configuration["JWT:Secret"] = secret;
     Console.WriteLine($"con: {connectionString}");
-    Console.WriteLine($"jwt: {jwtSecret}");
+    Console.WriteLine($"jwt: {configuration["JWT:Secret"]}");
 }
 else
 {
     connectionString = configuration.GetConnectionString("DevConnection");
-    jwtSecret = configuration["JWT:Secret"];
 }
 
 
@@ -85,7 +85,7 @@ builder.Services.AddAuthentication(options =>
 
                ValidAudience = configuration["JWT:ValidAudience"],
                ValidIssuer = configuration["JWT:ValidIssuer"],
-               IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecret)),
+               IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Secret"])),
            };
        });
 
@@ -161,7 +161,7 @@ if (app.Environment.IsProduction())
     using (var scope = app.Services.CreateScope())
     {
         var dbContext = scope.ServiceProvider.GetRequiredService<Context>();
-        dbContext.Database.Migrate();
+        dbContext.Database.EnsureCreated();
     }
 }
 
