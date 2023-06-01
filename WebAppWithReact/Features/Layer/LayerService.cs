@@ -54,6 +54,7 @@ public class LayerService
     public async Task<Guid> Create(CreateLayerDto dto, Guid userId)
     {
         var layer = dto.Adapt<DAL.Layer>();
+        layer.AppUserId = userId;
         await _layerRepository.Create(layer);
 
         return layer.Id;
