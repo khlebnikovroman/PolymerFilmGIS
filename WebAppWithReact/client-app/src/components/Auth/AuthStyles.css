@@ -1,0 +1,17 @@
+﻿.containerStyle {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.formStyle {
+    flex-direction: column;
+    width: 600px;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.formStyle:hover {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}

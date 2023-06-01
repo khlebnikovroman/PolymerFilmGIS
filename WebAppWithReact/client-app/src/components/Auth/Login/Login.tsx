@@ -64,42 +64,47 @@ const Login: FC = () => {
     }
 
     return (
-        <Form
-            name="basic"
-            labelCol={{ span: 8 }}
-            wrapperCol={{ span: 16 }}
-            initialValues={{ remember: true }}
-            autoComplete="off"
-        >
-            <Form.Item
-                label="Имя пользователя"
-                name="username"
-                rules={[{ required: true, message: 'Введите имя пользователя' }]}
-            >
-                <Input onChange={(e) => setUsername(e.target.value)} />
-            </Form.Item>
+        <div className={"containerStyle"}>
+            <div className={"formStyle"}>
+                <Form
+                    name="basic"
+                    labelCol={{ span: 8 }}
+                    wrapperCol={{ span: 16 }}
+                    initialValues={{ remember: true }}
+                    autoComplete="off"
+                >
+                    <Form.Item
+                        label="Имя пользователя"
+                        name="username"
+                        rules={[{ required: true, message: 'Введите имя пользователя' }]}
+                    >
+                        <Input onChange={(e) => setUsername(e.target.value)} />
+                    </Form.Item>
 
-            <Form.Item
-                label="Пароль"
-                name="password"
-                rules={[{ required: true, message: 'Введите пароль' }]}
-            >
-                <Input.Password onChange={(e) => setPassword(e.target.value)} />
-            </Form.Item>
+                    <Form.Item
+                        label="Пароль"
+                        name="password"
+                        rules={[{ required: true, message: 'Введите пароль' }]}
+                    >
+                        <Input.Password onChange={(e) => setPassword(e.target.value)} />
+                    </Form.Item>
 
-            <Form.Item name="remember" valuePropName="checked" wrapperCol={{ offset: 8, span: 16 }}>
-                <Checkbox>Запомнить меня</Checkbox>
-            </Form.Item>
+                    <Form.Item name="remember" valuePropName="checked" wrapperCol={{ offset: 8, span: 16 }}>
+                        <Checkbox>Запомнить меня</Checkbox>
+                    </Form.Item>
 
-            <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-                <Button type="primary" onClick={() => handleLogin()}>
-                    Вход
-                </Button>
-                <Button type="primary" onClick={showRegistrationForm}>
-                    Регистрация
-                </Button>
-            </Form.Item>
-        </Form>
+                    <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+                        <Button type="primary" onClick={() => handleLogin()}>
+                            Вход
+                        </Button>
+                        <Button type="default" style={{marginLeft: "15px"}} onClick={showRegistrationForm}>
+                            Регистрация
+                        </Button>
+                    </Form.Item>
+                </Form>
+            </div>
+        </div>
+        
     );
 }
 
