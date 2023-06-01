@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Text;
 
 using DAL;
@@ -23,28 +24,33 @@ var configuration = builder.Configuration;
 
 // Add services to the container.
 // For Entity Framework
+foreach (DictionaryEntry VARIABLE in Environment.GetEnvironmentVariables())
+{
+    Console.WriteLine(VARIABLE.Key + ": " + VARIABLE.Value);
+}
+
 var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 Console.WriteLine(env);
-string connectionString, jwtSecret;
+string connectionString;
 
 if (env == "Production")
 {
     connectionString = Environment.GetEnvironmentVariable("PRODUCION_BASE");
-    jwtSecret = Environment.GetEnvironmentVariable("JWT_SECRET");
+    var secret = Environment.GetEnvironmentVariable("JWT_SECRET");
+    configuration["JWT:Secret"] = secret;
     Console.WriteLine($"con: {connectionString}");
-    Console.WriteLine($"jwt: {jwtSecret}");
+    Console.WriteLine($"jwt: {configuration["JWT:Secret"]}");
 }
 else
 {
     connectionString = configuration.GetConnectionString("DevConnection");
-    jwtSecret = configuration["JWT:Secret"];
 }
 
 
 builder.Services.AddDbContext<Context>(options =>
 {
     options.UseLazyLoadingProxies()
-           .UseSqlServer(configuration.GetConnectionString(connectionString));
+           .UseSqlServer(connectionString);
 });
 
 builder.Services.AddHttpContextAccessor();
@@ -79,7 +85,7 @@ builder.Services.AddAuthentication(options =>
 
                ValidAudience = configuration["JWT:ValidAudience"],
                ValidIssuer = configuration["JWT:ValidIssuer"],
-               IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecret)),
+               IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Secret"])),
            };
        });
 
@@ -148,6 +154,15 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+}
+
+if (app.Environment.IsProduction())
+{
+    using (var scope = app.Services.CreateScope())
+    {
+        var dbContext = scope.ServiceProvider.GetRequiredService<Context>();
+        dbContext.Database.EnsureCreated();
+    }
 }
 
 // Configure the HTTP request pipeline.
