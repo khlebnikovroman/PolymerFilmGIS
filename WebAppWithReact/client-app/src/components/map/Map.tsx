@@ -100,7 +100,7 @@ export const MapComponent: React.FC = () => {
                             name: values.objectName,
                             lati: values.objectLat,
                             long: values.objectLng,
-                            capacity: 1
+                            capacity: values.objectCapacity
                         });
                         const objectClient = new ObjectsOnMapClient();
                         const id = await objectClient.objectsOnMapPOST(model)
