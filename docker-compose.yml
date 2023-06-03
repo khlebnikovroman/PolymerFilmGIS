@@ -37,3 +37,5 @@ services:
     environment:
       SA_PASSWORD: ${sql_password}
       ACCEPT_EULA: "Y"
+    volumes:
+      - sqlservervolume:/var/opt/mssql 
