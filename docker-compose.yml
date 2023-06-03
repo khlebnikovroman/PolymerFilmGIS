@@ -39,3 +39,5 @@ services:
       ACCEPT_EULA: "Y"
     volumes:
       - sqlservervolume:/var/opt/mssql 
+volumes:
+  sqlservervolume:
