@@ -119,7 +119,7 @@ class simpleidw {
     }
 
 
-    draw(opacity) {
+    async draw(opacity) {
         if (!this._cell) this.cellSize(this.defaultCellSize);
         if (!this._grad) this.gradient(this.defaultGradient);
 
@@ -182,12 +182,23 @@ export const IdwLayer = L.Layer.extend({
     },
     */
     initialize: function (latlngs, options) {
-        // let client = new RussiaBoundsClient()
-        // this.polygon=  
-        // console.log(this.polygon)
-        this._latlngs = latlngs;
-        L.setOptions(this, options);
+        console.log("Enter initialize")
+        const client = new RussiaBoundsClient()
+        const promise = client.russiaBounds()
+            .then((res) => {
+                console.log("Enter then", res);
+                this._polygon = res;
 
+            })
+            .then(() => {
+                this._latlngs = latlngs;
+                L.setOptions(this, options);
+                console.log("Exit then");
+            });
+        return promise.then(() => {
+            console.log("Exit promise")
+        })
+        console.log("Exit initialize")
     },
 
     setLatLngs: function (latlngs) {
@@ -305,6 +316,9 @@ export const IdwLayer = L.Layer.extend({
 
 
     _redraw: function () {
+        if (!this._polygon) {
+            return;
+        }
         if (!this._map) {
             return;
         }
@@ -330,8 +344,7 @@ export const IdwLayer = L.Layer.extend({
         this._idw.min(Number.MAX_SAFE_INTEGER);
         this._idw.max(Number.MIN_SAFE_INTEGER);
 
-        let client = new RussiaBoundsClient()
-        client.russiaBounds().then(res => {
+
             for (let i = 0; i < nCellY; i++) {
                 for (let j = 0; j < nCellX; j++) {
 
@@ -346,7 +359,7 @@ export const IdwLayer = L.Layer.extend({
 
                     var cp = L.point((y - cellCen), (x - cellCen));
                     var p2 = this._map.containerPointToLatLng(cp)
-                    if (!isInPolygon(res, p2)) {
+                    if (!isInPolygon(this._polygon, p2)) {
                         continue
                     }
 
@@ -405,7 +418,6 @@ export const IdwLayer = L.Layer.extend({
             // console.timeEnd('draw ' + data.length);
 
             this._frame = null;
-        })
 
 
     },
