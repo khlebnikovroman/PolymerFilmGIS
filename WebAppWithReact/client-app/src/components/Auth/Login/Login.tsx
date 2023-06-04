@@ -1,9 +1,9 @@
 ﻿import {FC, useEffect, useState} from "react";
-import {Navigate, NavigateFunction, useLocation, useNavigate} from "react-router-dom";
+import {Navigate, useLocation, useNavigate} from "react-router-dom";
 import UserService from "../../../services/UserService";
 import {ILoginModel, LoginModel} from "../../../services/Clients";
 import RegistrationForm from "../Registration/RegistrationForm";
-import {Button, Checkbox, Form, Input, Modal} from "antd";
+import {Button, Checkbox, Form, Input} from "antd";
 
 const Login: FC = () => {
     const navigation = useNavigate();
@@ -18,7 +18,7 @@ const Login: FC = () => {
     const [showRegistration, setShowRegistration] = useState(false);
     
     useEffect(() => {
-        const currentUser = UserService.getCurrentUserToken();
+        const currentUser = UserService.isAuthenticated();
         if (currentUser) {
             setIsAuthorized(true);
         }

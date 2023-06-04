@@ -1,45 +1,91 @@
-import {AuthClient, LoginModel, LoginResponse} from "./Clients";
+import {AuthClient, LoginModel, LoginResponse, RefreshTokenModel, RefreshTokenResponse} from "./Clients";
 import * as jose from 'jose'
+import Cookies from "js-cookie";
 
 class UserService {
 
     logout() {
-        localStorage.removeItem("user");
-        console.log("выход")
+        Cookies.remove("user")
+        console.log("выход");
+    }
+
+    isAuthenticated() {
+        const user = this.getCurrentUserToken();
+        if (user) {
+            const expirationDate = new Date(user.expiration!);
+            const currentDate = new Date();
+            return expirationDate > currentDate;
+        }
+        return false;
+    }
+
+    async checkAuthenticatedAndTryRefreshToken() {
+        if (this.isAuthenticated()) {
+            return true;
+        } else {
+            const success = await this.refreshToken();
+            if (!success) {
+                this.logout();
+            }
+            return success;
+        }
+    }
+
+    async refreshToken() {
+        const user = this.getCurrentUserToken();
+
+        if (user) {
+            const client = new AuthClient()
+            let response: RefreshTokenResponse
+            try {
+                response = await client.refreshToken(new RefreshTokenModel({
+                    accessToken: user.token,
+                    refreshToken: user.refreshToken
+                }))
+            } catch {
+                this.logout()
+                return false;
+            }
+            Cookies.set("user", encodeURIComponent(JSON.stringify(response)))
+            return true;
+
+        }
+
+        return false;
     }
 
     getCurrentUserToken(): LoginResponse | null {
-        const userStr = localStorage.getItem("user");
-        if (userStr) return JSON.parse(userStr);
-
+        const user = Cookies.get("user")
+        if (user) {
+            return JSON.parse(decodeURIComponent(user));
+        }
         return null;
     }
 
     getCurrentUserName(): string | null {
-        const token = this.getCurrentUserToken()
+        const token = this.getCurrentUserToken();
         if (token != null) {
-
-            const claims = jose.decodeJwt(token.token!)
-            return (<string | null>claims["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"])
+            const claims = jose.decodeJwt(token.token!);
+            return <string | null>claims["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"];
         }
-        return null
+        return null;
     }
 
     getCurrentUserId(): string | null {
-        const token = this.getCurrentUserToken()
+        const token = this.getCurrentUserToken();
         if (token != null) {
-
-            const claims = jose.decodeJwt(token.token!)
-            return (<string | null>claims["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/id"])
+            const claims = jose.decodeJwt(token.token!);
+            return <string | null>claims["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/id"];
         }
-        return null
+        return null;
     }
 
     async login(model: LoginModel) {
-        const authClient = new AuthClient()
-        const response = await authClient.login(model)
-        localStorage.setItem("user", JSON.stringify(response));
+        const authClient = new AuthClient();
+        const response = await authClient.login(model);
+        Cookies.set("user", encodeURIComponent(JSON.stringify(response)))
     }
+
 
 }
 

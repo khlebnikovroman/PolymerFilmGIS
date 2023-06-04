@@ -15,7 +15,7 @@ export const UserMenu: React.FC = () => {
 
     function logout() {
         UserService.logout();
-        navigate("/")
+        navigate("/login")
     }
 
     return (

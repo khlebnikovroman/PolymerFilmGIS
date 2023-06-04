@@ -223,7 +223,7 @@ export class AuthClient extends ApiBase {
      * @param body (optional)
      * @return Success
      */
-    refreshToken(body: TokenModel | undefined, cancelToken?: CancelToken | undefined): Promise<TokenModel> {
+    refreshToken(body: RefreshTokenModel | undefined, cancelToken?: CancelToken | undefined): Promise<RefreshTokenResponse> {
         let url_ = this.baseUrl + "/api/Auth/refresh-token";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -253,7 +253,7 @@ export class AuthClient extends ApiBase {
         });
     }
 
-    protected processRefreshToken(response: AxiosResponse): Promise<TokenModel> {
+    protected processRefreshToken(response: AxiosResponse): Promise<RefreshTokenResponse> {
         const status = response.status;
         let _headers: any = {};
         if (response.headers && typeof response.headers === "object") {
@@ -267,14 +267,14 @@ export class AuthClient extends ApiBase {
             const _responseText = response.data;
             let result200: any = null;
             let resultData200 = _responseText;
-            result200 = TokenModel.fromJS(resultData200);
-            return Promise.resolve<TokenModel>(result200);
+            result200 = RefreshTokenResponse.fromJS(resultData200);
+            return Promise.resolve<RefreshTokenResponse>(result200);
 
         } else if (status !== 200 && status !== 204) {
             const _responseText = response.data;
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
-        return Promise.resolve<TokenModel>(null as any);
+        return Promise.resolve<RefreshTokenResponse>(null as any);
     }
 
     /**
@@ -1183,9 +1183,9 @@ export class ObjectsOnMapClient extends ApiBase {
 }
 
 export class RussiaBoundsClient extends ApiBase {
-    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
     private instance: AxiosInstance;
     private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
 
     constructor(baseUrl?: string, instance?: AxiosInstance) {
 
@@ -1627,6 +1627,90 @@ export interface ILoginResponse {
     expiration?: Date;
 }
 
+export class RefreshTokenModel implements IRefreshTokenModel {
+    accessToken?: string | undefined;
+    refreshToken?: string | undefined;
+
+    constructor(data?: IRefreshTokenModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    static fromJS(data: any): RefreshTokenModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new RefreshTokenModel();
+        result.init(data);
+        return result;
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.accessToken = _data["accessToken"];
+            this.refreshToken = _data["refreshToken"];
+        }
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["accessToken"] = this.accessToken;
+        data["refreshToken"] = this.refreshToken;
+        return data;
+    }
+}
+
+export interface IRefreshTokenModel {
+    accessToken?: string | undefined;
+    refreshToken?: string | undefined;
+}
+
+export class RefreshTokenResponse implements IRefreshTokenResponse {
+    token?: string | undefined;
+    refreshToken?: string | undefined;
+    expiration?: Date;
+
+    constructor(data?: IRefreshTokenResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    static fromJS(data: any): RefreshTokenResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new RefreshTokenResponse();
+        result.init(data);
+        return result;
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.token = _data["token"];
+            this.refreshToken = _data["refreshToken"];
+            this.expiration = _data["expiration"] ? new Date(_data["expiration"].toString()) : <any>undefined;
+        }
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["token"] = this.token;
+        data["refreshToken"] = this.refreshToken;
+        data["expiration"] = this.expiration ? this.expiration.toISOString() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IRefreshTokenResponse {
+    token?: string | undefined;
+    refreshToken?: string | undefined;
+    expiration?: Date;
+}
+
 export class RegisterModel implements IRegisterModel {
     username!: string;
     firstName!: string;
@@ -1757,46 +1841,6 @@ export class SetLayerSelectionDto implements ISetLayerSelectionDto {
 export interface ISetLayerSelectionDto {
     layerId: string;
     selection: boolean;
-}
-
-export class TokenModel implements ITokenModel {
-    accessToken?: string | undefined;
-    refreshToken?: string | undefined;
-
-    constructor(data?: ITokenModel) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.accessToken = _data["accessToken"];
-            this.refreshToken = _data["refreshToken"];
-        }
-    }
-
-    static fromJS(data: any): TokenModel {
-        data = typeof data === 'object' ? data : {};
-        let result = new TokenModel();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["accessToken"] = this.accessToken;
-        data["refreshToken"] = this.refreshToken;
-        return data;
-    }
-}
-
-export interface ITokenModel {
-    accessToken?: string | undefined;
-    refreshToken?: string | undefined;
 }
 
 export class UpdateLayerDto implements IUpdateLayerDto {
