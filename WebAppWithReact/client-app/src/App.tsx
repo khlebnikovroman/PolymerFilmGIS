@@ -6,6 +6,7 @@ import {ContextMenuProvider} from "./components/context";
 import {RequireAuth} from "./RequireAuth";
 import {LogoutComponent} from "./components/Auth/Login/logout.component";
 import Login from "./components/Auth/Login/Login";
+import NotFound from "./components/misc/NotFound";
 
 // {MultilineChart} from "./heatmap/testCountour";
 function App() {
@@ -25,6 +26,7 @@ function App() {
                 <Route path="/about" element={<h1>ABOUT</h1>}/>
                 <Route path="/login" element={<Login/>}/>
                 <Route path="/logout" element={<LogoutComponent/>}/>
+                <Route path="*" element={<NotFound/>}/>
                 {/*<Route path="/test" element={<MultilineChart/>}/>*/}
             </Routes>
         </BrowserRouter>

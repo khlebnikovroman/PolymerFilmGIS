@@ -177,20 +177,19 @@ public class AuthController : ControllerBase
     /// <summary>
     ///     Обновляет JWT токен
     /// </summary>
-    /// <param name="tokenModel">DTO для токена</param>
+    /// <param name="refreshTokenModel">DTO для токена</param>
     /// <returns></returns>
     [HttpPost]
     [Route("refresh-token")]
-    [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(TokenModel))]
-    public async Task<IActionResult> RefreshToken(TokenModel tokenModel)
+    public async Task<ActionResult<RefreshTokenResponse>> RefreshToken(RefreshTokenModel refreshTokenModel)
     {
-        if (tokenModel is null)
+        if (refreshTokenModel is null)
         {
             return BadRequest("Invalid client request");
         }
 
-        var accessToken = tokenModel.AccessToken;
-        var refreshToken = tokenModel.RefreshToken;
+        var accessToken = refreshTokenModel.AccessToken;
+        var refreshToken = refreshTokenModel.RefreshToken;
 
         var principal = GetPrincipalFromExpiredToken(accessToken);
 
@@ -218,10 +217,11 @@ public class AuthController : ControllerBase
         user.RefreshToken = newRefreshToken;
         await _userManager.UpdateAsync(user);
 
-        return new ObjectResult(new TokenModel
+        return Ok(new RefreshTokenResponse
         {
-            AccessToken = new JwtSecurityTokenHandler().WriteToken(newAccessToken),
+            Token = new JwtSecurityTokenHandler().WriteToken(newAccessToken),
             RefreshToken = newRefreshToken,
+            Expiration = newAccessToken.ValidTo,
         });
     }
 
@@ -316,6 +316,3 @@ public class AuthController : ControllerBase
         return principal;
     }
 }
-
-
-
