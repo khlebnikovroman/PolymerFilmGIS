@@ -89,8 +89,10 @@ public class LayerService
     /// <param name="id">ID слоя</param>
     public async Task Delete(Guid id)
     {
-        var l = await _layerRepository.FindById(id);
-        await _layerRepository.Remove(l);
+        var layerToDelete = await _layerRepository.FindById(id);
+        layerToDelete.ObjectsOnMap.Clear();
+        await _layerRepository.Update(layerToDelete);
+        await _layerRepository.Remove(layerToDelete);
     }
 
     /// <summary>
