@@ -12,6 +12,7 @@ const RegistrationForm: React.FC = () => {
     const [firstName, setFirstName] = useState("");
     const [secondName, setSecondName] = useState("");
     const [isNotRegister, setNotRegister] = useState<boolean>(true);
+    const [message, setMessage] = useState("");
     
     const navigation = useNavigate();
     const location = useLocation()
@@ -34,8 +35,8 @@ const RegistrationForm: React.FC = () => {
                 if (response.status === 'Success') {
                     setNotRegister(false) 
                 }
-                UserService.login(new LoginModel({username, password})).then(
-                    () => {
+                UserService.login(new LoginModel({username, password}))
+                    .then(() => {
                         navigation(toPage);
                     },
                     error => {
@@ -49,10 +50,24 @@ const RegistrationForm: React.FC = () => {
                 );
             })
             .catch((info) =>{
-               console.log(info);
-               
+                setMessage("Логин занят!");
             });
     };
+
+    const validatePassword = (_: any, value: string) => {
+        if (!value) {
+            return Promise.reject(new Error('Пожалуйста, введите пароль!'));
+        }
+        if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9])/.test(value)) {
+            return Promise.reject(
+                new Error(
+                    'Пароль должен содержать минимум 1 заглавную букву, 1 прописную букву, 1 цифру и 1 специальный символ.'
+                )
+            );
+        }
+        return Promise.resolve();
+    };
+    
     return (
         <div className={"containerStyle"}>
             <div className={"formStyle"}>
@@ -96,15 +111,41 @@ const RegistrationForm: React.FC = () => {
                     <Form.Item
                         label="Пароль"
                         name="password"
-                        rules={[{required: true, message: 'Заполните обязательное поле'}]}
+                        rules={[
+                            {required: true, message: 'Заполните обязательное поле'},
+                            { validator: validatePassword },
+                        ]}
+                        hasFeedback
                     >
-                        <Input.Password type={"password"} onChange={(e) => setPassword(e.target.value)}/>
+                        <Input.Password type={"password"} onChange={(e) => setPassword(e.target.value)} onBlur={(e) => form.validateFields(['confirm'])}/>
                     </Form.Item>
-
+                    <Form.Item
+                        name="confirm"
+                        label="Подтвердите пароль"
+                        dependencies={['password']}
+                        hasFeedback
+                        rules={[
+                            {
+                                required: true,
+                                message: 'Пожалуйста, подтвердите пароль!',
+                            },
+                            ({ getFieldValue }) => ({
+                                validator(_, value) {
+                                    if (!value || getFieldValue('password') === value) {
+                                        return Promise.resolve();
+                                    }
+                                    return Promise.reject(new Error('Пароли должны совпадать!'));
+                                },
+                            }),
+                        ]}
+                    >
+                        <Input.Password />
+                    </Form.Item>
                     <Form.Item wrapperCol={{offset: 8, span: 16}}>
-                        <Button type="primary"  onClick={() => handleRegister()}>
-                            Зарегистрироваться!
+                        <Button type="primary" onClick={() => handleRegister()} >
+                            Зарегистрироваться
                         </Button>
+                        <label style={{paddingLeft: "15px", color: "red"}}>{message}</label>
                     </Form.Item>
                 </Form>
             </div>
