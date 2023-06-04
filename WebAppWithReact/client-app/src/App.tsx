@@ -3,7 +3,6 @@ import './App.css';
 import MapComponent from "./components/map/Map";
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import {ContextMenuProvider} from "./components/context";
-import {Login2} from "./components/Auth/Login/login.component";
 import {RequireAuth} from "./RequireAuth";
 import {LogoutComponent} from "./components/Auth/Login/logout.component";
 import Login from "./components/Auth/Login/Login";

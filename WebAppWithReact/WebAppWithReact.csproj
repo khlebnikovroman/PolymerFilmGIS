@@ -8,7 +8,7 @@
         <IsPackable>false</IsPackable>
         <SpaRoot>client-app\</SpaRoot>
         <DefaultItemExcludes>$(DefaultItemExcludes);$(SpaRoot)node_modules\**</DefaultItemExcludes>
-        <SpaProxyServerUrl>https://localhost:44412</SpaProxyServerUrl>
+        <SpaProxyServerUrl>http://localhost:44412</SpaProxyServerUrl>
         <SpaProxyLaunchCommand>npm start</SpaProxyLaunchCommand>
         <ImplicitUsings>enable</ImplicitUsings>
         <GenerateDocumentationFile>True</GenerateDocumentationFile>
@@ -50,13 +50,15 @@
     </ItemGroup>
 
     <ItemGroup>
-        <_ContentIncludedByDefault Remove="ClientApp\package-lock.json" />
-        <_ContentIncludedByDefault Remove="ClientApp\package.json" />
-        <_ContentIncludedByDefault Remove="ClientApp\public\manifest.json" />
-        <_ContentIncludedByDefault Remove="client-app\semantic\src\theme.config" />
-        <_ContentIncludedByDefault Remove="client-app\semantic\tasks\config\admin\templates\bower.json" />
-        <_ContentIncludedByDefault Remove="client-app\semantic\tasks\config\admin\templates\composer.json" />
-        <_ContentIncludedByDefault Remove="client-app\semantic\tasks\config\admin\templates\package.json" />
+        <_ContentIncludedByDefault Remove="ClientApp\package-lock.json"/>
+        <_ContentIncludedByDefault Remove="ClientApp\package.json"/>
+        <_ContentIncludedByDefault Remove="ClientApp\public\manifest.json"/>
+        <_ContentIncludedByDefault Remove="client-app\semantic\src\theme.config"/>
+        <_ContentIncludedByDefault Remove="client-app\semantic\tasks\config\admin\templates\bower.json"/>
+        <_ContentIncludedByDefault Remove="client-app\semantic\tasks\config\admin\templates\composer.json"/>
+        <_ContentIncludedByDefault Remove="client-app\semantic\tasks\config\admin\templates\package.json"/>
+        <_ContentIncludedByDefault Remove="client-app\build\asset-manifest.json"/>
+        <_ContentIncludedByDefault Remove="client-app\build\manifest.json"/>
     </ItemGroup>
 
     <ItemGroup>
@@ -73,14 +75,14 @@
         <Exec WorkingDirectory="$(SpaRoot)" Command="npm install" />
     </Target>
 
-    <Target Name="PublishRunWebpack" AfterTargets="ComputeFilesToPublish" Condition=" '$(Configuration)' == 'Debug'">
+    <Target Name="PublishRunWebpack" AfterTargets="ComputeFilesToPublish">
         <!-- As part of publishing, ensure the JS resources are freshly built in production mode -->
-        <Exec WorkingDirectory="$(SpaRoot)" Command="npm install" />
-        <Exec WorkingDirectory="$(SpaRoot)" Command="npm run build" />
+        <Exec WorkingDirectory="$(SpaRoot)" Command="npm install"/>
+        <Exec WorkingDirectory="$(SpaRoot)" Command="npm run build"/>
 
         <!-- Include the newly-built files in the publish output -->
         <ItemGroup>
-            <DistFiles Include="$(SpaRoot)build\**" />
+            <DistFiles Include="$(SpaRoot)build\**"/>
             <ResolvedFileToPublish Include="@(DistFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
                 <RelativePath>wwwroot\%(RecursiveDir)%(FileName)%(Extension)</RelativePath>
                 <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>

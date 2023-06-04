@@ -5,6 +5,8 @@
  https://github.com/Leaflet/Leaflet.heat
 */
 import L from "leaflet"
+import {isInPolygon} from "./geojsonHelper"
+import {RussiaBoundsClient} from "../../../services/Clients";
 
 class simpleidw {
 
@@ -116,6 +118,7 @@ class simpleidw {
         this._ctx.clearRect(0, 0, this._width, this._height);
     }
 
+
     draw(opacity) {
         if (!this._cell) this.cellSize(this.defaultCellSize);
         if (!this._grad) this.gradient(this.defaultGradient);
@@ -179,8 +182,12 @@ export const IdwLayer = L.Layer.extend({
     },
     */
     initialize: function (latlngs, options) {
+        // let client = new RussiaBoundsClient()
+        // this.polygon=  
+        // console.log(this.polygon)
         this._latlngs = latlngs;
         L.setOptions(this, options);
+
     },
 
     setLatLngs: function (latlngs) {
@@ -296,6 +303,7 @@ export const IdwLayer = L.Layer.extend({
         this._redraw();
     },
 
+
     _redraw: function () {
         if (!this._map) {
             return;
@@ -322,75 +330,84 @@ export const IdwLayer = L.Layer.extend({
         this._idw.min(Number.MAX_SAFE_INTEGER);
         this._idw.max(Number.MIN_SAFE_INTEGER);
 
-        // console.time('process');
+        let client = new RussiaBoundsClient()
+        client.russiaBounds().then(res => {
+            for (let i = 0; i < nCellY; i++) {
+                for (let j = 0; j < nCellX; j++) {
 
-        for (let i = 0; i < nCellY; i++) {
-            for (let j = 0; j < nCellX; j++) {
+                    const x = i * r;
+                    const y = j * r;
 
-                const x = i * r;
-                const y = j * r;
+                    let numerator = 0;
+                    let denominator = 0;
 
-                let numerator = 0;
-                let denominator = 0;
+                    let zeroDist = false;
+                    let zeroDistVal = undefined;
 
-                let zeroDist = false;
-                let zeroDistVal = undefined;
-
-                for (let k = 0; k < this._latlngs.length; k++) {
-
-                    // Get distance between cell and point
-                    var p1 = L.latLng(this._latlngs[k][0], this._latlngs[k][1])
-
-                    var p = this._map.latLngToContainerPoint(this._latlngs[k]);
                     var cp = L.point((y - cellCen), (x - cellCen));
                     var p2 = this._map.containerPointToLatLng(cp)
-                    //var dist = cp.distanceTo(p);
-                    var dist = p1.distanceTo(p2);
-                    if (this.options.maxDistance) {
-                        if (dist > this.options.maxDistance) {
-                            continue
+                    if (!isInPolygon(res, p2)) {
+                        continue
+                    }
+
+                    for (let k = 0; k < this._latlngs.length; k++) {
+
+                        // Get distance between cell and point
+                        var p1 = L.latLng(this._latlngs[k][0], this._latlngs[k][1])
+
+                        var p = this._map.latLngToContainerPoint(this._latlngs[k]);
+
+                        //var dist = cp.distanceTo(p);
+                        var dist = p1.distanceTo(p2);
+                        if (this.options.maxDistance) {
+                            if (dist > this.options.maxDistance) {
+                                continue
+                            }
                         }
+
+                        if (dist === 0) {
+                            zeroDist = true;
+                            zeroDistVal = this._latlngs[k].alt !== undefined ? this._latlngs[k].alt : this._latlngs[k][2];
+                            break;
+                        }
+                        var dist2 = Math.pow(dist, exp);
+
+                        var val = this._latlngs[k].alt !== undefined ? this._latlngs[k].alt : this._latlngs[k][2];
+
+                        numerator += val / dist2;
+                        denominator += 1 / dist2;
+
                     }
 
-                    if (dist === 0) {
-                        zeroDist = true;
-                        zeroDistVal = this._latlngs[k].alt !== undefined ? this._latlngs[k].alt : this._latlngs[k][2];
-                        break;
+                    const interpolVal = zeroDist ? zeroDistVal : numerator / denominator;
+
+                    const cell = [j * r, i * r, interpolVal];
+
+                    if (cell && !isNaN(interpolVal)) {
+                        data.push([
+                            Math.round(cell[0]),
+                            Math.round(cell[1]),
+                            cell[2]
+                        ]);
+                        this._idw.min(Math.min(this._idw._min, cell[2]));
+                        this._idw.max(Math.max(this._idw._max, cell[2]));
+                    } else {
+                        //console.log(`${i}, ${j}`);
                     }
-                    var dist2 = Math.pow(dist, exp);
-
-                    var val = this._latlngs[k].alt !== undefined ? this._latlngs[k].alt : this._latlngs[k][2];
-
-                    numerator += val / dist2;
-                    denominator += 1 / dist2;
-
-                }
-
-                const interpolVal = zeroDist ? zeroDistVal : numerator / denominator;
-
-                const cell = [j * r, i * r, interpolVal];
-
-                if (cell && !isNaN(interpolVal)) {
-                    data.push([
-                        Math.round(cell[0]),
-                        Math.round(cell[1]),
-                        cell[2]
-                    ]);
-                    this._idw.min(Math.min(this._idw._min, cell[2]));
-                    this._idw.max(Math.max(this._idw._max, cell[2]));
-                } else {
-                    //console.log(`${i}, ${j}`);
                 }
             }
-        }
 
-        // console.timeEnd('process');
 
-        // console.time('draw ' + data.length);
-        this._idw.data(data).draw(this.options.opacity);
-        // console.timeEnd('draw ' + data.length);
+            // console.timeEnd('process');
 
-        this._frame = null;
+            // console.time('draw ' + data.length);
+            this._idw.data(data).draw(this.options.opacity);
+            // console.timeEnd('draw ' + data.length);
+
+            this._frame = null;
+        })
+
+
     },
 
     _animateZoom: function (e) {

@@ -1182,6 +1182,76 @@ export class ObjectsOnMapClient extends ApiBase {
     }
 }
 
+export class RussiaBoundsClient extends ApiBase {
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+    private instance: AxiosInstance;
+    private baseUrl: string;
+
+    constructor(baseUrl?: string, instance?: AxiosInstance) {
+
+        super();
+
+        this.instance = instance ? instance : axios.create();
+
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+
+    }
+
+    /**
+     * @return Success
+     */
+    russiaBounds(cancelToken?: CancelToken | undefined): Promise<any> {
+        let url_ = this.baseUrl + "/api/RussiaBounds";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: AxiosRequestConfig = {
+            method: "GET",
+            url: url_,
+            headers: {
+                "Accept": "text/plain"
+            },
+            cancelToken
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.instance.request(transformedOptions_);
+        }).catch((_error: any) => {
+            if (isAxiosError(_error) && _error.response) {
+                return _error.response;
+            } else {
+                throw _error;
+            }
+        }).then((_response: AxiosResponse) => {
+            return this.processRussiaBounds(_response);
+        });
+    }
+
+    protected processRussiaBounds(response: AxiosResponse): Promise<any> {
+        const status = response.status;
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (let k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
+        }
+        if (status === 200) {
+            const _responseText = response.data;
+            let result200: any = null;
+            let resultData200 = _responseText;
+            result200 = resultData200 !== undefined ? resultData200 : <any>null;
+
+            return Promise.resolve<any>(result200);
+
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+        }
+        return Promise.resolve<any>(null as any);
+    }
+}
+
 export class AddObjectToLayerDTO implements IAddObjectToLayerDTO {
     layerId?: string;
     objectId?: string;

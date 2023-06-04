@@ -37,7 +37,7 @@ export const MapComponent: React.FC = () => {
         if (objects) {
             const min = objects.reduce((acc, cur) => Math.min(acc, cur[2]), Infinity);
             const max = objects.reduce((acc, cur) => Math.max(acc, cur[2]), -Infinity);
-            setMin(min);
+            setMin(0);
             setMax(max);
         }
     }, [objects])
