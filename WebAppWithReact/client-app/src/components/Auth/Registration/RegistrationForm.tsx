@@ -1,11 +1,12 @@
-import {Button, Checkbox, Form, Input} from 'antd';
+import {Button, Form, Input} from 'antd';
 import React, {useState} from 'react';
-import {AuthClient, ILoginModel, LoginModel, RegisterModel} from "../../../services/Clients";
+import {AuthClient, LoginModel, RegisterModel} from "../../../services/Clients";
 import "../AuthStyles.css"
 import UserService from "../../../services/UserService";
 import {useLocation, useNavigate} from "react-router-dom";
 
 const RegistrationForm: React.FC = () => {
+    document.title = 'HeatGIS | Регистрация';
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [email, setEmail] = useState("");

@@ -6,6 +6,7 @@ import RegistrationForm from "../Registration/RegistrationForm";
 import {Button, Checkbox, Form, Input} from "antd";
 
 const Login: FC = () => {
+    document.title = 'HeatGIS | Авторизация';
     const navigation = useNavigate();
     const location = useLocation()
     const fromPage = location.state?.from?.pathname || "/"

@@ -19,6 +19,7 @@ import UserService from "../../services/UserService";
 L.Icon.Default.imagePath = "https://unpkg.com/browse/leaflet@1.9.2/dist/images/";
 
 export const MapComponent: React.FC = () => {
+    document.title = 'HeatGIS';
     const [lat, setLat] = useState(59.918711823015684);
     const [lng, setlng] = useState(30.319212156536604);
     const [position, setPosition] = useState<LatLng>();
@@ -86,7 +87,7 @@ export const MapComponent: React.FC = () => {
     const [form] = Form.useForm();
     
     function showAdd(item: CreateObjectOnMapDto) {
-        
+        document.title = 'Создание объекта';
         confirm({
             title: "Создание объекта",
             icon: <div/>,
@@ -113,16 +114,21 @@ export const MapComponent: React.FC = () => {
                             id: id
                         })
                         dispatch(addObject(createdObject))
+                        document.title = 'HeatGIS';
+
                     })
                     .catch((info) => {
                         form.resetFields();
                         console.log('Validate Failed:', position);
+                        document.title = 'HeatGIS';
                     });
             },
             onCancel: () => {
 
                 form.resetFields()
                 console.log('Clear:', item.long, item.lati);
+                document.title = 'HeatGIS';
+
             }
         })
     }
