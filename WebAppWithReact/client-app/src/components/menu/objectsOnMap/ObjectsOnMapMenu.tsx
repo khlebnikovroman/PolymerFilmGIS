@@ -49,6 +49,7 @@ const ObjectsOnMapMenu: React.FC = () => {
         confirm({
             title: "Изменение объекта",
             icon: <div/>,
+            width: "500px",
             content: <ObjectOnMapForm form={form} objectDto={item}/>,
             onOk: () => {
                 console.log(form.getFieldsValue())
