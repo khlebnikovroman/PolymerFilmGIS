@@ -86,7 +86,7 @@ const ObjectsOnMapMenu: React.FC = () => {
     
     return (
         <>
-            <div>
+            <div style={{ maxHeight: '435px', overflowY: 'auto' }}> 
                 <Collapse bordered={false}
                           defaultActiveKey={['1']}
                           expandIcon={({ isActive }) => <CaretRightOutlined rotate={isActive ? 90 : 0} />}
