@@ -58,6 +58,9 @@ const RegistrationForm: React.FC = () => {
         if (!value) {
             return Promise.reject(new Error('Пожалуйста, введите пароль!'));
         }
+        if (value.length < 6) {
+            return Promise.reject(new Error('Пароль должен содержать минимум 6 символов.'));
+        }
         if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9])/.test(value)) {
             return Promise.reject(
                 new Error(
