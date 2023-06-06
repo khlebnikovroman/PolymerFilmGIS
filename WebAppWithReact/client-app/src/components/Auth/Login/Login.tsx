@@ -46,7 +46,9 @@ const Login: FC = () => {
                     error.toString();
 
                 setLoading(false);
-                setMessage(resMessage);
+                if (error.response.status == 401) {
+                    setMessage("Пользователь не найден!");
+                }
             }
         );
     };
@@ -100,6 +102,7 @@ const Login: FC = () => {
                         <Button type="default" style={{marginLeft: "15px"}} onClick={showRegistrationForm}>
                             Регистрация
                         </Button>
+                        <label style={{paddingLeft: "15px", color: "red"}}>{message}</label>
                     </Form.Item>
                 </Form>
             </div>

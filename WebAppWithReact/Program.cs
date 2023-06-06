@@ -153,14 +153,14 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-if (app.Environment.IsProduction())
-{
+//if (app.Environment.IsProduction())
+//{
     using (var scope = app.Services.CreateScope())
     {
         var dbContext = scope.ServiceProvider.GetRequiredService<Context>();
         dbContext.Database.EnsureCreated();
     }
-}
+//}
 
 // Configure the HTTP request pipeline.
 

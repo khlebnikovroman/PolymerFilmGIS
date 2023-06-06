@@ -38,13 +38,18 @@ const ObjectsOnMapMenu: React.FC = () => {
 
     const {confirm} = Modal;
     const [form] = Form.useForm();
-
+    
     function showEdit(item: GetObjectOnMapDto) {
-//todo починить, при вызове формы, появляются старые данные в форме а не новые
-        form.resetFields();
+        form.setFieldsValue({
+            objectName: item.name,
+            objectLat: item.lati,
+            objectLng: item.long,
+            objectCapacity: item.capacity,
+        });
         confirm({
             title: "Изменение объекта",
             icon: <div/>,
+            width: "500px",
             content: <ObjectOnMapForm form={form} objectDto={item}/>,
             onOk: () => {
                 console.log(form.getFieldsValue())
@@ -81,7 +86,7 @@ const ObjectsOnMapMenu: React.FC = () => {
     
     return (
         <>
-            <div>
+            <div style={{ maxHeight: '435px', overflowY: 'auto', borderRadius: '15px' }}> 
                 <Collapse bordered={false}
                           defaultActiveKey={['1']}
                           expandIcon={({ isActive }) => <CaretRightOutlined rotate={isActive ? 90 : 0} />}

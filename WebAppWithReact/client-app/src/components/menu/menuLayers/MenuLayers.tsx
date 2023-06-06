@@ -1,15 +1,15 @@
 ﻿import React, {useEffect, useState} from "react";
-import {Button, Checkbox, Form, List, Modal} from 'antd';
+import {Button, Checkbox, Collapse, Form, List, Modal, theme} from 'antd';
 import {CheckboxChangeEvent} from "antd/es/checkbox";
 import {
     CreateLayerDto,
-    GetLayerDto,
+    GetLayerDto, GetObjectOnMapDto,
     LayerClient,
     ObjectsOnMapClient,
     SetLayerSelectionDto,
     UpdateLayerDto
 } from "../../../services/Clients"
-import {DeleteOutlined, EditOutlined, PlusOutlined} from "@ant-design/icons";
+import {CaretRightOutlined, DeleteOutlined, EditOutlined, PlusOutlined} from "@ant-design/icons";
 import LayerForm from "./LayerForm";
 import {RootState, useAppDispatch} from "../../../redux/store";
 import {setLayers, setSelection} from "../../../redux/LayersSlice";
@@ -21,7 +21,10 @@ const MenuLayers = () => {
     const [initLoading, setInitLoading] = useState(true);
     const [loading, setLoading] = useState(false);
     const {layers} = useSelector((state: RootState) => state.layers);
-
+    
+    const {Panel} = Collapse;
+    const {token} = theme.useToken();
+    
     const dispatch = useAppDispatch();
 
     useEffect(() => {
@@ -123,45 +126,53 @@ const MenuLayers = () => {
     };
     
     return (
-        <>
-            <List
-                style={{backgroundColor: 'white'}}
-                size="small"
-                header={<div>Слои</div>}
-                bordered
-                dataSource={layers}
-                renderItem={(item: GetLayerDto, index: number) =>
-                    <List.Item>
-                        <Checkbox
-                            onChange={e => onChange(item, e)}
-                            id={item.id}
-                            defaultChecked={item.isSelectedByUser}
-                            name={item.name}
-                        >
-                            {item.name}
-                        </Checkbox>
-                        <div style={{width: 100, paddingLeft: 30}}>
-                            <Button type="primary"
-                                    shape="default"
-                                    icon={<EditOutlined/>}
-                                    size={"small"}
-                                    style={{marginLeft: '8px'}}
-                                    onClick={() => showEdit(item)}
-                            ></Button>
-                            <Button type="primary"
-                                    shape="default"
-                                    icon={<DeleteOutlined/>}
-                                    size={"small"}
-                                    style={{marginLeft: '8px'}}
-                                    onClick={() => deleteLayer(item)}
-                            ></Button>
-                        </div>
-                    </List.Item>}
-            />
-            <Button type="primary" shape={"default"} style={{width: "100%"}} onClick={() => showAdd(new CreateLayerDto({name: "", objects: []}))}>
-                Создать новый слой
-            </Button>
-        </>
+        <div style={{maxHeight: '235px', overflowY: 'auto', borderRadius: '15px' }}>
+            <Collapse bordered={false}
+                      defaultActiveKey={['1']}
+                      expandIcon={({ isActive }) => <CaretRightOutlined rotate={isActive ? 90 : 0} />}
+                      style={{ background: token.colorBgContainer }}>
+                <Panel header='Список слоев' key={1}>
+                    <List
+                        style={{backgroundColor: 'white'}}
+                        size="small"
+                        //header={<div>Слои</div>}
+                        bordered
+                        dataSource={layers}
+                        renderItem={(item: GetLayerDto, index: number) =>
+                            <List.Item>
+                                <Checkbox
+                                    onChange={e => onChange(item, e)}
+                                    id={item.id}
+                                    defaultChecked={item.isSelectedByUser}
+                                    name={item.name}
+                                >
+                                    {item.name}
+                                </Checkbox>
+                                <div style={{width: 100, paddingLeft: 30}}>
+                                    <Button type="primary"
+                                            shape="default"
+                                            icon={<EditOutlined/>}
+                                            size={"small"}
+                                            style={{marginLeft: '8px'}}
+                                            onClick={() => showEdit(item)}
+                                    ></Button>
+                                    <Button type="primary"
+                                            shape="default"
+                                            icon={<DeleteOutlined/>}
+                                            size={"small"}
+                                            style={{marginLeft: '8px'}}
+                                            onClick={() => deleteLayer(item)}
+                                    ></Button>
+                                </div>
+                            </List.Item>}
+                    />
+                    <Button type="primary" shape={"default"} style={{width: "100%"}} onClick={() => showAdd(new CreateLayerDto({name: "", objects: []}))}>
+                        Создать новый слой
+                    </Button>
+                </Panel>
+            </Collapse>
+           
+        </div>
     );
 }
 
