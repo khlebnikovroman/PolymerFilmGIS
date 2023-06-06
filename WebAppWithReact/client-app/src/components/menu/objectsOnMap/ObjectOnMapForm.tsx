@@ -16,10 +16,10 @@ const ObjectOnMapForm: React.FC<AddObjectOnMapProps> = ({objectDto, form}: AddOb
                 labelCol={{span: 4}}
                 wrapperCol={{span: 25}}
                 initialValues={{
-                    objectName: objectDto.name,
-                    objectLat: objectDto.lati,
-                    objectLng: objectDto.long,
-                    objectCapacity: objectDto.capacity
+                     objectName: objectDto.name,
+                     objectLat: objectDto.lati,
+                     objectLng: objectDto.long,
+                     objectCapacity: objectDto.capacity
                 }}
                 autoComplete="off"
             >
@@ -28,28 +28,28 @@ const ObjectOnMapForm: React.FC<AddObjectOnMapProps> = ({objectDto, form}: AddOb
                     name="objectName"
                     rules={[{required: true, message: 'Пожалуйста, введите название объекта'}]}
                 >
-                    <Input/>
+                    <Input value={objectDto.name}/>
                 </Form.Item>
                 <Form.Item
                     label="Мощность"
                     name="objectCapacity"
                     rules={[{required: true, message: 'Пожалуйста, введите название объекта'}]}
                 >
-                    <Input/>
+                    <Input value={objectDto.capacity}/>
                 </Form.Item>
                 <Form.Item
                     label="Широта"
                     name="objectLat"
                     rules={[{required: true, message: 'Пожалуйста, введите широту'}]}
                 >
-                    <Input/>
+                    <Input value={objectDto.lati}/>
                 </Form.Item>
                 <Form.Item
                     label="Долгота"
                     name="objectLng"
                     rules={[{required: true, message: 'Пожалуйста, введите долготу'}]}
                 >
-                    <Input/>
+                    <Input value={objectDto.long}/>
                 </Form.Item>
 
             </Form>

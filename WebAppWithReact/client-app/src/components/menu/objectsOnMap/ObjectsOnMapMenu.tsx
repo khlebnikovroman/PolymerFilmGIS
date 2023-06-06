@@ -38,10 +38,14 @@ const ObjectsOnMapMenu: React.FC = () => {
 
     const {confirm} = Modal;
     const [form] = Form.useForm();
-
+    
     function showEdit(item: GetObjectOnMapDto) {
-//todo починить, при вызове формы, появляются старые данные в форме а не новые
-        form.resetFields();
+        form.setFieldsValue({
+            objectName: item.name,
+            objectLat: item.lati,
+            objectLng: item.long,
+            objectCapacity: item.capacity,
+        });
         confirm({
             title: "Изменение объекта",
             icon: <div/>,
