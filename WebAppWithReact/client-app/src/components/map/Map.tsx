@@ -146,8 +146,9 @@ export const MapComponent: React.FC = () => {
                                              opacity={0.3}
                                              maxZoom={18}
                                              cellSize={10}
-                                             exp={3}
-                                             displayValue={{min: min, max: max}}/>
+                                             exp={2}
+                                    // maxDistance={900000}
+                                />
                                 <TileLayer
                                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                                     url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager_labels_under/{z}/{x}/{y}{r}.png"/>
