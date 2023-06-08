@@ -194,6 +194,11 @@ public class LayerController : BaseAuthorizedController
         return Forbid();
     }
 
+    /// <summary>
+    ///     Устанавливает слой как выбранный пользователем, по ID слоя
+    /// </summary>
+    /// <param name="dto">DTO с информацией о выбранном слое</param>
+    /// <returns></returns>
     [HttpPut("selection")]
     public async Task<ActionResult> SetSelection([FromBody] SetLayerSelectionDto dto)
     {

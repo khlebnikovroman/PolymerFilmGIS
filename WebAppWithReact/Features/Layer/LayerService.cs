@@ -131,7 +131,12 @@ public class LayerService
             await _layerRepository.Update(layerToDelete);
         }
     }
-
+    
+    /// <summary>
+    ///     Отмечает слой как выбранный пользователем, по ID слоя
+    /// </summary>
+    /// <param name="dto">DTO с информацией о выбранном слое</param>
+    /// <returns></returns>
     public async Task SetSelection(SetLayerSelectionDto dto)
     {
         var l = await _layerRepository.FindById(dto.LayerId);
