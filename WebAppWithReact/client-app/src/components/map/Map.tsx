@@ -7,7 +7,7 @@ import {Form, Layout, Modal} from 'antd';
 import {Content} from "antd/es/layout/layout";
 import {useContextMenu} from "../../hooks";
 import {Mapelements} from "../menu/mapelements";
-import ReactGaussHeatmapLayer from "../heatmap/variant2/ReactGaussHeatmapLayer";
+import ReactGaussHeatmapLayer from "../heatmap/ReactGaussHeatmapLayer";
 import {CreateObjectOnMapDto, GetObjectOnMapDto, ObjectsOnMapClient} from "../../services/Clients";
 import ObjectOnMapForm from "../menu/objectsOnMap/ObjectOnMapForm";
 import {useSelector} from "react-redux";

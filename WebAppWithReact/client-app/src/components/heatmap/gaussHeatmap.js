@@ -3,7 +3,7 @@
 */
 import L from "leaflet"
 import {isInPolygon} from "./geojsonHelper"
-import {RussiaBoundsClient} from "../../../services/Clients";
+import {RussiaBoundsClient} from "../../services/Clients";
 
 class heatMap {
 
