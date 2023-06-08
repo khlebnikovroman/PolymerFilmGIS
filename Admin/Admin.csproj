@@ -18,12 +18,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Content Include="..\.dockerignore">
-            <Link>.dockerignore</Link>
-        </Content>
-    </ItemGroup>
-
-    <ItemGroup>
         <ProjectReference Include="..\DAL\DAL.csproj"/>
     </ItemGroup>
 
@@ -41,6 +35,12 @@
         <_ContentIncludedByDefault Remove="Pages\_ViewImports.cshtml"/>
         <_ContentIncludedByDefault Remove="Pages\_ViewStart.cshtml"/>
         <_ContentIncludedByDefault Remove="Areas\Identity\Pages\_ViewStart.cshtml"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Content Include="..\.dockerignore">
+            <Link>.dockerignore</Link>
+        </Content>
     </ItemGroup>
 
 </Project>

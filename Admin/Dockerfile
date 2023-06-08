@@ -6,6 +6,7 @@ EXPOSE 443
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
 COPY ["Admin/Admin.csproj", "Admin/"]
+COPY ["DAL/DAL.csproj", "DAL/"]
 RUN dotnet restore "Admin/Admin.csproj"
 COPY . .
 WORKDIR "/src/Admin"
