@@ -1,14 +1,11 @@
 /*
- (c) 2016, Manuel Bär
- Leaflet.idw, a tiny and fast inverse distance weighting plugin for Leaflet.
- Largely based on the source code of Leaflet.heat by Vladimir Agafonkin (c) 2014
- https://github.com/Leaflet/Leaflet.heat
+ based on https://github.com/spatialsparks/Leaflet.idw
 */
 import L from "leaflet"
 import {isInPolygon} from "./geojsonHelper"
 import {RussiaBoundsClient} from "../../../services/Clients";
 
-class simpleidw {
+class heatMap {
 
     defaultCellSize = 20
     defaultGradient = {
@@ -26,7 +23,7 @@ class simpleidw {
     }
 
     constructor(canvas) {
-        if (!(this instanceof simpleidw)) return new simpleidw(canvas);
+        if (!(this instanceof heatMap)) return new heatMap(canvas);
 
         this._canvas = canvas = typeof canvas === 'string' ? document.getElementById(canvas) : canvas;
 
@@ -135,19 +132,6 @@ class simpleidw {
             min = this._displayValue.min;
             max = this._displayValue.max;
         }
-        // else {
-        //     for (var i = 0, len = this._data.length, p; i < len; i++){
-        //         if (this._data[i][2]>max){
-        //             max = this._data[i][2]
-        //         }
-        //         if (this._data[i][2]<min){
-        //             min = this._data[i][2]
-        //         }
-        //     }
-        //
-        //     console.log("min after", min)
-        //     console.log("max after", max)
-        // }
 
         for (var i = 0, len = this._data.length, p; i < len; i++) {
             var p = this._data[i];
@@ -182,19 +166,7 @@ class simpleidw {
 
 }
 
-//window.simpleidw = simpleidw
-
-
-export const IdwLayer = L.Layer.extend({
-    /*
-    options: {
-        opacity: 0.5,
-        maxZoom: 18,
-        cellSize: 1,
-        exp: 2,
-        redrawFinsih: callback
-    },
-    */
+export const GaussHeatMap = L.Layer.extend({
     initialize: function (latlngs, options) {
         const client = new RussiaBoundsClient()
         const promise = client.russiaBounds()
@@ -213,8 +185,8 @@ export const IdwLayer = L.Layer.extend({
         this._latlngs = latlngs;
         if (!(!this._polygon || !this._map || !this._latlngs || this._latlngs.length === 0)) {
             let minmax = this._findMinMax()
-            this._idw.min(minmax.min)
-            this._idw.max(minmax.max)
+            this._heatmap.min(minmax.min)
+            this._heatmap.max(minmax.max)
             console.log(minmax)
         }
         return this.redraw();
@@ -231,14 +203,14 @@ export const IdwLayer = L.Layer.extend({
 
     setOptions: function (options) {
         L.setOptions(this, options);
-        if (this._idw) {
+        if (this._heatmap) {
             this._updateOptions();
         }
         return this.redraw();
     },
 
     redraw: function () {
-        if (this._idw && !this._frame && !this._map._animating) {
+        if (this._heatmap && !this._frame && !this._map._animating) {
             this._frame = L.Util.requestAnimFrame(this._redraw, this);
         }
         return this;
@@ -278,15 +250,15 @@ export const IdwLayer = L.Layer.extend({
     },
 
     getMax: function () {
-        return this._idw._max
+        return this._heatmap._max
     },
 
     getMin: function () {
-        return this._idw._min
+        return this._heatmap._min
     },
 
     _initCanvas: function () {
-        var canvas = this._canvas = L.DomUtil.create('canvas', 'leaflet-idwmap-layer leaflet-layer');
+        var canvas = this._canvas = L.DomUtil.create('canvas', 'leaflet-layer');
 
         var originProp = L.DomUtil.testProp(['transformOrigin', 'WebkitTransformOrigin', 'msTransformOrigin']);
         canvas.style[originProp] = '50% 50%';
@@ -298,21 +270,21 @@ export const IdwLayer = L.Layer.extend({
         var animated = this._map.options.zoomAnimation && L.Browser.any3d;
         L.DomUtil.addClass(canvas, 'leaflet-zoom-' + (animated ? 'animated' : 'hide'));
 
-        this._idw = new simpleidw(canvas);
+        this._heatmap = new heatMap(canvas);
         this._updateOptions();
     },
 
     _updateOptions: function () {
-        this._idw.cellSize(this.options.cellSize || this._idw.defaultCellSize);
+        this._heatmap.cellSize(this.options.cellSize || this._heatmap.defaultCellSize);
 
         if (this.options.redrawFinish) {
-            this._idw.redrawFinish(this.options.redrawFinish);
+            this._heatmap.redrawFinish(this.options.redrawFinish);
         }
 
-        this._idw.displayValue(this.options.displayValue);
+        this._heatmap.displayValue(this.options.displayValue);
 
         if (this.options.gradient) {
-            this._idw.gradient(this.options.gradient);
+            this._heatmap.gradient(this.options.gradient);
         }
     },
 
@@ -322,11 +294,11 @@ export const IdwLayer = L.Layer.extend({
 
         var size = this._map.getSize();
 
-        if (this._idw._width !== size.x) {
-            this._canvas.width = this._idw._width = size.x;
+        if (this._heatmap._width !== size.x) {
+            this._canvas.width = this._heatmap._width = size.x;
         }
-        if (this._idw._height !== size.y) {
-            this._canvas.height = this._idw._height = size.y;
+        if (this._heatmap._height !== size.y) {
+            this._canvas.height = this._heatmap._height = size.y;
         }
 
         this._redraw();
@@ -337,14 +309,14 @@ export const IdwLayer = L.Layer.extend({
         if (!this._polygon || !this._map || !this._latlngs || this._latlngs.length === 0) {
             return;
         }
-        var r = this._idw._r;
+        var r = this._heatmap._r;
         var size = this._map.getSize();
         var bounds = this._calculateBounds(r, size);
         var data = this._calculateData(bounds);
         this._drawData(data);
     },
     _drawData: function (data) {
-        this._idw.data(data).draw(this.options.opacity);
+        this._heatmap.data(data).draw(this.options.opacity);
     },
 
     _findMinMax: function () {
@@ -439,7 +411,7 @@ export const IdwLayer = L.Layer.extend({
     },
 
     _calculateData: function (bounds) {
-        var r = this._idw._r;
+        var r = this._heatmap._r;
         var data = [];
 
         var nCellX = this._calculateCellCount(bounds, r, 'x');
@@ -527,7 +499,3 @@ export const IdwLayer = L.Layer.extend({
         }
     }
 });
-
-const idwLayer = function (latlngs, options) {
-    return new L.IdwLayer(latlngs, options);
-};

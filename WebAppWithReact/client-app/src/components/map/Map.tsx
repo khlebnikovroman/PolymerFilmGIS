@@ -7,8 +7,7 @@ import {Form, Layout, Modal} from 'antd';
 import {Content} from "antd/es/layout/layout";
 import {useContextMenu} from "../../hooks";
 import {Mapelements} from "../menu/mapelements";
-import "leaflet.webgl-temperature-map"
-import IdwMapLayer from "../heatmap/variant2/HeatMapLayer2";
+import ReactGaussHeatmapLayer from "../heatmap/variant2/ReactGaussHeatmapLayer";
 import {CreateObjectOnMapDto, GetObjectOnMapDto, ObjectsOnMapClient} from "../../services/Clients";
 import ObjectOnMapForm from "../menu/objectsOnMap/ObjectOnMapForm";
 import {useSelector} from "react-redux";
@@ -54,7 +53,6 @@ export const MapComponent: React.FC = () => {
     
     const center = [lat, lng];
     const mapRef = useRef<L.Map>(null);
-    const tempMapRef = useRef<L.WebGlTemperatureMapLayer>(null);
     
     const contextMenu = useMemo(() => [
         {
@@ -148,11 +146,11 @@ export const MapComponent: React.FC = () => {
                                           style={{zIndex: 1, position: "relative", top: 0, left: 0}}>
                                 <ZoomControl position={'bottomright'}/>
                                 <LocationFinder/>
-                                <IdwMapLayer latlngs={objects}
-                                             opacity={0.3}
-                                             maxZoom={18}
-                                             cellSize={10}
-                                             exp={2}
+                                <ReactGaussHeatmapLayer latlngs={objects}
+                                                        opacity={0.3}
+                                                        maxZoom={18}
+                                                        cellSize={10}
+                                                        exp={2}
                                     // maxDistance={900000}
                                 />
                                 <TileLayer

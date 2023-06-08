@@ -1,9 +1,9 @@
 import {createLayerComponent, LayerProps} from '@react-leaflet/core';
 
 // @ts-ignore
-import {IdwLayer} from "./leaflet-idw";
+import {GaussHeatMap} from "./gaussHeatmap";
 
-export interface IdwLayerOptions extends LayerProps {
+export interface GaussHeatmapLayerOptions extends LayerProps {
     maxDistance?: number;
     opacity?: number;
     maxZoom?: number;
@@ -17,15 +17,17 @@ export interface IdwLayerOptions extends LayerProps {
     gradient?: Record<number, string>;
 }
 
-interface IdwLayerProps extends IdwLayerOptions {
+interface GaussHeatmapLayerProps extends GaussHeatmapLayerOptions {
     latlngs?: [number, number, number][]
 }
 
-const IdwMapLayer = createLayerComponent<IdwLayer, IdwLayerProps>(
-    function createIdwMapLayer(props, context) {
+// @ts-ignore
+const ReactGaussHeatmapLayer = createLayerComponent<GaussHeatMap, GaussHeatmapLayerProps>(
+    function createGaussHeatMapLayer(props, context) {
         const {latlngs, ...options} = props;
 
-        const layer = new IdwLayer(latlngs!, options);
+        // @ts-ignore
+        const layer = new GaussHeatMap(latlngs!, options);
 
         const container = context.layerContainer || context.map;
         container.addLayer(layer);
@@ -38,10 +40,10 @@ const IdwMapLayer = createLayerComponent<IdwLayer, IdwLayerProps>(
             },
         };
     },
-    function updateIdwMapLayer(instance, props, prevProps) {
+    function updateGaussHeatmapLayer(instance, props, prevProps) {
 
-        if (instance._idw) {
-            instance._idw.clear()
+        if (instance._heatmap) {
+            instance._heatmap.clear()
         }
         instance.setLatLngs(props.latlngs);
         if (props != null && props !== prevProps) {
@@ -51,4 +53,4 @@ const IdwMapLayer = createLayerComponent<IdwLayer, IdwLayerProps>(
     }
 );
 
-export default IdwMapLayer;
+export default ReactGaussHeatmapLayer;
