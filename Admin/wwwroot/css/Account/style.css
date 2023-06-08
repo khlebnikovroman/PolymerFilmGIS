@@ -1,0 +1,67 @@
+.login__card {
+    padding: 15px;
+    width: 500px;
+    height: auto;
+    border-radius: 16px;
+    box-shadow: 7px 7px 8px 2px rgba(34, 60, 80, 0.16);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.title__login__card {
+    font-family: 'RostelecomBasis-Regular';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 28px;
+    line-height: 32px;
+    color: #101828;
+    margin-bottom: 8px;
+}
+
+.login__text {
+    font-family: 'RostelecomBasis-Regular';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 22px;
+    color: #101828;
+    margin-top: 8px;
+}
+
+.text-danger {
+    font-family: 'RostelecomBasis-Regular';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 20px;
+}
+
+.form__input {
+    font-family: 'RostelecomBasis-Regular';
+    border: none;
+    background-color: rgba(16, 24, 40, 0.05);
+    border-radius: 8px;
+    width: 100%; /*360px;*/
+    z-index: 10;
+    padding: 12px;
+    transition: transform 0.3s;
+}
+
+.btn {
+    border: #FFFFFF;
+    font-family: 'RostelecomBasis-Regular';
+    font-style: normal;
+    border-radius: 8px;
+}
+
+.accept__btn {
+    margin-top: 16px;
+    width: 100px;
+    padding: 8px 12px;
+    background: #2F9AFF;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 20px;
+    color: #FFFFFF !important;
+}

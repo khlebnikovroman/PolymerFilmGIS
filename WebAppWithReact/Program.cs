@@ -85,7 +85,6 @@ builder.Services.AddAuthorization(options =>
 
 builder.Services.AddSingleton<IAuthorizationHandler, OwnByUserHandler>();
 
-builder.Services.AddCoreAdmin(UserRoles.Admin);
 builder.Services.AddControllers();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

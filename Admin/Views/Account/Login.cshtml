@@ -1,0 +1,33 @@
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model Admin.Controllers.LoginViewModel 
+@{
+    Layout = "_LayoutNoHeaderNoFooter";
+    ViewData["Title"] = "Авторизация";
+}
+
+@section AddToHead{
+    <link href="~/css/Account/style.css" rel="stylesheet"/>
+}
+
+<div class="d-flex justify-content-center align-items-center h-100">
+    <div class="login__card">
+        <form method="post" asp-controller="Account" asp-action="Login" asp-route-returnurl="@*@Model.ReturnUrl*@" id="loginForm">
+            <div class="title__login__card">Авторизация</div>
+
+            <label asp-for="Username" class="login__text"></label>
+            <input type="text" class="form__input" asp-for="Username" placeholder="Введите имя пользователя" autocomplete="off">
+            <span id="usernameValidation" asp-validation-for="Username" class="text-danger" style="display: block"></span>
+
+            <label asp-for="Password" class="login__text"></label>
+            <input type="password" class="login__input form__input" asp-for="Password" placeholder="Введите пароль" autocomplete="off">
+            <span id="passwordValidation" asp-validation-for="Password" class="text-danger" style="display: block"></span>
+
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="d-flex w-100 justify-content-center">
+                <button id="btnLogin" type="submit" class="btn accept__btn">Войти</button>
+            </div>
+
+        </form>
+    </div>
+</div>
