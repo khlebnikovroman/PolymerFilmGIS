@@ -6,7 +6,6 @@ class UserService {
 
     logout() {
         Cookies.remove("user")
-        console.log("выход");
     }
 
     isAuthenticated() {

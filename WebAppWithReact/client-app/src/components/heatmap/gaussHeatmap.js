@@ -188,7 +188,6 @@ export const GaussHeatMap = L.Layer.extend({
             let minmax = this._findMinMax()
             this._heatmap.min(minmax.min)
             this._heatmap.max(minmax.max)
-            console.log(minmax)
         }
         return this.redraw();
     },
@@ -341,7 +340,6 @@ export const GaussHeatMap = L.Layer.extend({
             const localMin = -this._findMaxOnGrid(fminus, latlngVal[0] - c, latlngVal[0] + c, latlngVal[1] - c, latlngVal[1] + c, 100, 3)
             max = Math.max(max, localMax)
             min = Math.min(min, localMin)
-            console.log("k= ", latlngVal[2], 'максимальное значение:', max, 'минимальное значение:', min, "c= ", c);
         }
         return {min: min, max: max}
     },
@@ -444,8 +442,6 @@ export const GaussHeatMap = L.Layer.extend({
                         Math.round(cell[1]),
                         cell[2]
                     ]);
-                } else {
-                    //console.log(`${i}, ${j}`);
                 }
             }
         }

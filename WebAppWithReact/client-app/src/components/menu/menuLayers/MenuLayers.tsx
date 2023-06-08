@@ -3,7 +3,7 @@ import {Button, Checkbox, Collapse, Form, List, Modal, theme} from 'antd';
 import {CheckboxChangeEvent} from "antd/es/checkbox";
 import {
     CreateLayerDto,
-    GetLayerDto, GetObjectOnMapDto,
+    GetLayerDto,
     LayerClient,
     ObjectsOnMapClient,
     SetLayerSelectionDto,
@@ -52,7 +52,6 @@ const MenuLayers = () => {
             width: 750,
             content: <LayerForm form={form} layerDto={item}/>,
             onOk: () => {
-                console.log(form.getFieldsValue())
                 form
                     .validateFields()
                     .then(async (values) => {
@@ -103,7 +102,6 @@ const MenuLayers = () => {
                     })
                     .catch((info) => {
                         form.resetFields();
-                        console.log('Validate Failed:');
                     });
             },
             onCancel: () => {

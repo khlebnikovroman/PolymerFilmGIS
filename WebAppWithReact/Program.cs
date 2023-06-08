@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Text;
 
 using DAL;
@@ -22,15 +21,7 @@ using WebAppWithReact.Repositories;
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
 
-// Add services to the container.
-// For Entity Framework
-foreach (DictionaryEntry VARIABLE in Environment.GetEnvironmentVariables())
-{
-    Console.WriteLine(VARIABLE.Key + ": " + VARIABLE.Value);
-}
-
 var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-Console.WriteLine(env);
 string connectionString;
 
 if (env == "Production")
@@ -38,8 +29,6 @@ if (env == "Production")
     connectionString = Environment.GetEnvironmentVariable("PRODUCION_BASE");
     var secret = Environment.GetEnvironmentVariable("JWT_SECRET");
     configuration["JWT:Secret"] = secret;
-    Console.WriteLine($"con: {connectionString}");
-    Console.WriteLine($"jwt: {configuration["JWT:Secret"]}");
 }
 else
 {
@@ -155,11 +144,12 @@ if (app.Environment.IsDevelopment())
 
 //if (app.Environment.IsProduction())
 //{
-    using (var scope = app.Services.CreateScope())
-    {
-        var dbContext = scope.ServiceProvider.GetRequiredService<Context>();
-        dbContext.Database.EnsureCreated();
-    }
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<Context>();
+    dbContext.Database.EnsureCreated();
+}
+
 //}
 
 // Configure the HTTP request pipeline.

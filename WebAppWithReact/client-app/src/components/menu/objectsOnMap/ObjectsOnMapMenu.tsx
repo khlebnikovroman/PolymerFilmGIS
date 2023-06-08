@@ -25,8 +25,6 @@ const ObjectsOnMapMenu: React.FC = () => {
 
 
     const onChange = (e: CheckboxChangeEvent) => {
-        console.log(`checked = ${e.target.checked}`);
-        console.log(`target name = ${e.target.id}`);
     };
 
     useEffect(() => {
@@ -52,7 +50,6 @@ const ObjectsOnMapMenu: React.FC = () => {
             width: "500px",
             content: <ObjectOnMapForm form={form} objectDto={item}/>,
             onOk: () => {
-                console.log(form.getFieldsValue())
                 form
                     .validateFields()
                     .then(async (values) => {

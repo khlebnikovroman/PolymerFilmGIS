@@ -84,12 +84,7 @@ const LayerForm: FunctionComponent<Props> = (props: OwnProps) => {
 
     const onScroll = (direction: TransferDirection, e: React.SyntheticEvent<HTMLUListElement>) => {
     };
-
-    // const test = () => {
-    //     const objectNames = mockData.filter((item) => targetKeys.includes(item.key));
-    //     console.log("Obj names", objectNames);
-    // };
-
+    
     return (
         <>
             <Form

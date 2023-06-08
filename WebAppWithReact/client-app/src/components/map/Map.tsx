@@ -117,14 +117,12 @@ export const MapComponent: React.FC = () => {
                     })
                     .catch((info) => {
                         form.resetFields();
-                        console.log('Validate Failed:', position);
                         document.title = 'HeatGIS';
                     });
             },
             onCancel: () => {
 
                 form.resetFields()
-                console.log('Clear:', item.long, item.lati);
                 document.title = 'HeatGIS';
 
             }
