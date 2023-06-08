@@ -9,7 +9,7 @@ class heatMap {
 
     defaultCellSize = 20
     defaultGradient = {
-        0: '#00E3E5',
+        0: '#00E3E500',
         0.1: '#00E19F',
         0.2: '#00DD5A',
         0.3: '#00D917',
@@ -150,7 +150,8 @@ class heatMap {
 
 
             var j = Math.round(((value - min) / (max - min)) * 255) * 4;
-            ctx.fillStyle = 'rgba(' + grad[j] + ',' + grad[j + 1] + ',' + grad[j + 2] + ',' + opacity + ')';
+            let alpha = opacity * grad[j + 3] / 255
+            ctx.fillStyle = 'rgba(' + grad[j] + ',' + grad[j + 1] + ',' + grad[j + 2] + ',' + alpha + ')';
             ctx.fillRect(p[0] - this._r, p[1] - this._r, this._r, this._r);
         }
 
