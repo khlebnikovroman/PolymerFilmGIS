@@ -17,8 +17,8 @@ services:
       - sqlserver
   admin:
     build:
-      context: ./Admin
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: Admin/Dockerfile
     environment:
       ASPNETCORE_URLS: "http://+:80"
       PRODUCION_BASE: ${sql_connection}
