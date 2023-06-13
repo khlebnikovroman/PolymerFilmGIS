@@ -16,8 +16,6 @@ RUN dotnet ef migrations add InitialMigration --project DAL.csproj --output-dir 
 WORKDIR "/src/WebAppWithReact"
 RUN dotnet build "WebAppWithReact.csproj" -c Release -o /app/build
 
-RUN dotnet ef database update --no-launch-profile --project ../DAL
-
 FROM build AS publish
 RUN dotnet publish "WebAppWithReact.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
