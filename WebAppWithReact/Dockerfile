@@ -10,8 +10,10 @@ COPY ["DAL/DAL.csproj", "DAL/"]
 RUN dotnet restore "WebAppWithReact/WebAppWithReact.csproj"
 COPY . .
 
-WORKDIR "/src/DAL"
-RUN dotnet ef migrations add InitialMigration --project DAL.csproj --output-dir Migrations
+RUN dotnet tool install --global dotnet-ef
+ENV PATH="${PATH}:/root/.dotnet/tools"
+RUN dotnet-ef migrations add $(date '+%Y%m%d%H%M%S')_AUTO --project DAL/DAL.csproj --startup-project WebAppWithReact/WebAppWithReact.csproj --context DAL.Context --configuration Release --output-dir Migrations
+
 
 WORKDIR "/src/WebAppWithReact"
 RUN dotnet build "WebAppWithReact.csproj" -c Release -o /app/build
