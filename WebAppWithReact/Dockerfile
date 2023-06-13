@@ -9,8 +9,14 @@ COPY ["WebAppWithReact/WebAppWithReact.csproj", "WebAppWithReact/"]
 COPY ["DAL/DAL.csproj", "DAL/"]
 RUN dotnet restore "WebAppWithReact/WebAppWithReact.csproj"
 COPY . .
+
+WORKDIR "/src/DAL"
+RUN dotnet ef migrations add InitialMigration --project DAL.csproj --output-dir Migrations
+
 WORKDIR "/src/WebAppWithReact"
 RUN dotnet build "WebAppWithReact.csproj" -c Release -o /app/build
+
+RUN dotnet ef database update --no-launch-profile --project ../DAL
 
 FROM build AS publish
 RUN dotnet publish "WebAppWithReact.csproj" -c Release -o /app/publish /p:UseAppHost=false
