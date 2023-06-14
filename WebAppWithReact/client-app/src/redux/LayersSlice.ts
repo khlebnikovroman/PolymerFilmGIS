@@ -39,8 +39,8 @@ const layersSlice = createSlice({
         addLayer(state, action: PayloadAction<GetLayerDto>) {
             state.layers.push(action.payload)
         },
-        removeLayer(state, action: PayloadAction<string>) {
-            state.layers = state.layers.filter(layer => layer.id !== action.payload)
+        removeLayer(state, action: PayloadAction<GetLayerDto>) {
+            state.layers = state.layers.filter(layer => layer.id !== action.payload.id)
         }
     }
 });

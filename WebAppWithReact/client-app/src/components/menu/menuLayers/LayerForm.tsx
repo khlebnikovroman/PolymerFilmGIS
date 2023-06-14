@@ -1,5 +1,5 @@
 import React, {FunctionComponent, useEffect, useState} from 'react';
-import {Form, FormInstance, Input, Transfer} from "antd";
+import {Form, FormInstance, Input, InputNumber, Transfer} from "antd";
 import {CreateLayerDto, GetLayerDto, GetObjectOnMapDto, ObjectsOnMapClient} from "../../../services/Clients";
 import type {TransferDirection} from 'antd/es/transfer';
 
@@ -93,6 +93,7 @@ const LayerForm: FunctionComponent<Props> = (props: OwnProps) => {
                 wrapperCol={{span: 16}}
                 initialValues={{
                     layerName: props.layerDto.name,
+                    layerAlpha: props.layerDto.alpha
                 }}
             >
                 <Form.Item label="Название слоя"
@@ -100,6 +101,15 @@ const LayerForm: FunctionComponent<Props> = (props: OwnProps) => {
                            rules={[{required: true, message: 'Пожалуйста, введите название слоя'}]}
                 >
                     <Input/>
+                </Form.Item>
+                <Form.Item label="Интенсивоность затухания"
+                           name="layerAlpha"
+                           rules={[{
+                               required: true,
+                               message: 'Пожалуйста, введите интенсивность затухания объектов слоя'
+                           }]}
+                >
+                    <InputNumber min={0.1}/>
                 </Form.Item>
                 <Form.Item label="Объекты"
                            name="layerObjects">

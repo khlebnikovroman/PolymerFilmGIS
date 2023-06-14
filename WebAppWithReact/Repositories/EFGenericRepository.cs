@@ -28,6 +28,7 @@ public class EFGenericRepository<TEntity> : IGenericRepository<TEntity> where TE
 
     public async Task<TEntity?> FindById(Guid id)
     {
+        var layers = await Get();
         var e = await _dbSet.FindAsync(id);
 
         return e;
@@ -64,6 +65,3 @@ public class EFGenericRepository<TEntity> : IGenericRepository<TEntity> where TE
         await _context.SaveChangesAsync();
     }
 }
-
-
-

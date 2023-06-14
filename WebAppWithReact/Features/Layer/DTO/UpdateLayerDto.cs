@@ -19,4 +19,7 @@ public record UpdateLayerDto
 
     [Required(ErrorMessage = "Objects is required")]
     public IReadOnlyCollection<Guid> Objects { get; set; }
+
+    [Required(ErrorMessage = "Alpha is required")]
+    public double Alpha { get; set; }
 }

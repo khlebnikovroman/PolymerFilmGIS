@@ -1295,6 +1295,7 @@ export interface IAddObjectToLayerDTO {
 export class CreateLayerDto implements ICreateLayerDto {
     name!: string;
     objects?: string[] | undefined;
+    alpha!: number;
 
     constructor(data?: ICreateLayerDto) {
         if (data) {
@@ -1313,6 +1314,7 @@ export class CreateLayerDto implements ICreateLayerDto {
                 for (let item of _data["objects"])
                     this.objects!.push(item);
             }
+            this.alpha = _data["alpha"];
         }
     }
 
@@ -1331,6 +1333,7 @@ export class CreateLayerDto implements ICreateLayerDto {
             for (let item of this.objects)
                 data["objects"].push(item);
         }
+        data["alpha"] = this.alpha;
         return data;
     }
 }
@@ -1338,6 +1341,7 @@ export class CreateLayerDto implements ICreateLayerDto {
 export interface ICreateLayerDto {
     name: string;
     objects?: string[] | undefined;
+    alpha: number;
 }
 
 export class CreateObjectOnMapDto implements ICreateObjectOnMapDto {
@@ -1433,6 +1437,7 @@ export class GetLayerDto implements IGetLayerDto {
     name!: string;
     objects!: GetObjectOnMapDto[];
     isSelectedByUser!: boolean;
+    alpha!: number;
 
     constructor(data?: IGetLayerDto) {
         if (data) {
@@ -1456,6 +1461,7 @@ export class GetLayerDto implements IGetLayerDto {
                     this.objects!.push(GetObjectOnMapDto.fromJS(item));
             }
             this.isSelectedByUser = _data["isSelectedByUser"];
+            this.alpha = _data["alpha"];
         }
     }
 
@@ -1476,6 +1482,7 @@ export class GetLayerDto implements IGetLayerDto {
                 data["objects"].push(item.toJSON());
         }
         data["isSelectedByUser"] = this.isSelectedByUser;
+        data["alpha"] = this.alpha;
         return data;
     }
 }
@@ -1485,6 +1492,7 @@ export interface IGetLayerDto {
     name: string;
     objects: GetObjectOnMapDto[];
     isSelectedByUser: boolean;
+    alpha: number;
 }
 
 export class GetObjectOnMapDto implements IGetObjectOnMapDto {
@@ -1640,18 +1648,18 @@ export class RefreshTokenModel implements IRefreshTokenModel {
         }
     }
 
-    static fromJS(data: any): RefreshTokenModel {
-        data = typeof data === 'object' ? data : {};
-        let result = new RefreshTokenModel();
-        result.init(data);
-        return result;
-    }
-
     init(_data?: any) {
         if (_data) {
             this.accessToken = _data["accessToken"];
             this.refreshToken = _data["refreshToken"];
         }
+    }
+
+    static fromJS(data: any): RefreshTokenModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new RefreshTokenModel();
+        result.init(data);
+        return result;
     }
 
     toJSON(data?: any) {
@@ -1681,19 +1689,19 @@ export class RefreshTokenResponse implements IRefreshTokenResponse {
         }
     }
 
-    static fromJS(data: any): RefreshTokenResponse {
-        data = typeof data === 'object' ? data : {};
-        let result = new RefreshTokenResponse();
-        result.init(data);
-        return result;
-    }
-
     init(_data?: any) {
         if (_data) {
             this.token = _data["token"];
             this.refreshToken = _data["refreshToken"];
             this.expiration = _data["expiration"] ? new Date(_data["expiration"].toString()) : <any>undefined;
         }
+    }
+
+    static fromJS(data: any): RefreshTokenResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new RefreshTokenResponse();
+        result.init(data);
+        return result;
     }
 
     toJSON(data?: any) {
@@ -1848,6 +1856,7 @@ export class UpdateLayerDto implements IUpdateLayerDto {
     name!: string;
     isSelectedByUser!: boolean;
     objects!: string[];
+    alpha!: number;
 
     constructor(data?: IUpdateLayerDto) {
         if (data) {
@@ -1871,6 +1880,7 @@ export class UpdateLayerDto implements IUpdateLayerDto {
                 for (let item of _data["objects"])
                     this.objects!.push(item);
             }
+            this.alpha = _data["alpha"];
         }
     }
 
@@ -1891,6 +1901,7 @@ export class UpdateLayerDto implements IUpdateLayerDto {
             for (let item of this.objects)
                 data["objects"].push(item);
         }
+        data["alpha"] = this.alpha;
         return data;
     }
 }
@@ -1900,6 +1911,7 @@ export interface IUpdateLayerDto {
     name: string;
     isSelectedByUser: boolean;
     objects: string[];
+    alpha: number;
 }
 
 export class UpdateObjectOnMapDto implements IUpdateObjectOnMapDto {

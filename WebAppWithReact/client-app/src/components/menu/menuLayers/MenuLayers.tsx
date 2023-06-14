@@ -12,7 +12,7 @@ import {
 import {CaretRightOutlined, DeleteOutlined, EditOutlined, PlusOutlined} from "@ant-design/icons";
 import LayerForm from "./LayerForm";
 import {RootState, useAppDispatch} from "../../../redux/store";
-import {setLayers, setSelection} from "../../../redux/LayersSlice";
+import {removeLayer, setLayers, setSelection} from "../../../redux/LayersSlice";
 import {setObjects} from "../../../redux/ObjectSlice";
 import {useSelector} from "react-redux";
 
@@ -58,6 +58,7 @@ const MenuLayers = () => {
                         form.resetFields();
                         const model = new UpdateLayerDto({
                             id: item.id,
+                            alpha: values.layerAlpha,
                             name: values.layerName,
                             objects: values.layerObjects,
                             isSelectedByUser: item.isSelectedByUser
@@ -92,13 +93,20 @@ const MenuLayers = () => {
                     .validateFields()
                     .then(async (values) => {
                         form.resetFields();
-                        
+
                         const model = new CreateLayerDto({
                             name: values.layerName,
-                            objects: []
+                            alpha: values.layerAlpha,
+                            objects: values.layerObjects
                         });
+
                         const layerClient = new LayerClient();
+                        const objectsClient = new ObjectsOnMapClient();
                         await layerClient.layerPOST(model)
+                        const layers = await layerClient.layerAll()
+                        const objectsWithoutLayers = await objectsClient.getAllWithoutLayer()
+                        dispatch(setLayers(layers))
+                        dispatch(setObjects(objectsWithoutLayers))
                     })
                     .catch((info) => {
                         form.resetFields();
@@ -110,9 +118,13 @@ const MenuLayers = () => {
         })
     }
 
-    function deleteLayer(item: GetLayerDto) {
+    async function deleteLayer(item: GetLayerDto) {
         const layerClient = new LayerClient();
-        layerClient.layerDELETE(item.id).then()
+        await layerClient.layerDELETE(item.id)
+        dispatch(removeLayer(item))
+        const objectsClient = new ObjectsOnMapClient();
+        const objectsWithoutLayers = await objectsClient.getAllWithoutLayer()
+        dispatch(setObjects(objectsWithoutLayers))
     }
     
     const onChange = (layer: GetLayerDto, e: CheckboxChangeEvent) => {
@@ -164,7 +176,8 @@ const MenuLayers = () => {
                                 </div>
                             </List.Item>}
                     />
-                    <Button type="primary" shape={"default"} style={{width: "100%"}} onClick={() => showAdd(new CreateLayerDto({name: "", objects: []}))}>
+                    <Button type="primary" shape={"default"} style={{width: "100%"}}
+                            onClick={() => showAdd(new CreateLayerDto({name: "", objects: [], alpha: 1}))}>
                         Создать новый слой
                     </Button>
                 </Panel>

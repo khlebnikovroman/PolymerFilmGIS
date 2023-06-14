@@ -55,6 +55,14 @@ public class LayerService
     {
         var layer = dto.Adapt<DAL.Layer>();
         layer.AppUserId = userId;
+        layer.ObjectsOnMap = new List<DAL.ObjectOnMap>();
+
+        //todo асинхронно сделать, сейчас заглушка
+        foreach (var objectId in dto.Objects)
+        {
+            layer.ObjectsOnMap.Add(_objectOnMapRepository.FindById(objectId).Result);
+        }
+
         await _layerRepository.Create(layer);
 
         return layer.Id;
@@ -131,7 +139,7 @@ public class LayerService
             await _layerRepository.Update(layerToDelete);
         }
     }
-    
+
     /// <summary>
     ///     Отмечает слой как выбранный пользователем, по ID слоя
     /// </summary>

@@ -21,4 +21,7 @@ public record GetLayerDto
 
     [Required]
     public bool IsSelectedByUser { get; set; }
+
+    [Required(ErrorMessage = "Alpha is required")]
+    public double Alpha { get; set; }
 }

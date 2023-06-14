@@ -12,7 +12,7 @@ public record CreateLayerDto
     public string? Name { get; set; }
 
     public IEnumerable<Guid>? Objects { get; set; }
+
+    [Required(ErrorMessage = "Alpha is required")]
+    public double Alpha { get; set; }
 }
-
-
-
