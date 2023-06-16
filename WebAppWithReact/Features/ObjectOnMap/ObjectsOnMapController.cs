@@ -3,6 +3,8 @@ using Mapster;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
+using ObjectsParsers;
+
 using WebAppWithReact.Controllers;
 using WebAppWithReact.Features.ObjectOnMap.DTO;
 using WebAppWithReact.Misc.AuthHandlers;
@@ -17,15 +19,22 @@ namespace WebAppWithReact.Features.ObjectOnMap;
 public class ObjectsOnMapController : BaseAuthorizedController
 {
     private readonly IAuthorizationService _authorizationService;
+    private readonly IHostEnvironment _hostEnvironment;
+    private readonly IGenericRepository<DAL.Layer> _layerRepository;
     private readonly IGenericRepository<DAL.ObjectOnMap> _objectOnMapRepository;
     private readonly ObjectOnMapService _objectOnMapService;
 
-    public ObjectsOnMapController(IGenericRepository<DAL.ObjectOnMap> objectOnMapRepository, ObjectOnMapService objectOnMapService,
-                                  IAuthorizationService authorizationService)
+    public ObjectsOnMapController(IGenericRepository<DAL.ObjectOnMap> objectOnMapRepository,
+                                  ObjectOnMapService objectOnMapService,
+                                  IAuthorizationService authorizationService,
+                                  IHostEnvironment hostEnvironment,
+                                  IGenericRepository<DAL.Layer> layerRepository)
     {
         _objectOnMapRepository = objectOnMapRepository;
         _objectOnMapService = objectOnMapService;
         _authorizationService = authorizationService;
+        _hostEnvironment = hostEnvironment;
+        _layerRepository = layerRepository;
     }
 
 
@@ -46,8 +55,6 @@ public class ObjectsOnMapController : BaseAuthorizedController
     /// <summary>
     ///     Получает все объекты
     /// </summary>
-
-    // todo переписать (сейчас это заглушка(нельзя использовать для админа))
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<ActionResult<GetObjectOnMapDto>> Get()
@@ -137,8 +144,42 @@ public class ObjectsOnMapController : BaseAuthorizedController
 
     [HttpPost]
     [Route("UploadFile")]
-    public async Task<ActionResult> GetFile()
+    public async Task<ActionResult> GetFile(IFormFile file)
     {
+        var uploads = Path.Combine(_hostEnvironment.ContentRootPath, "Uploads");
+        var path = await file.SaveTo(uploads);
+        var parser = ObjectParserFactory.CreateParser(path);
+        var layersAndObjects = parser.Parse(path);
+        var layers = layersAndObjects.Item1.ToList();
+        var objects = layersAndObjects.Item2;
+
+
+        foreach (var layer in layers)
+        {
+            var layersWithSameName = (await _layerRepository.Get(x => x.Name == layer.Name)).FirstOrDefault();
+
+            if (layersWithSameName is null)
+            {
+                layer.AppUserId = UserId;
+                await _layerRepository.Create(layer);
+            }
+            else
+            {
+                layer.AppUserId = layersWithSameName.AppUserId;
+            }
+        }
+
+        foreach (var objectOnMap in objects)
+        {
+            var objectsWithSameName = await _objectOnMapRepository.Get(x => x.Name == objectOnMap.Name);
+
+            if (objectsWithSameName.Count == 0)
+            {
+                objectOnMap.AppUserId = UserId;
+                await _objectOnMapRepository.Create(objectOnMap);
+            }
+        }
+
         return Ok();
     }
 }
