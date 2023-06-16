@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 
+using WebAppWithReact.Features.GoodCities;
 using WebAppWithReact.Features.Layer;
 using WebAppWithReact.Features.Layer.DTO;
 using WebAppWithReact.Features.ObjectOnMap;
@@ -127,6 +128,8 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(EFGenericRepository<>));
 builder.Services.AddTransient<ObjectOnMapService>();
 builder.Services.AddTransient<LayerService>();
+builder.Services.AddTransient<IGoodCitiesService, GoodCitiesServiceStub>();
+
 
 TypeAdapterConfig<GetLayerDto, Layer>
     .NewConfig()

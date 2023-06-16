@@ -134,8 +134,11 @@ public class ObjectsOnMapController : BaseAuthorizedController
 
         return Forbid();
     }
+
+    [HttpPost]
+    [Route("UploadFile")]
+    public async Task<ActionResult> GetFile()
+    {
+        return Ok();
+    }
 }
-
-
-
-

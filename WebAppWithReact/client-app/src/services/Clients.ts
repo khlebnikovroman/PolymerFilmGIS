@@ -377,6 +377,81 @@ export class AuthClient extends ApiBase {
     }
 }
 
+export class GoodCitiesClient extends ApiBase {
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+    private instance: AxiosInstance;
+    private baseUrl: string;
+
+    constructor(baseUrl?: string, instance?: AxiosInstance) {
+
+        super();
+
+        this.instance = instance ? instance : axios.create();
+
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+
+    }
+
+    /**
+     * @return Success
+     */
+    getCities(cancelToken?: CancelToken | undefined): Promise<CityDto[]> {
+        let url_ = this.baseUrl + "/api/GoodCities/GetCities";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: AxiosRequestConfig = {
+            method: "GET",
+            url: url_,
+            headers: {
+                "Accept": "text/plain"
+            },
+            cancelToken
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.instance.request(transformedOptions_);
+        }).catch((_error: any) => {
+            if (isAxiosError(_error) && _error.response) {
+                return _error.response;
+            } else {
+                throw _error;
+            }
+        }).then((_response: AxiosResponse) => {
+            return this.processGetCities(_response);
+        });
+    }
+
+    protected processGetCities(response: AxiosResponse): Promise<CityDto[]> {
+        const status = response.status;
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (let k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
+        }
+        if (status === 200) {
+            const _responseText = response.data;
+            let result200: any = null;
+            let resultData200 = _responseText;
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(CityDto.fromJS(item));
+            } else {
+                result200 = <any>null;
+            }
+            return Promise.resolve<CityDto[]>(result200);
+
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+        }
+        return Promise.resolve<CityDto[]>(null as any);
+    }
+}
+
 export class LayerClient extends ApiBase {
     private instance: AxiosInstance;
     private baseUrl: string;
@@ -1290,6 +1365,58 @@ export class AddObjectToLayerDTO implements IAddObjectToLayerDTO {
 export interface IAddObjectToLayerDTO {
     layerId?: string;
     objectId?: string;
+}
+
+export class CityDto implements ICityDto {
+    name?: string | undefined;
+    lat?: number;
+    lng?: number;
+    population?: number;
+    isRailwayNearby?: boolean;
+
+    constructor(data?: ICityDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    static fromJS(data: any): CityDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new CityDto();
+        result.init(data);
+        return result;
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.name = _data["name"];
+            this.lat = _data["lat"];
+            this.lng = _data["lng"];
+            this.population = _data["population"];
+            this.isRailwayNearby = _data["isRailwayNearby"];
+        }
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["name"] = this.name;
+        data["lat"] = this.lat;
+        data["lng"] = this.lng;
+        data["population"] = this.population;
+        data["isRailwayNearby"] = this.isRailwayNearby;
+        return data;
+    }
+}
+
+export interface ICityDto {
+    name?: string | undefined;
+    lat?: number;
+    lng?: number;
+    population?: number;
+    isRailwayNearby?: boolean;
 }
 
 export class CreateLayerDto implements ICreateLayerDto {
