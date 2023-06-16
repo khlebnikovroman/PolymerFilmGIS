@@ -57,7 +57,7 @@ public class ObjectsOnMapController : BaseAuthorizedController
     /// </summary>
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public async Task<ActionResult<GetObjectOnMapDto>> Get()
+    public async Task<ActionResult<IReadOnlyCollection<GetObjectOnMapDto>>> Get()
     {
         var objects = await _objectOnMapRepository.Get(o => o.AppUserId == UserId);
         var objectDtos = objects.Adapt<List<GetObjectOnMapDto>>();
