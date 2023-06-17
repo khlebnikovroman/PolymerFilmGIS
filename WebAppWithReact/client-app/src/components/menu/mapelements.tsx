@@ -9,6 +9,7 @@ import {useState} from "react";
 import type { RcFile } from 'antd/es/upload/interface';
 import {useAppDispatch} from "../../redux/store";
 import L from "leaflet";
+import CitiesOnMapMenu from "./cities/CitiesMenu";
 
 export const Mapelements: React.FC = () => {
 
@@ -64,6 +65,7 @@ export const Mapelements: React.FC = () => {
                 >
                     {uploading ? 'Uploading' : 'Start Upload'}
                 </Button>
+                <CitiesOnMapMenu/>
                 <MenuLayers/>
                 <ObjectsOnMapMenu/>
             </Space>

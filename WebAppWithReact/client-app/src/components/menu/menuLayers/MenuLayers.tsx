@@ -181,7 +181,6 @@ const MenuLayers = () => {
                     </Button>
                 </Panel>
             </Collapse>
-           
         </div>
     );
 }

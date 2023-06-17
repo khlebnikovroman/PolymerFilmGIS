@@ -14,7 +14,9 @@ import {RootState, useAppDispatch} from "../../redux/store";
 import {addObject} from "../../redux/ObjectSlice";
 import UserService from "../../services/UserService";
 import {setAllObjects} from "../../redux/AllObjectSlice";
-import customIconImage from "./objectIcon.png";
+import customObjectIconImage from "./objectIcon.png";
+import customCityIconImage from "./cityIcon.png";
+import {setCities} from "../../redux/CitiesSlice";
 
 L.Icon.Default.imagePath = "https://unpkg.com/browse/leaflet@1.9.2/dist/images/";
 
@@ -27,6 +29,7 @@ export const MapComponent: React.FC = () => {
 
     const {allObjects} = useSelector((state: RootState) => state.allObjects)
     const {layers} = useSelector((state: RootState) => state.layers);
+    const {cities} = useSelector((state: RootState) => state.cities);
     const [objects, setObjects] = useState<[number, number, number][]>();
 
     const [min, setMin] = useState(0);
@@ -34,8 +37,6 @@ export const MapComponent: React.FC = () => {
 
     const {setContextMenu} = useContextMenu();
     const dispatch = useAppDispatch();
-
-    
     
     useEffect(() => {
         const objClient = new ObjectsOnMapClient();
@@ -59,7 +60,8 @@ export const MapComponent: React.FC = () => {
                 layer.objects?.map(({lati, long, capacity}) => [lati, long, capacity])
             );
         // @ts-ignore
-        setObjects(result)
+        setObjects(result);
+        dispatch(setCities([]));
     }, [layers])
     
     const center = [lat, lng];
@@ -140,12 +142,48 @@ export const MapComponent: React.FC = () => {
         })
     }
 
-    const customIcon = L.icon({
-        iconUrl: customIconImage,
+    const customObjectIcon = L.icon({
+        iconUrl: customObjectIconImage,
         iconSize: [32, 32], // Размер иконки в пикселях
         iconAnchor: [16, 32], // Точка привязки иконки
     });
-    
+
+    const customCityIcon = L.icon({
+        iconUrl: customCityIconImage,
+        iconSize: [32, 32], // Размер иконки в пикселях
+        iconAnchor: [16, 32], // Точка привязки иконки
+    });
+    const renderObjectMarkers = () => {
+        return allObjects.map((object) => (
+            <Marker icon={customObjectIcon} position={[object.lati!, object.long!]} key={object.id}>
+                <Popup>
+                    <div>
+                        <h3>Название: {object.name}</h3>
+                        <p>Мощность: {object.capacity}</p>
+                        <p>Широта: {object.lati}</p>
+                        <p>Долгота: {object.long}</p>
+                    </div>
+                </Popup>
+            </Marker>
+        ));
+    };
+
+    const renderCityMarkers = () => {
+        return cities.map((city) => (
+            <Marker icon={customCityIcon} position={[city.lat!, city.lng!]}>
+                <Popup>
+                    <div>
+                        <h3>Название: {city.name}</h3>
+                        <p>Наличие Ж\Д: {city.isRailwayNearby}</p>
+                        <p>Население: {city.population}</p>
+                        <p>Широта: {city.lat}</p>
+                        <p>Долгота: {city.lng}</p>
+                    </div>
+                </Popup>
+            </Marker>
+        ));
+    };
+
     return (
         <div>
             <Layout className="site-layout">
@@ -159,18 +197,8 @@ export const MapComponent: React.FC = () => {
                                           className="big-map"
                                           attributionControl={false}
                                           style={{zIndex: 1, position: "relative", top: 0, left: 0}}>
-                                {allObjects.map((object) => (
-                                    <Marker icon={customIcon} position={[object.lati!, object.long!]}>
-                                        <Popup>
-                                            <div>
-                                                <h3>Название: {object.name}</h3>
-                                                <p>Мощность: {object.capacity}</p>
-                                                <p>Широта: {object.lati}</p>
-                                                <p>Долгота: {object.long}</p>
-                                            </div>
-                                        </Popup>
-                                    </Marker>
-                                ))}
+                                {renderObjectMarkers()}
+                                {renderCityMarkers()}
                                 <ZoomControl position={'bottomright'}/>
                                 <LocationFinder/>
                                 <ReactGaussHeatmapLayer latlngs={objects}

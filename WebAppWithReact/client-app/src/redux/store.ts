@@ -3,13 +3,15 @@ import {useDispatch} from 'react-redux'
 import layersSlice from './LayersSlice'
 import objectSlice from "./ObjectSlice";
 import allObjectSlice from "./AllObjectSlice";
+import citiesSlice from "./CitiesSlice";
 
 
 const store = configureStore({
     reducer: {
         layers: layersSlice,
         objects: objectSlice,
-        allObjects: allObjectSlice
+        allObjects: allObjectSlice,
+        cities: citiesSlice
     }
 })
 
