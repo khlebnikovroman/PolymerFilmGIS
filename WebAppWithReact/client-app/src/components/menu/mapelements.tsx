@@ -4,16 +4,11 @@ import {UserMenu} from "./usermenu";
 import MenuLayers from "./menuLayers/MenuLayers";
 import ObjectsOnMapMenu from "./objectsOnMap/ObjectsOnMapMenu";
 import {UploadOutlined} from "@ant-design/icons";
-import ObjectMarker from "../markers/ObjectMarker";
 import {GetObjectOnMapDto, ObjectsOnMapClient} from "../../services/Clients";
-import {useEffect, useRef, useState} from "react";
-import L from "leaflet";
-import {MapContainer} from "react-leaflet";
-import {UploadChangeParam} from "antd/es/upload";
+import {useState} from "react";
 import type { RcFile } from 'antd/es/upload/interface';
-import {setObjects} from "../../redux/ObjectSlice";
-import {setMarker} from "../../redux/AllObjectSlice";
 import {useAppDispatch} from "../../redux/store";
+import L from "leaflet";
 
 export const Mapelements: React.FC = () => {
 
@@ -22,7 +17,6 @@ export const Mapelements: React.FC = () => {
     const dispatch = useAppDispatch();
 
     const handleUploadFile = async () => {
-        
         const file = fileList[0] as RcFile;
         setUploading(true);
         const objectsClient = new ObjectsOnMapClient();
@@ -72,7 +66,6 @@ export const Mapelements: React.FC = () => {
                 </Button>
                 <MenuLayers/>
                 <ObjectsOnMapMenu/>
-                <ObjectMarker/>
             </Space>
         </>
     )

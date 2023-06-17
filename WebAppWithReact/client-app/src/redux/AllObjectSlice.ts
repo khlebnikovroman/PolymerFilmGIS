@@ -2,33 +2,39 @@
 import {GetObjectOnMapDto} from "../services/Clients";
 
 type InitialStateType = {
-    objects: GetObjectOnMapDto[]
+    allObjects: GetObjectOnMapDto[]
 }
 
 let initialState: InitialStateType = {
-    objects: []
+    allObjects: []
 }
 
-const allObjectsWithoutLayerSlice = createSlice({
+const allObjectsSlice = createSlice({
     name: 'allObjects',
     initialState,
     reducers: {
-        setMarker(state, action: PayloadAction<GetObjectOnMapDto[]>) {
-            state.objects = action.payload
+        setAllObjects(state, action: PayloadAction<GetObjectOnMapDto[]>) {
+            state.allObjects = action.payload;
         },
-        addMarker(state, action: PayloadAction<GetObjectOnMapDto>) {
-            state.objects.push(action.payload)
+        addObject(state, action: PayloadAction<GetObjectOnMapDto>) {
+            const newState = state.allObjects.slice();
+            newState.push(action.payload);
+            state.allObjects = newState;
         },
-        removeMarker(state, action: PayloadAction<string>) {
-            state.objects = state.objects.filter(layer => layer.id !== action.payload)
+        removeObject(state, action: PayloadAction<string>) {
+            state.allObjects = state.allObjects.filter(object => object.id !== action.payload);
         },
-        editMarker(state, action: PayloadAction<GetObjectOnMapDto>) {
-            const index = state.objects.findIndex((item) => item.id === action.payload.id);
-            state.objects[index] = action.payload;
+        editObject(state, action: PayloadAction<GetObjectOnMapDto>) {
+            const newState = state.allObjects.slice();
+            const index = newState.findIndex(item => item.id === action.payload.id);
+            if (index !== -1) {
+                newState[index] = action.payload;
+                state.allObjects = newState;
+            }
         }
     }
 });
 
-export const { setMarker, addMarker, removeMarker, editMarker} = allObjectsWithoutLayerSlice.actions;
+export const { setAllObjects, addObject, removeObject, editObject} = allObjectsSlice.actions;
 
-export default allObjectsWithoutLayerSlice.reducer;
+export default allObjectsSlice.reducer;

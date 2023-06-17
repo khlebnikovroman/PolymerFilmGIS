@@ -65,7 +65,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\DAL\DAL.csproj" />
-        <ProjectReference Include="..\ObjectsParsers\ObjectsParsers.csproj"/>
+        <ProjectReference Include="..\ObjectsParsers\ObjectsParsers.csproj" />
     </ItemGroup>
 
     <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
