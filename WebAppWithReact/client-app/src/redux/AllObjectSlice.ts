@@ -16,15 +16,15 @@ const allObjectsSlice = createSlice({
         setAllObjects(state, action: PayloadAction<GetObjectOnMapDto[]>) {
             state.allObjects = action.payload;
         },
-        addObject(state, action: PayloadAction<GetObjectOnMapDto>) {
+        addObjectToAll(state, action: PayloadAction<GetObjectOnMapDto>) {
             const newState = state.allObjects.slice();
             newState.push(action.payload);
             state.allObjects = newState;
         },
-        removeObject(state, action: PayloadAction<string>) {
+        removeObjectFromAll(state, action: PayloadAction<string>) {
             state.allObjects = state.allObjects.filter(object => object.id !== action.payload);
         },
-        editObject(state, action: PayloadAction<GetObjectOnMapDto>) {
+        editObjectFromAll(state, action: PayloadAction<GetObjectOnMapDto>) {
             const newState = state.allObjects.slice();
             const index = newState.findIndex(item => item.id === action.payload.id);
             if (index !== -1) {
@@ -35,6 +35,6 @@ const allObjectsSlice = createSlice({
     }
 });
 
-export const { setAllObjects, addObject, removeObject, editObject} = allObjectsSlice.actions;
+export const { setAllObjects, addObjectToAll, removeObjectFromAll, editObjectFromAll} = allObjectsSlice.actions;
 
 export default allObjectsSlice.reducer;

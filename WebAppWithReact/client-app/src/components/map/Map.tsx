@@ -14,7 +14,7 @@ import {useSelector} from "react-redux";
 import {RootState, useAppDispatch} from "../../redux/store";
 import {addObject} from "../../redux/ObjectSlice";
 import UserService from "../../services/UserService";
-import {setAllObjects} from "../../redux/AllObjectSlice";
+import {addObjectToAll, setAllObjects} from "../../redux/AllObjectSlice";
 import customObjectIconImage from "./objectIcon.png";
 import customCityIconImage from "./cityIcon.png";
 import {setCities} from "../../redux/CitiesSlice";
@@ -118,6 +118,7 @@ export const MapComponent: React.FC = () => {
                             id: id
                         })
                         dispatch(addObject(createdObject))
+                        dispatch(addObjectToAll(createdObject))
                         document.title = 'HeatGIS';
 
                     })

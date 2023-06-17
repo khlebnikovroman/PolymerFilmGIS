@@ -93,7 +93,8 @@ const LayerForm: FunctionComponent<Props> = (props: OwnProps) => {
                 wrapperCol={{span: 16}}
                 initialValues={{
                     layerName: props.layerDto.name,
-                    layerAlpha: props.layerDto.alpha
+                    layerAlpha: props.layerDto.alpha,
+                    layerObjects: props.layerDto.objects,
                 }}
             >
                 <Form.Item label="Название слоя"
