@@ -14,6 +14,7 @@ namespace DAL
         public DbSet<AppUser> AppUsers { get; set; }
         public DbSet<ObjectOnMap> ObjectsOnMap { get; set; }
         public DbSet<Layer> Layers { get; set; }
+        public DbSet<UserSettings> UsersSettings { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

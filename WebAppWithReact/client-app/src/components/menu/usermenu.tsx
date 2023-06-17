@@ -18,6 +18,10 @@ export const UserMenu: React.FC = () => {
         navigate("/login")
     }
 
+    function showSettings() {
+        
+    }
+
     return (
         <>
             <Modal open={open}
@@ -26,9 +30,9 @@ export const UserMenu: React.FC = () => {
                    title="Вы действительно хотите выйти?">
 
             </Modal>
-            <Card hoverable style={{width: 300, marginTop: 16}}
+            <Card hoverable style={{width: "100%", marginTop: 16}}
                   actions={[
-                      <SettingOutlined key="Настройки"/>,
+                      <SettingOutlined key="Настройки" onClick={() => showSettings()}/>,
                       <LogoutOutlined key="Выход" onClick={() => setOpen(true)}/>,
                   ]}>
                 <Meta

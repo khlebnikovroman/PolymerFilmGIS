@@ -136,7 +136,7 @@ const MenuLayers = () => {
     };
     
     return (
-        <div style={{maxHeight: '235px', overflowY: 'auto', borderRadius: '15px' }}>
+        <div style={{ borderRadius: '15px' }}>
             <Collapse bordered={false}
                       defaultActiveKey={['1']}
                       expandIcon={({ isActive }) => <CaretRightOutlined rotate={isActive ? 90 : 0} />}
