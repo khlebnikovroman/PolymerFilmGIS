@@ -20,5 +20,8 @@ namespace DAL
         public virtual List<Layer> Layers { get; set; }
         public string? RefreshToken { get; set; }
         public DateTime RefreshTokenExpiryTime { get; set; }
+
+        public Guid UserSettingsId { get; set; }
+        public virtual UserSettings UserSettings { get; set; }
     }
 }

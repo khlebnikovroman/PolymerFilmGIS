@@ -51,24 +51,28 @@ export const Mapelements: React.FC = () => {
     
     return (
         <>
-            <Space direction="vertical" size="middle" style={{display: 'flex'}}>
-                <UserMenu/>
-                <Upload {...props}>
-                    <Button icon={<UploadOutlined />}>Select File</Button>
-                </Upload>
-                <Button
-                    type="primary"
-                    onClick={handleUploadFile}
-                    disabled={fileList.length === 0}
-                    loading={uploading}
-                    style={{ marginTop: 16 }}
-                >
-                    {uploading ? 'Uploading' : 'Start Upload'}
-                </Button>
-                <CitiesOnMapMenu/>
-                <MenuLayers/>
-                <ObjectsOnMapMenu/>
-            </Space>
+            <div style={{maxHeight: '80vh', overflowY: 'auto', borderRadius: '15px', maxWidth: '35vw'}}>
+                <Space direction="vertical" size="middle" style={{display: 'flex'}}>
+                    <UserMenu/>
+                    <div style={{ display: 'flex', alignItems: 'stretch', width: '100%'  }}>
+                        <Upload {...props} style={{ flex: 1 }}>
+                            <Button icon={<UploadOutlined />}>Выбрать файл</Button>
+                        </Upload>
+                        <Button
+                            type="primary"
+                            onClick={handleUploadFile}
+                            disabled={fileList.length === 0}
+                            loading={uploading}
+                            style={{ flex: 1, marginLeft: "15px" }}
+                        >
+                            {uploading ? 'Загружается' : 'Загрузить'}
+                        </Button>
+                    </div>
+                    <CitiesOnMapMenu/>
+                    <MenuLayers/>
+                    <ObjectsOnMapMenu/>
+                </Space>
+            </div>
         </>
     )
 }
