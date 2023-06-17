@@ -92,9 +92,15 @@ export const MapComponent: React.FC = () => {
     
     function showAdd(item: CreateObjectOnMapDto) {
         document.title = 'Создание объекта';
+        form.setFieldsValue({
+            objectName: item.name,
+            objectLat: item.lati,
+            objectLng: item.long,
+            objectCapacity: item.capacity,
+        });
         item.long = Number(item.long.toFixed(4));
         item.lati = Number(item.lati.toFixed(4));
-        confirm({
+                confirm({
             title: "Создание объекта",
             icon: <div/>,
             content: <ObjectOnMapForm form={form} objectDto={item}/>,
