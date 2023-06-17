@@ -3,6 +3,7 @@ import {MapContainer, Marker, Popup, TileLayer, useMapEvents, ZoomControl} from 
 import L, {LatLng, latLng} from "leaflet";
 import './Map.css';
 import {Form, Layout, Modal} from 'antd';
+
 import {Content} from "antd/es/layout/layout";
 import {useContextMenu} from "../../hooks";
 import {Mapelements} from "../menu/mapelements";
@@ -30,7 +31,7 @@ export const MapComponent: React.FC = () => {
     const {allObjects} = useSelector((state: RootState) => state.allObjects)
     const {layers} = useSelector((state: RootState) => state.layers);
     const {cities} = useSelector((state: RootState) => state.cities);
-    const [objects, setObjects] = useState<[number, number, number][]>();
+    const [objects, setObjects] = useState<[number, number, number, number][]>();
 
     const [min, setMin] = useState(0);
     const [max, setMax] = useState(0);
@@ -45,19 +46,11 @@ export const MapComponent: React.FC = () => {
         })
     }, [])
     
-    useEffect(() => {
-        if (objects) {
-            const min = objects.reduce((acc, cur) => Math.min(acc, cur[2]), Infinity);
-            const max = objects.reduce((acc, cur) => Math.max(acc, cur[2]), -Infinity);
-            setMin(0);
-            setMax(max);
-        }
-    }, [objects])
     
     useEffect(() => {
         const result = layers.filter((l) => l.isSelectedByUser)
             .flatMap((layer) =>
-                layer.objects?.map(({lati, long, capacity}) => [lati, long, capacity])
+                layer.objects?.map(({lati, long, capacity}) => [lati, long, capacity, layer.alpha])
             );
         // @ts-ignore
         setObjects(result);

@@ -472,7 +472,7 @@ export const GaussHeatMap = L.Layer.extend({
             var ppp = this._latLngToPoint(p1)
             var pp = this._latLngToPoint(point)
 
-            weight += this._gaussFunction(pp.x, pp.y, ppp.x, ppp.y, this._latlngs[k][2], 1)
+            weight += this._gaussFunction(pp.x, pp.y, ppp.x, ppp.y, this._latlngs[k][2], this._latlngs[k][3])
         }
 
         return weight;
