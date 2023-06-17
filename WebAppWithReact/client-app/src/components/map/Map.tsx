@@ -31,7 +31,7 @@ export const MapComponent: React.FC = () => {
     const {allObjects} = useSelector((state: RootState) => state.allObjects)
     const {layers} = useSelector((state: RootState) => state.layers);
     const {cities} = useSelector((state: RootState) => state.cities);
-    const [objects, setObjects] = useState<[number, number, number][]>();
+    const [objects, setObjects] = useState<[number, number, number, number][]>();
 
     const [min, setMin] = useState(0);
     const [max, setMax] = useState(0);
