@@ -1,5 +1,5 @@
 ﻿import React, {useEffect, useState} from "react";
-import {Button, Checkbox, Collapse, Form, List, Modal, theme} from 'antd';
+import {Button, Checkbox, Collapse, Form, List, Modal, Slider, theme} from 'antd';
 import {CheckboxChangeEvent} from "antd/es/checkbox";
 import {
     CreateLayerDto,
@@ -145,7 +145,6 @@ const MenuLayers = () => {
                     <List
                         style={{backgroundColor: 'white'}}
                         size="small"
-                        //header={<div>Слои</div>}
                         bordered
                         dataSource={layers}
                         renderItem={(item: GetLayerDto, index: number) =>
@@ -182,7 +181,6 @@ const MenuLayers = () => {
                     </Button>
                 </Panel>
             </Collapse>
-           
         </div>
     );
 }
