@@ -3,7 +3,6 @@ import {MapContainer, TileLayer, useMapEvents, ZoomControl} from "react-leaflet"
 import L, {LatLng, latLng} from "leaflet";
 import './Map.css';
 import {Form, Layout, Modal} from 'antd';
-
 import {Content} from "antd/es/layout/layout";
 import {useContextMenu} from "../../hooks";
 import {Mapelements} from "../menu/mapelements";
@@ -19,6 +18,11 @@ L.Icon.Default.imagePath = "https://unpkg.com/browse/leaflet@1.9.2/dist/images/"
 
 export const MapComponent: React.FC = () => {
     document.title = 'HeatGIS';
+
+    // @ts-ignore
+    const mapRef = useRef<MapContainer>(null);
+    const allObjects: GetObjectOnMapDto[] = [];
+    
     const [lat, setLat] = useState(59.918711823015684);
     const [lng, setlng] = useState(30.319212156536604);
     const [position, setPosition] = useState<LatLng>();
@@ -52,7 +56,7 @@ export const MapComponent: React.FC = () => {
     }, [layers])
     
     const center = [lat, lng];
-    const mapRef = useRef<L.Map>(null);
+    //const mapRef = useRef<L.Map>(null);
     
     const contextMenu = useMemo(() => [
         {
@@ -135,7 +139,7 @@ export const MapComponent: React.FC = () => {
                 <div>
                     <Content>
                         <div className="element-on-map">
-                            <Mapelements/>
+                            <Mapelements allObjects={allObjects}/>
                         </div>
                         <div onContextMenu={handleContextMenu}>
                             <MapContainer ref={mapRef} zoomControl={false} zoom={4} center={latLng(lat, lng)}
