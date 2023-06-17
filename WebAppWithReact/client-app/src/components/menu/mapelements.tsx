@@ -4,12 +4,14 @@ import {UserMenu} from "./usermenu";
 import MenuLayers from "./menuLayers/MenuLayers";
 import ObjectsOnMapMenu from "./objectsOnMap/ObjectsOnMapMenu";
 import {UploadOutlined} from "@ant-design/icons";
-import {GetObjectOnMapDto, ObjectsOnMapClient} from "../../services/Clients";
+import {GetObjectOnMapDto, LayerClient, ObjectsOnMapClient} from "../../services/Clients";
 import {useState} from "react";
 import type { RcFile } from 'antd/es/upload/interface';
 import {useAppDispatch} from "../../redux/store";
 import L from "leaflet";
 import CitiesOnMapMenu from "./cities/CitiesMenu";
+import {addObjectToAll, setAllObjects} from "../../redux/AllObjectSlice";
+import {setLayers} from "../../redux/LayersSlice";
 
 export const Mapelements: React.FC = () => {
 
@@ -24,6 +26,13 @@ export const Mapelements: React.FC = () => {
         await objectsClient.uploadFile({ data: file, fileName: file.name || "file" })
             .then(async () => {
                 setFileList([]);
+                await objectsClient.objectsOnMapAll().then((res) => {
+                    dispatch(setAllObjects(res))
+                })
+                const layerClient = new LayerClient();
+                await layerClient.layerAll().then((res) => {
+                    dispatch(setLayers(res));
+                })
                 message.success('upload successfully.');
             })
             .catch(() => {

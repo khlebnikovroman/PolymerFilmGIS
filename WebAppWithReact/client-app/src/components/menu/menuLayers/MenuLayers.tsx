@@ -46,6 +46,11 @@ const MenuLayers = () => {
     const [form] = Form.useForm();
 
     function showEdit(item: GetLayerDto) {
+        form.setFieldsValue({
+           layerName: item.name,
+           layerAlpha: item.alpha,
+           layerObjects: item.objects.map(x => x.id) 
+        });
         confirm({
             title: "Изменение слоя",
             icon: <EditOutlined/>,

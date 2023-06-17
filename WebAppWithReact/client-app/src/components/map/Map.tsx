@@ -92,6 +92,8 @@ export const MapComponent: React.FC = () => {
     
     function showAdd(item: CreateObjectOnMapDto) {
         document.title = 'Создание объекта';
+        item.long = Number(item.long.toFixed(4));
+        item.lati = Number(item.lati.toFixed(4));
         confirm({
             title: "Создание объекта",
             icon: <div/>,
@@ -164,7 +166,7 @@ export const MapComponent: React.FC = () => {
 
     const renderCityMarkers = () => {
         return cities.map((city) => (
-            <Marker icon={customCityIcon} position={[city.lat!, city.lng!]}>
+            <Marker icon={customCityIcon} position={[city.lat!, city.lng!]} key={city.name}>
                 <Popup>
                     <div>
                         <h3>Название: {city.name}</h3>
