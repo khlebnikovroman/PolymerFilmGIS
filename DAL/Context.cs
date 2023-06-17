@@ -20,6 +20,11 @@ namespace DAL
         {
             base.OnModelCreating(modelBuilder);
 
+            modelBuilder.Entity<AppUser>()
+                        .HasOne(u => u.UserSettings)
+                        .WithOne(s => s.AppUser)
+                        .HasForeignKey<UserSettings>(s => s.AppUserId);
+
             // modelBuilder.Entity<Layer>()
             //             .HasMany(c => c.ObjectsOnMap)
             //             .WithOne(e => e.Layer)
