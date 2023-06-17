@@ -18,9 +18,7 @@ L.Icon.Default.imagePath = "https://unpkg.com/browse/leaflet@1.9.2/dist/images/"
 
 export const MapComponent: React.FC = () => {
     document.title = 'HeatGIS';
-
-    // @ts-ignore
-    const mapRef = useRef<MapContainer>(null);
+    
     const allObjects: GetObjectOnMapDto[] = [];
     
     const [lat, setLat] = useState(59.918711823015684);
@@ -56,7 +54,7 @@ export const MapComponent: React.FC = () => {
     }, [layers])
     
     const center = [lat, lng];
-    //const mapRef = useRef<L.Map>(null);
+    const mapRef = useRef<L.Map>(null);
     
     const contextMenu = useMemo(() => [
         {
@@ -139,7 +137,7 @@ export const MapComponent: React.FC = () => {
                 <div>
                     <Content>
                         <div className="element-on-map">
-                            <Mapelements allObjects={allObjects}/>
+                            <Mapelements/>
                         </div>
                         <div onContextMenu={handleContextMenu}>
                             <MapContainer ref={mapRef} zoomControl={false} zoom={4} center={latLng(lat, lng)}

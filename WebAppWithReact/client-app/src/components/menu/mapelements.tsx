@@ -15,14 +15,11 @@ import {setObjects} from "../../redux/ObjectSlice";
 import {setMarker} from "../../redux/AllObjectSlice";
 import {useAppDispatch} from "../../redux/store";
 
-export const Mapelements: React.FC<{ allObjects: GetObjectOnMapDto[] }> = ({ allObjects }) => {
+export const Mapelements: React.FC = () => {
 
     const [fileList, setFileList] = useState<UploadFile[]>([]);
     const [uploading, setUploading] = useState(false);
     const dispatch = useAppDispatch();
-
-    // @ts-ignore
-    const mapRef = useRef<MapContainer>(null);
 
     const handleUploadFile = async () => {
         
@@ -33,7 +30,6 @@ export const Mapelements: React.FC<{ allObjects: GetObjectOnMapDto[] }> = ({ all
             .then(async () => {
                 setFileList([]);
                 message.success('upload successfully.');
-                allObjects = await objectsClient.objectsOnMapAll()
             })
             .catch(() => {
                 message.error('upload failed.');
@@ -76,7 +72,7 @@ export const Mapelements: React.FC<{ allObjects: GetObjectOnMapDto[] }> = ({ all
                 </Button>
                 <MenuLayers/>
                 <ObjectsOnMapMenu/>
-                <ObjectMarker allObjects={allObjects}  mapRef={mapRef} />
+                <ObjectMarker/>
             </Space>
         </>
     )
