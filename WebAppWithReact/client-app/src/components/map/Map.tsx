@@ -25,7 +25,7 @@ export const MapComponent: React.FC = () => {
 
 
     const {layers} = useSelector((state: RootState) => state.layers);
-    const [objects, setObjects] = useState<[number, number, number][]>();
+    const [objects, setObjects] = useState<[number, number, number, number][]>();
 
     const [min, setMin] = useState(0);
     const [max, setMax] = useState(0);
@@ -33,19 +33,11 @@ export const MapComponent: React.FC = () => {
     const {setContextMenu} = useContextMenu();
     const dispatch = useAppDispatch();
 
-    useEffect(() => {
-        if (objects) {
-            const min = objects.reduce((acc, cur) => Math.min(acc, cur[2]), Infinity);
-            const max = objects.reduce((acc, cur) => Math.max(acc, cur[2]), -Infinity);
-            setMin(0);
-            setMax(max);
-        }
-    }, [objects])
     
     useEffect(() => {
         const result = layers.filter((l) => l.isSelectedByUser)
             .flatMap((layer) =>
-                layer.objects?.map(({lati, long, capacity}) => [lati, long, capacity])
+                layer.objects?.map(({lati, long, capacity}) => [lati, long, capacity, layer.alpha])
             );
         // @ts-ignore
         setObjects(result)

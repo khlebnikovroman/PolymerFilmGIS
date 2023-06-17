@@ -2,7 +2,7 @@ namespace WebAppWithReact.Features.GoodCities;
 
 public class GoodCitiesServiceStub : IGoodCitiesService
 {
-    public List<CityDto> GetGoodCities(Guid userId)
+    public async Task<List<CityDto>> GetGoodCities(Guid userId)
     {
         return new List<CityDto>
         {

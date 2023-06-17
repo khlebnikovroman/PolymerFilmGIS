@@ -1,6 +1,7 @@
 namespace WebAppWithReact.Features.GoodCities;
 
 public interface IGoodCitiesService
+
 {
-    public List<CityDto> GetGoodCities(Guid userId);
+    public Task<List<CityDto>> GetGoodCities(Guid userId);
 }

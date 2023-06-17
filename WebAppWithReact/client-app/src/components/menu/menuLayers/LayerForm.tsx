@@ -109,7 +109,7 @@ const LayerForm: FunctionComponent<Props> = (props: OwnProps) => {
                                message: 'Пожалуйста, введите интенсивность затухания объектов слоя'
                            }]}
                 >
-                    <InputNumber min={0.1}/>
+                    <InputNumber min={0.1} step={0.1}/>
                 </Form.Item>
                 <Form.Item label="Объекты"
                            name="layerObjects">
