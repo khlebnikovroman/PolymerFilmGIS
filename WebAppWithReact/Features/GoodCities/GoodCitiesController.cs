@@ -18,6 +18,8 @@ public class GoodCitiesController : BaseAuthorizedController
     [Route("GetCities")]
     public async Task<ActionResult<IReadOnlyCollection<CityDto>>> Get()
     {
-        return Ok(_goodCitiesService.GetGoodCities(UserId));
+        var goodCities = await _goodCitiesService.GetGoodCities(UserId);
+
+        return Ok(goodCities);
     }
 }
