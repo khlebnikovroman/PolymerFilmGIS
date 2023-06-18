@@ -1,4 +1,4 @@
-﻿import React, {useEffect} from "react";
+﻿import React, {useEffect, useState} from "react";
 import {Button, Collapse, List, Table, theme} from "antd";
 import {CityDto, GoodCitiesClient} from "../../../services/Clients";
 import {CaretRightOutlined} from "@ant-design/icons";
@@ -10,11 +10,15 @@ const CitiesOnMapMenu: React.FC = () => {
     const {Panel} = Collapse;
     const {token} = theme.useToken();
     
+    const [isLoading, setLoading] = useState(false);
+    const [isShown, setShown] = useState(false);
+    
     const dispatch = useAppDispatch();
     const {cities} = useSelector((state: RootState) => state.cities);
     const {layers} = useSelector((state: RootState) => state.layers);
     
     const handleClickFindCities = async () => {
+        setLoading(true);
         const isAnyLayerSelected = layers.some((layer) => layer.isSelectedByUser);
 
         const hasObjectsInSelectedLayer = layers.some(
@@ -23,12 +27,18 @@ const CitiesOnMapMenu: React.FC = () => {
 
         if (isAnyLayerSelected && hasObjectsInSelectedLayer) {
             const citiesClient = new GoodCitiesClient();
-            await citiesClient.getCities().then((res) => {
+            citiesClient.getCities().then((res) => {
                 dispatch(setCities(res));
                 console.log(res);
+                setShown(true);
+                setLoading(false);
             })
         }
     }
+    
+    useEffect(() => {
+        setShown(false);
+    }, [layers])
     
     return (
         <div style={{ borderRadius: '15px'}}>
@@ -37,25 +47,42 @@ const CitiesOnMapMenu: React.FC = () => {
                       expandIcon={({ isActive }) => <CaretRightOutlined rotate={isActive ? 90 : 0} />}
                       style={{ background: token.colorBgContainer }}>
                 <Panel header='Список городов' key={1}>
-                    <div style={{flexDirection: "row"}}>
-                        <p>Название Наличие Ж/Д Население</p>
-                    </div>
-                    <List
-                        style={{backgroundColor: 'white'}}
+                    <Table
+                        style={{ backgroundColor: 'white', display: isShown ? "flex" : "none" }}
                         size="small"
                         bordered
                         dataSource={cities}
-                        renderItem={(item: CityDto, index: number) =>
-                            
-                            <List.Item>
-                                <p>{item.name}</p>
-                                <p>{item.isRailwayNearby ? 'Да' : 'Нет'}</p>
-                                <p>{item.population}</p>
-                            </List.Item>}
+                        locale={{
+                            emptyText: "Тут пусто",
+                        }}
+                        columns={[
+                            {
+                                title: 'Название',
+                                dataIndex: 'name',
+                                key: 'name',
+                            },
+                            {
+                                title: 'Наличие Ж/Д',
+                                dataIndex: 'isRailwayNearby',
+                                key: 'isRailwayNearby',
+                                render: (isRailwayNearby) => (isRailwayNearby ? 'Да' : 'Нет'),
+                            },
+                            {
+                                title: 'Население',
+                                dataIndex: 'population',
+                                key: 'population',
+                            },
+                        ]}
                     />
-                    <Button type="primary" shape={"default"} style={{width: "100%"}}
-                            onClick={() => handleClickFindCities()}>
-                        Найти города
+
+                    <Button
+                        type="primary"
+                        shape="default"
+                        style={{ width: '100%' }}
+                        onClick={() => handleClickFindCities()}
+                        loading={isLoading}
+                    >
+                        {isLoading ? 'Ищем' : 'Найти города' }
                     </Button>
                 </Panel>
             </Collapse>

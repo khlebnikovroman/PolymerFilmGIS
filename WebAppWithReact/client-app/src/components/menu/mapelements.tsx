@@ -26,11 +26,11 @@ export const Mapelements: React.FC = () => {
         await objectsClient.uploadFile({ data: file, fileName: file.name || "file" })
             .then(async () => {
                 setFileList([]);
-                await objectsClient.objectsOnMapAll().then((res) => {
+                objectsClient.objectsOnMapAll().then((res) => {
                     dispatch(setAllObjects(res))
                 })
                 const layerClient = new LayerClient();
-                await layerClient.layerAll().then((res) => {
+                layerClient.layerAll().then((res) => {
                     dispatch(setLayers(res));
                 })
                 message.success('upload successfully.');
