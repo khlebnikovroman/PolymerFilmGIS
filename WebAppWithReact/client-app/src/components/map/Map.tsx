@@ -204,6 +204,7 @@ export const MapComponent: React.FC = () => {
                                 <ZoomControl position={'bottomright'}/>
                                 <LocationFinder/>
                                 <ReactGaussHeatmapLayer latlngs={objects}
+                                                        radiusOfMaxCapacity={500}
                                                         opacity={0.3}
                                                         maxZoom={18}
                                                         cellSize={10}

@@ -1,6 +1,8 @@
 using System.Globalization;
 using System.Text.Json;
 
+using DAL;
+
 using WebAppWithReact.Repositories;
 
 
@@ -56,10 +58,12 @@ public class Area
 public class GoodCitiesService : IGoodCitiesService
 {
     private readonly IGenericRepository<DAL.Layer> _layerRepository;
+    private readonly IGenericRepository<UserSettings> _userSettingRepository;
 
-    public GoodCitiesService(IGenericRepository<DAL.Layer> layerRepository)
+    public GoodCitiesService(IGenericRepository<DAL.Layer> layerRepository, IGenericRepository<UserSettings> userSettingRepository)
     {
         _layerRepository = layerRepository;
+        _userSettingRepository = userSettingRepository;
     }
 
     public async Task<List<CityDto>> GetGoodCities(Guid userId)
@@ -72,6 +76,8 @@ public class GoodCitiesService : IGoodCitiesService
         }
 
         var userActiveLayers = await _layerRepository.Get(x => x.AppUserId == userId && x.IsSelectedByUser);
+        var radius = (await _userSettingRepository.Get(x => x.AppUserId == userId)).First().RadiusOfObjectWithMaxCapacityInKilometers / 222;
+
         var multiplier = GetNormalizeMultiplier(userActiveLayers, 2);
         List<PointWithValue> minExtremums;
         List<PointWithValue> maxExtremums;
@@ -103,7 +109,6 @@ public class GoodCitiesService : IGoodCitiesService
 
         return cities;
     }
-
 
     private double GetNormalizeMultiplier(List<DAL.Layer> layers, double maxRadiusInDegrees)
     {

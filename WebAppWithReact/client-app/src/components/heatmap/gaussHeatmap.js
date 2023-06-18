@@ -185,26 +185,43 @@ export const GaussHeatMap = L.Layer.extend({
     setLatLngs: function (latlngs) {
         this._latlngs = latlngs;
         if (!(!this._polygon || !this._map || !this._latlngs || this._latlngs.length === 0)) {
+            this.normalizeCapacity(this.getNormalizeMultiplier())
             let minmax = this._findMinMax()
             this._heatmap.min(minmax.min)
             this._heatmap.max(minmax.max)
         }
-        return this.redraw();
+        return this._redraw();
     },
 
-    findMinMaxInRussia: function () {
-
+    getNormalizeMultiplier: function () {
+        if (!this._latlngs || this._latlngs.length == 0) {
+            return 1
+        }
+        let objectWithMaxCapacity = this._latlngs.reduce((max, current) => {
+            if (current[2] > max[2]) {
+                return current;
+            } else {
+                return max;
+            }
+        })
+        let a = objectWithMaxCapacity[3]
+        let k = objectWithMaxCapacity[2]
+        let radius = this.options.radiusOfMaxCapacity / 222 // километры в градусы, 1 градус равен 222км по вертикальнй оси
+        let normK = Math.pow(2 * Math.pow(radius, 2) / 9, 1 / a);
+        return k / normK;
     },
-
-    addLatLng: function (latlng) {
-        this._latlngs.push(latlng);
-        return this.redraw();
+    normalizeCapacity: function (multiplier) {
+        for (let i = 0; i < this._latlngs.length; i += 1) {
+            this._latlngs[i][2] = this._latlngs[i][2] / multiplier
+        }
     },
-
     setOptions: function (options) {
         L.setOptions(this, options);
         if (this._heatmap) {
             this._updateOptions();
+        }
+        if (!(!this._polygon || !this._map || !this._latlngs || this._latlngs.length === 0)) {
+            this.normalizeCapacity(this.getNormalizeMultiplier())
         }
         return this.redraw();
     },
@@ -332,10 +349,7 @@ export const GaussHeatMap = L.Layer.extend({
         let max = Number.MIN_SAFE_INTEGER
         for (let k = 0; k < this._latlngs.length; k++) {
             let latlngVal = this._latlngs[k]
-            let point = this._latLngToPoint(L.latLng(latlngVal[0], latlngVal[1]))
-            let scale = L.CRS.EPSG3857.scale(5)
-            //todo найти нормальную формуул для вычисления c сейчас как-то очень нестабильно
-            let c = Math.sqrt(Math.pow(Math.abs(latlngVal[2]), a) / 2) * 2.35482 / 10
+            let c = Math.sqrt(Math.pow(Math.abs(latlngVal[2]), a) / 2) * 3
             const localMax = this._findMaxOnGrid(f, latlngVal[0] - c, latlngVal[0] + c, latlngVal[1] - c, latlngVal[1] + c, 100, 3)
             const localMin = -this._findMaxOnGrid(fminus, latlngVal[0] - c, latlngVal[0] + c, latlngVal[1] - c, latlngVal[1] + c, 100, 3)
             max = Math.max(max, localMax)
@@ -461,18 +475,18 @@ export const GaussHeatMap = L.Layer.extend({
         var max = bounds.max[axis];
         return Math.ceil((max - min) / r) + 1;
     },
-    _latLngToPoint: function (point) {
-        return L.CRS.EPSG3857.latLngToPoint(point, 5)
-    },
-    _calculateWeight: function (point) {
+    // _latLngToPoint: function (point) {
+    //     return L.CRS.EPSG3857.latLngToPoint(point, 5)
+    // },
+    _calculateWeight: function (pointToCalculate) {
         let weight = 0;
 
         for (let k = 0; k < this._latlngs.length; k++) {
-            var p1 = L.latLng(this._latlngs[k][0], this._latlngs[k][1]);
-            var ppp = this._latLngToPoint(p1)
-            var pp = this._latLngToPoint(point)
+            var objectPoint = L.latLng(this._latlngs[k][0], this._latlngs[k][1]);
+            // var ppp = this._latLngToPoint(p1)
+            // var pp = this._latLngToPoint(point)
 
-            weight += this._gaussFunction(pp.x, pp.y, ppp.x, ppp.y, this._latlngs[k][2], this._latlngs[k][3])
+            weight += this._gaussFunction(pointToCalculate.lat, pointToCalculate.lng, objectPoint.lat, objectPoint.lng, this._latlngs[k][2], this._latlngs[k][3])
         }
 
         return weight;

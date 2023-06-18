@@ -4,7 +4,7 @@ import {createLayerComponent, LayerProps} from '@react-leaflet/core';
 import {GaussHeatMap} from "./gaussHeatmap";
 
 export interface GaussHeatmapLayerOptions extends LayerProps {
-    maxDistance?: number;
+    radiusOfMaxCapacity: number;
     opacity?: number;
     maxZoom?: number;
     cellSize?: number;
@@ -45,11 +45,12 @@ const ReactGaussHeatmapLayer = createLayerComponent<GaussHeatMap, GaussHeatmapLa
         if (instance._heatmap) {
             instance._heatmap.clear()
         }
-        instance.setLatLngs(props.latlngs);
         if (props != null && props !== prevProps) {
             instance.setOptions(props);
         }
-        instance._redraw();
+        instance.setLatLngs(props.latlngs);
+
+
     }
 );
 
