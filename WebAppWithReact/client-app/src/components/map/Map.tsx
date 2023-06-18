@@ -176,7 +176,7 @@ export const MapComponent: React.FC = () => {
                 <Popup>
                     <div>
                         <h3>Название: {city.name}</h3>
-                        <p>Наличие Ж\Д: {city.isRailwayNearby}</p>
+                        <p>Наличие Ж\Д: {city.isRailwayNearby ? "Есть" : "Нет"}</p>
                         <p>Население: {city.population}</p>
                         <p>Широта: {city.lat}</p>
                         <p>Долгота: {city.lng}</p>

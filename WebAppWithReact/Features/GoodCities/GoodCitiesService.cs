@@ -153,7 +153,7 @@ public class GoodCitiesService : IGoodCitiesService
             cities.AddRange(await OsmClient.GetCitiesInArea(area));
         }
 
-        cities = cities.DistinctBy(x => x.Name).OrderBy(x => x.IsRailwayNearby).ThenByDescending(x => x.Population).ToList();
+        cities = cities.DistinctBy(x => x.Name).OrderByDescending(x => x.IsRailwayNearby).ThenByDescending(x => x.Population).ToList();
 
         return cities;
     }
