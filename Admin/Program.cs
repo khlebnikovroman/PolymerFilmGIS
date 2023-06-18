@@ -65,6 +65,8 @@ else
     app.UseHsts();
 }
 
+app.UseCoreAdminCustomTitle("Панель администратора");
+
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
@@ -75,6 +77,7 @@ app.UseAuthorization();
 
 app.MapRazorPages();
 app.MapDefaultControllerRoute();
+app.UseCoreAdminCustomUrl("Admin");
 
 app.MapControllerRoute("default",
                        "{controller=Account}/{action=Login}/{id?}");
