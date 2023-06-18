@@ -46,6 +46,11 @@ const MenuLayers = () => {
     const [form] = Form.useForm();
 
     function showEdit(item: GetLayerDto) {
+        form.setFieldsValue({
+           layerName: item.name,
+           layerAlpha: item.alpha,
+           layerObjects: item.objects.map(x => x.id) 
+        });
         confirm({
             title: "Изменение слоя",
             icon: <EditOutlined/>,
@@ -56,6 +61,9 @@ const MenuLayers = () => {
                     .validateFields()
                     .then(async (values) => {
                         form.resetFields();
+                        if (!values.layerObjects) {
+                            values.layerObjects = layers.find(x => x.id === item.id)!.objects.map(x => x.id);
+                        }
                         const model = new UpdateLayerDto({
                             id: item.id,
                             alpha: values.layerAlpha,
@@ -66,10 +74,10 @@ const MenuLayers = () => {
                         const layerClient = new LayerClient();
                         const objectsClient = new ObjectsOnMapClient();
                         await layerClient.layerPUT(model)
-                        const layers = await layerClient.layerAll()
+                        const layersCl = await layerClient.layerAll()
                         const objectsWithoutLayers = await objectsClient.getAllWithoutLayer()
                         //todo это возможно обновить локально, без обращения на получение к серверу, потом надо это сделать
-                        dispatch(setLayers(layers))
+                        dispatch(setLayers(layersCl))
                         dispatch(setObjects(objectsWithoutLayers))
 
                     })
@@ -87,6 +95,7 @@ const MenuLayers = () => {
         confirm({
             title: "Добавление слоя",
             icon: <PlusOutlined />,
+            width: 750,
             content: <LayerForm form={form} layerDto={item}/>,
             onOk: () => {
                 form

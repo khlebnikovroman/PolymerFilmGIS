@@ -7,6 +7,7 @@ import ObjectOnMapForm from "./ObjectOnMapForm";
 import {useSelector} from "react-redux";
 import {RootState, useAppDispatch} from "../../../redux/store";
 import {editObject, removeObject, setObjects} from "../../../redux/ObjectSlice";
+import {editObjectFromAll, removeObjectFromAll} from "../../../redux/AllObjectSlice";
 
 
 const ObjectsOnMapMenu: React.FC = () => {
@@ -64,6 +65,7 @@ const ObjectsOnMapMenu: React.FC = () => {
                         const objectClient = new ObjectsOnMapClient();
                         await objectClient.objectsOnMapPUT(model)
                         dispatch(editObject(model))
+                        dispatch(editObjectFromAll(model));
                     })
                     .catch((info) => {
                         form.resetFields();
@@ -78,7 +80,8 @@ const ObjectsOnMapMenu: React.FC = () => {
     function deleteObject(item: GetObjectOnMapDto) {
         const objectClient = new ObjectsOnMapClient();
         objectClient.objectsOnMapDELETE(item.id!).then()
-        dispatch(removeObject(item.id!))
+        dispatch(removeObject(item.id!));
+        dispatch(removeObjectFromAll(item.id!));
     }
     
     return (
@@ -92,7 +95,6 @@ const ObjectsOnMapMenu: React.FC = () => {
                         <List
                             style={{backgroundColor: 'white'}}
                             size="small"
-                            //header={<div>Объекты</div>}
                             bordered
                             dataSource={objects}
                             renderItem={(item: GetObjectOnMapDto, index: number) =>

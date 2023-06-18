@@ -14,7 +14,7 @@ import {useSelector} from "react-redux";
 import {RootState, useAppDispatch} from "../../redux/store";
 import {addObject} from "../../redux/ObjectSlice";
 import UserService from "../../services/UserService";
-import {setAllObjects} from "../../redux/AllObjectSlice";
+import {addObjectToAll, setAllObjects} from "../../redux/AllObjectSlice";
 import cityImage from "./city.png"
 import factoryImage from "./factory.png"
 import {setCities} from "../../redux/CitiesSlice";
@@ -23,7 +23,7 @@ L.Icon.Default.imagePath = "https://unpkg.com/browse/leaflet@1.9.2/dist/images/"
 
 export const MapComponent: React.FC = () => {
     document.title = 'HeatGIS';
-
+    
     const [lat, setLat] = useState(59.918711823015684);
     const [lng, setlng] = useState(30.319212156536604);
     const [position, setPosition] = useState<LatLng>();
@@ -92,6 +92,14 @@ export const MapComponent: React.FC = () => {
     
     function showAdd(item: CreateObjectOnMapDto) {
         document.title = 'Создание объекта';
+        form.setFieldsValue({
+            objectName: item.name,
+            objectLat: item.lati,
+            objectLng: item.long,
+            objectCapacity: item.capacity,
+        });
+        item.long = Number(item.long.toFixed(4));
+        item.lati = Number(item.lati.toFixed(4));
         confirm({
             title: "Создание объекта",
             icon: <div/>,
@@ -118,6 +126,7 @@ export const MapComponent: React.FC = () => {
                             id: id
                         })
                         dispatch(addObject(createdObject))
+                        dispatch(addObjectToAll(createdObject))
                         document.title = 'HeatGIS';
 
                     })
@@ -163,7 +172,7 @@ export const MapComponent: React.FC = () => {
 
     const renderCityMarkers = () => {
         return cities.map((city) => (
-            <Marker icon={customCityIcon} position={[city.lat!, city.lng!]}>
+            <Marker icon={customCityIcon} position={[city.lat!, city.lng!]} key={city.name}>
                 <Popup>
                     <div>
                         <h3>Название: {city.name}</h3>
