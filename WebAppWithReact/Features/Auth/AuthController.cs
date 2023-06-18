@@ -141,6 +141,8 @@ public class AuthController : ControllerBase
             Email = model.Email,
             SecurityStamp = Guid.NewGuid().ToString(),
             UserName = model.Username,
+            FirstName = model.FirstName,
+            SecondName = model.SecondName,
         };
 
         var result = await _userManager.CreateAsync(appUser, model.Password);
