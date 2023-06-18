@@ -15,15 +15,15 @@ import {RootState, useAppDispatch} from "../../redux/store";
 import {addObject} from "../../redux/ObjectSlice";
 import UserService from "../../services/UserService";
 import {setAllObjects} from "../../redux/AllObjectSlice";
-import customObjectIconImage from "./objectIcon.png";
-import customCityIconImage from "./cityIcon.png";
+import cityImage from "./city.png"
+import factoryImage from "./factory.png"
 import {setCities} from "../../redux/CitiesSlice";
 
 L.Icon.Default.imagePath = "https://unpkg.com/browse/leaflet@1.9.2/dist/images/";
 
 export const MapComponent: React.FC = () => {
     document.title = 'HeatGIS';
-    
+
     const [lat, setLat] = useState(59.918711823015684);
     const [lng, setlng] = useState(30.319212156536604);
     const [position, setPosition] = useState<LatLng>();
@@ -136,13 +136,13 @@ export const MapComponent: React.FC = () => {
     }
 
     const customObjectIcon = L.icon({
-        iconUrl: customObjectIconImage,
+        iconUrl: factoryImage,
         iconSize: [32, 32], // Размер иконки в пикселях
         iconAnchor: [16, 32], // Точка привязки иконки
     });
 
     const customCityIcon = L.icon({
-        iconUrl: customCityIconImage,
+        iconUrl: cityImage,
         iconSize: [32, 32], // Размер иконки в пикселях
         iconAnchor: [16, 32], // Точка привязки иконки
     });

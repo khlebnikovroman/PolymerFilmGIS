@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Text.Json;
 
 using WebAppWithReact.Repositories;
@@ -42,10 +43,10 @@ public class Point
         get => _x;
         set
         {
-            if (value > 180 || value < -180)
-            {
-                throw new ArgumentOutOfRangeException("X", value, "Must be in [-180; 180]");
-            }
+            // if (value > 180 || value < -180)
+            // {
+            //     throw new ArgumentOutOfRangeException("X", value, "Must be in [-180; 180]");
+            // }
 
             _x = value;
         }
@@ -56,10 +57,10 @@ public class Point
         get => _y;
         set
         {
-            if (value > 90 || value < -90)
-            {
-                throw new ArgumentOutOfRangeException("Y", value, "Must be in [-90; 90]");
-            }
+            // if (value > 90 || value < -90)
+            // {
+            //     throw new ArgumentOutOfRangeException("Y", value, "Must be in [-90; 90]");
+            // }
 
             _y = value;
         }
@@ -125,19 +126,84 @@ public class GoodCitiesService : IGoodCitiesService
         }
 
         var userActiveLayers = await _layerRepository.Get(x => x.AppUserId == userId && x.IsSelectedByUser);
+        var multiplier = GetNormalizeMultiplier(userActiveLayers, 2);
         List<PointWithValue> minExtremums;
         List<PointWithValue> maxExtremums;
+        NormalizeObjectsCapacity(userActiveLayers, multiplier);
         (minExtremums, maxExtremums) = GetLocalExtremums(userActiveLayers);
         var minPoint = minExtremums.MinBy(x => x.value);
         var maxPoint = maxExtremums.MaxBy(x => x.value);
-        var Areas = new List<Area>();
+
+        var areas = new List<Area>();
 
         foreach (var maxExtremum in maxExtremums)
         {
-            Areas.Add(FindAreaAroundPoint(maxExtremum, userActiveLayers, minPoint.value, maxPoint.value, threshold));
+            var area = FindAreaAroundPoint(maxExtremum, userActiveLayers, minPoint.value, maxPoint.value, threshold);
+
+            if (area is not null)
+            {
+                areas.Add(area);
+            }
         }
 
-        return null;
+        var cities = new List<CityDto>();
+
+        foreach (var area in areas)
+        {
+            cities.AddRange(await OsmClient.GetCitiesInArea(area));
+        }
+
+        cities = cities.DistinctBy(x => x.Name).OrderBy(x => x.IsRailwayNearby).ThenByDescending(x => x.Population).ToList();
+
+        return cities;
+    }
+
+
+    private double GetNormalizeMultiplier(List<DAL.Layer> layers, double maxRadiusInDegrees)
+    {
+        var objectWithMaxK = layers.SelectMany(x => x.ObjectsOnMap)
+                                   .MaxBy(x => x.Capacity);
+
+        var a = objectWithMaxK.Layer.Alpha;
+        var k = objectWithMaxK.Capacity;
+        var normK = Math.Pow(2 * Math.Pow(maxRadiusInDegrees, 2) / 9, 1 / a);
+        var multiplier = k / normK;
+
+        return multiplier;
+    }
+
+    private double NormalizeLatitude(double latitude)
+    {
+        latitude = Math.Log(Math.Tan(latitude * Math.PI / 180) + 1.0 / Math.Cos(latitude * Math.PI / 180));
+
+        return latitude;
+    }
+
+    private void NormalizeObjectsCapacity(List<DAL.Layer> layers, double multiplier)
+    {
+        foreach (var layer in layers)
+        {
+            foreach (var objectOnMap in layer.ObjectsOnMap)
+            {
+                objectOnMap.Capacity /= multiplier;
+            }
+        }
+    }
+
+    private void DenormalizeObjectsCapacity(List<DAL.Layer> layers, double multiplier)
+    {
+        foreach (var layer in layers)
+        {
+            foreach (var objectOnMap in layer.ObjectsOnMap)
+            {
+                objectOnMap.Capacity *= multiplier;
+            }
+        }
+    }
+
+    private void DenormalizePoint(PointWithValue pointWithValue, double multiplier)
+    {
+        pointWithValue.value *= multiplier;
     }
 
     public Area FindAreaAroundPoint(Point point, List<DAL.Layer> layers, double min, double max, double threshold)
@@ -147,11 +213,11 @@ public class GoodCitiesService : IGoodCitiesService
             return null;
         }
 
-        var step = 0.001;
+        var step = 0.01;
         var currentPoint = new Point(point);
         var left = point.X;
         var right = point.X;
-        var top = point.X;
+        var top = point.Y;
         var bottom = point.Y;
 
         //идем вправо от точки
@@ -191,7 +257,7 @@ public class GoodCitiesService : IGoodCitiesService
         {
             try
             {
-                currentPoint.Y += step;
+                currentPoint.Y += step * 2;
             }
             catch (ArgumentOutOfRangeException)
             {
@@ -223,7 +289,7 @@ public class GoodCitiesService : IGoodCitiesService
 
     public bool IsBiggerThanThreshold(Point point, List<DAL.Layer> layers, double min, double max, double threshold)
     {
-        return Normalize(WeightInPoint(point, layers), min, max) < threshold;
+        return Normalize(WeightInPoint(point, layers), min, max) > threshold;
     }
 
     private double GaussFunction(double x, double y, double x0, double y0, double k, double a)
@@ -248,34 +314,6 @@ public class GoodCitiesService : IGoodCitiesService
         return weight;
     }
 
-    // private async Task<(double min, double max)> GetMinMaxInRussia(Guid userId)
-    // {
-    //     var min = double.PositiveInfinity;
-    //     var max = double.NegativeInfinity;
-    //     var userActiveLayers = await _layerRepository.Get(x => x.AppUserId == userId && x.IsSelectedByUser);
-    //     var xLeft = 19.0;
-    //     var xRight = 179.9;
-    //     var yBottom = 41.0;
-    //     var yTop = 81.0;
-    //     var xStep = (xRight - xLeft) / 200;
-    //     var yCount = (int) ((yTop - yBottom) / xStep);
-    //     var yStep = (yTop - yBottom) / yCount;
-    //
-    //     var point = new Point();
-    //     for (var x = xLeft; x <= xRight; x+=xStep)
-    //     {
-    //         for (var y = yBottom; y <= yTop; y+=yStep)
-    //         {
-    //             point.x = x;
-    //             point.y = y;
-    //             var weight = WeightInPoint(point, userActiveLayers);
-    //             min = Math.Min(min, weight);
-    //             max = Math.Max(max, weight);
-    //         }
-    //     }
-    //
-    //     return (min, max);
-    // }
 
     private (List<PointWithValue>, List<PointWithValue>) GetLocalExtremums(List<DAL.Layer> userActiveLayers)
     {
@@ -304,23 +342,24 @@ public class GoodCitiesService : IGoodCitiesService
 
     private PointWithValue GetLocalExtremum(Point startPoint, List<DAL.Layer> layers, ExtremumType extremumType)
     {
-        Func<List<double>, double> func;
+        Func<double, double, double> func;
         PointWithValue extremumPoint;
 
         switch (extremumType)
         {
             case ExtremumType.Min:
-                func = x => -WeightInPoint(new Point(x), layers);
-                extremumPoint = new PointWithValue(GradientDescent.Calculate(startPoint.ToList(), func));
-                extremumPoint.value = -func(startPoint.ToList());
+                func = (x, y) => WeightInPoint(new Point(x, y), layers);
+                extremumPoint = new PointWithValue(GradientDescent.GradientDescentMin(startPoint, func));
+                extremumPoint.value = func(extremumPoint.X, extremumPoint.Y);
 
                 return extremumPoint;
 
                 break;
             case ExtremumType.Max:
-                func = x => WeightInPoint(new Point(x), layers);
-                extremumPoint = new PointWithValue(GradientDescent.Calculate(startPoint.ToList(), func));
-                extremumPoint.value = func(startPoint.ToList());
+                func = (x, y) => -WeightInPoint(new Point(x, y), layers);
+                extremumPoint = new PointWithValue(GradientDescent.GradientDescentMin(startPoint, func));
+                extremumPoint.value = -func(extremumPoint.X, extremumPoint.Y);
+
 
                 return extremumPoint;
 
@@ -339,31 +378,6 @@ public class GoodCitiesService : IGoodCitiesService
 }
 
 
-public class RootObject
-{
-    public List<Element> Elements { get; set; }
-}
-
-
-public class Element
-{
-    public string Type { get; set; }
-    public long Id { get; set; }
-    public double Lat { get; set; }
-    public double Lon { get; set; }
-    public Tags Tags { get; set; }
-}
-
-
-public class Tags
-{
-    public string Name { get; set; }
-    public string AddrCountry { get; set; }
-    public string AddrRegion { get; set; }
-    public int Population { get; set; }
-}
-
-
 public static class OsmClient
 {
     private static JsonSerializerOptions _options = new()
@@ -373,35 +387,54 @@ public static class OsmClient
 
     public static async Task<List<CityDto>> GetCitiesInArea(Area area)
     {
+        var culture = new CultureInfo("en-US");
+        culture.NumberFormat.NumberDecimalSeparator = ".";
+
         var url =
             $"https://overpass-api.de/api/interpreter?data=[out:json];(node[%22place%22=%22city%22]" +
-            $"({area.LeftBottom.X},{area.LeftBottom.Y},{area.RightTop.X},{area.RightTop.Y});way[%22place%22=%22city%22]" +
-            $"({area.LeftBottom.X},{area.LeftBottom.Y},{area.RightTop.X},{area.RightTop.Y}););out;";
+            $"({area.LeftBottom.Y.ToString(culture)},{area.LeftBottom.X.ToString(culture)},{area.RightTop.Y.ToString(culture)},{area.RightTop.X.ToString(culture)});way[%22place%22=%22city%22]" +
+            $"({area.LeftBottom.Y.ToString(culture)},{area.LeftBottom.X.ToString(culture)},{area.RightTop.Y.ToString(culture)},{area.RightTop.X.ToString(culture)}););out;";
 
         var json = await GetDataFromApi(url);
-        var rootObject = JsonSerializer.Deserialize<RootObject>(json);
+        var response = JsonSerializer.Deserialize<JsonElement>(json);
+        var elements = response.GetProperty("elements");
 
-        var cities = rootObject.Elements.Select(e => new CityDto
+        var cities = elements.EnumerateArray().Select(e =>
         {
-            Name = e.Tags.Name,
-            Lat = e.Lat,
-            Lng = e.Lon,
-            Population = e.Tags.Population,
+            return new CityDto
+            {
+                Name = e.GetProperty("tags").GetProperty("name").GetString(),
+                Lat = e.GetProperty("lat").GetDouble(),
+                Lng = e.GetProperty("lon").GetDouble(),
+                Population = int.Parse(e.GetProperty("tags").GetProperty("population").GetString()),
+            };
         }).ToList();
+
+        foreach (var city in cities)
+        {
+            await CheckAndSetRailway(city);
+        }
 
         return cities;
     }
 
     private static async Task CheckAndSetRailway(CityDto city)
     {
+        var culture = new CultureInfo("en-US");
+        culture.NumberFormat.NumberDecimalSeparator = ".";
         var around = 10000;
 
         var url = $"https://overpass-api.de/api/interpreter?data=[out:json];" +
-                  $"%20node[%22railway%22=%22station%22][%22subway%22!=%22yes%22]%20(around:{around},{city.Lat},{city.Lng})%20;%20out%20count;";
+                  $"%20node[%22railway%22=%22station%22][%22subway%22!=%22yes%22]%20" +
+                  $"(around:{around.ToString(culture)},{city.Lat.ToString(culture)},{city.Lng.ToString(culture)})%20;%20out%20count;";
 
         var json = await GetDataFromApi(url);
-        var jsonObject = JsonSerializer.Deserialize<dynamic>(json);
-        var nodesValue = int.Parse(jsonObject["elements"][0]["tags"]["nodes"]);
+        var jsonObject = JsonSerializer.Deserialize<JsonElement>(json);
+
+        var nodesValue = int.Parse(jsonObject.GetProperty("elements")
+                                             .EnumerateArray()
+                                             .First().GetProperty("tags")
+                                             .GetProperty("nodes").GetString());
 
         if (nodesValue > 0)
         {
@@ -425,70 +458,53 @@ public static class OsmClient
 
 public static class GradientDescent
 {
-    public static List<double> Calculate(List<double> startPoint,
-                                         Func<List<double>, double> function)
+    public static PointWithValue GradientDescentMin(Point point,
+                                                    Func<double, double, double> function)
     {
-        double alpha = 1;
-        var alphaDecreaseRate = 0.9;
-        var currentPoint = startPoint;
+        var x = point.X;
+        var y = point.Y;
+        var learningRate = 0.1;
 
-        while (true)
+        // Количество итераций
+        var numIterations = 100;
+
+        // Градиентный спуск
+        for (var i = 0; i < numIterations; i++)
         {
-            var currentValue = function(currentPoint);
-            var newPoint = new List<double>();
+            // Вычисление приближенного градиента функции
+            var gradientX = ApproximateGradientX(x, y, function);
+            var gradientY = ApproximateGradientY(x, y, function);
 
-            for (var i = 0; i < currentPoint.Count; i++)
-            {
-                Func<double, double> func = x =>
-                    function(CopyPointWithReplace(currentPoint, x, i));
+            // Обновление переменных
+            x = x - learningRate * gradientX;
+            y = y - learningRate * gradientY;
 
-                newPoint.Add(currentPoint[i] -
-                             alpha * (1.0 / Convert.ToDouble(startPoint.Count)) *
-                             GetDerivative(func, currentPoint[i], 0.001));
-            }
-
-            var newValue = function(newPoint);
-
-            if (newValue < currentValue)
-            {
-                alpha *= alphaDecreaseRate;
-            }
-            else
-            {
-                if (currentValue - newValue <= 0.001)
-                {
-                    return newPoint;
-                }
-
-                currentPoint = newPoint;
-            }
-        }
-    }
-
-    private static List<double> CopyPointWithReplace(List<double> point,
-                                                     double replace, int replaceIndex)
-    {
-        var result = new List<double>();
-
-        for (var i = 0; i < point.Count; i++)
-        {
-            if (i == replaceIndex)
-            {
-                result.Add(replace);
-            }
-            else
-            {
-                result.Add(point[i]);
-            }
+            // Вывод текущих значений переменных и значения функции
+            var functionValue = function(x, y);
         }
 
-        return result;
+        var minPoint = new PointWithValue(x, y);
+        minPoint.value = function(minPoint.X, minPoint.Y);
+
+        return minPoint;
     }
 
-    private static double GetDerivative(Func<double, double> function,
-                                        double point, double delta)
+    public static double ApproximateGradientX(double x, double y, Func<double, double, double> func)
     {
-        return (function(point + delta) - function(point - delta)) /
-               (2 * delta);
+        var epsilon = 1e-6; // Малое число для вычисления приращения
+        var f1 = func(x + epsilon, y);
+        var f2 = func(x - epsilon, y);
+
+        return (f1 - f2) / (2 * epsilon);
+    }
+
+    // Приближенное вычисление частной производной по y
+    public static double ApproximateGradientY(double x, double y, Func<double, double, double> func)
+    {
+        var epsilon = 1e-6; // Малое число для вычисления приращения
+        var f1 = func(x, y + epsilon);
+        var f2 = func(x, y - epsilon);
+
+        return (f1 - f2) / (2 * epsilon);
     }
 }

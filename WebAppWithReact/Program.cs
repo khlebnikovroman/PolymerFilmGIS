@@ -128,7 +128,7 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(EFGenericRepository<>));
 builder.Services.AddTransient<ObjectOnMapService>();
 builder.Services.AddTransient<LayerService>();
-builder.Services.AddTransient<IGoodCitiesService, GoodCitiesServiceStub>();
+builder.Services.AddTransient<IGoodCitiesService, GoodCitiesService>();
 
 
 TypeAdapterConfig<GetLayerDto, Layer>
