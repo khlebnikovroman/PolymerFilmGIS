@@ -104,7 +104,6 @@ public class GoodCitiesService : IGoodCitiesService
         return cities;
     }
 
-
     private double GetNormalizeMultiplier(List<DAL.Layer> layers, double maxRadiusInDegrees)
     {
         var objectWithMaxK = layers.SelectMany(x => x.ObjectsOnMap)
