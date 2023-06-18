@@ -8,24 +8,6 @@ namespace WebAppWithReact.Features.GoodCities;
 
 public class Point
 {
-    private double _x;
-    private double _y;
-
-    public Point()
-    {
-    }
-
-    public Point(List<double> xy)
-    {
-        if (xy.Count != 2)
-        {
-            throw new ArgumentException();
-        }
-
-        X = xy[0];
-        Y = xy[1];
-    }
-
     public Point(double x, double y)
     {
         X = x;
@@ -38,55 +20,19 @@ public class Point
         Y = point.Y;
     }
 
-    public double X
-    {
-        get => _x;
-        set
-        {
-            // if (value > 180 || value < -180)
-            // {
-            //     throw new ArgumentOutOfRangeException("X", value, "Must be in [-180; 180]");
-            // }
+    public double X { get; set; }
 
-            _x = value;
-        }
-    }
-
-    public double Y
-    {
-        get => _y;
-        set
-        {
-            // if (value > 90 || value < -90)
-            // {
-            //     throw new ArgumentOutOfRangeException("Y", value, "Must be in [-90; 90]");
-            // }
-
-            _y = value;
-        }
-    }
-
-    public List<double> ToList()
-    {
-        return new List<double>
-            {X, Y,};
-    }
+    public double Y { get; set; }
 }
 
 
 public class PointWithValue : Point
 {
-    public PointWithValue(Point point)
+    public PointWithValue(Point point) : base(point)
     {
-        X = point.X;
-        Y = point.Y;
     }
 
     public PointWithValue(double x, double y) : base(x, y)
-    {
-    }
-
-    public PointWithValue(List<double> calculate) : base(calculate)
     {
     }
 
@@ -172,13 +118,6 @@ public class GoodCitiesService : IGoodCitiesService
         return multiplier;
     }
 
-    private double NormalizeLatitude(double latitude)
-    {
-        latitude = Math.Log(Math.Tan(latitude * Math.PI / 180) + 1.0 / Math.Cos(latitude * Math.PI / 180));
-
-        return latitude;
-    }
-
     private void NormalizeObjectsCapacity(List<DAL.Layer> layers, double multiplier)
     {
         foreach (var layer in layers)
@@ -188,22 +127,6 @@ public class GoodCitiesService : IGoodCitiesService
                 objectOnMap.Capacity /= multiplier;
             }
         }
-    }
-
-    private void DenormalizeObjectsCapacity(List<DAL.Layer> layers, double multiplier)
-    {
-        foreach (var layer in layers)
-        {
-            foreach (var objectOnMap in layer.ObjectsOnMap)
-            {
-                objectOnMap.Capacity *= multiplier;
-            }
-        }
-    }
-
-    private void DenormalizePoint(PointWithValue pointWithValue, double multiplier)
-    {
-        pointWithValue.value *= multiplier;
     }
 
     public Area FindAreaAroundPoint(Point point, List<DAL.Layer> layers, double min, double max, double threshold)

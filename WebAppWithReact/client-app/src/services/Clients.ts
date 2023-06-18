@@ -956,35 +956,6 @@ export class ObjectsOnMapClient extends ApiBase {
     /**
      * @return Success
      */
-    objectsOnMapAll(cancelToken?: CancelToken | undefined): Promise<GetObjectOnMapDto[]> {
-        let url_ = this.baseUrl + "/api/ObjectsOnMap";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_: AxiosRequestConfig = {
-            method: "GET",
-            url: url_,
-            headers: {
-                "Accept": "text/plain"
-            },
-            cancelToken
-        };
-
-        return this.transformOptions(options_).then(transformedOptions_ => {
-            return this.instance.request(transformedOptions_);
-        }).catch((_error: any) => {
-            if (isAxiosError(_error) && _error.response) {
-                return _error.response;
-            } else {
-                throw _error;
-            }
-        }).then((_response: AxiosResponse) => {
-            return this.processObjectsOnMapAll(_response);
-        });
-    }
-
-    /**
-     * @return Success
-     */
     objectsOnMapGET(id: string, cancelToken?: CancelToken | undefined): Promise<GetObjectOnMapDto> {
         let url_ = this.baseUrl + "/api/ObjectsOnMap/{id}";
         if (id === undefined || id === null)
@@ -1011,6 +982,35 @@ export class ObjectsOnMapClient extends ApiBase {
             }
         }).then((_response: AxiosResponse) => {
             return this.processObjectsOnMapGET(_response);
+        });
+    }
+
+    /**
+     * @return Success
+     */
+    objectsOnMapAll(cancelToken?: CancelToken | undefined): Promise<GetObjectOnMapDto[]> {
+        let url_ = this.baseUrl + "/api/ObjectsOnMap";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: AxiosRequestConfig = {
+            method: "GET",
+            url: url_,
+            headers: {
+                "Accept": "text/plain"
+            },
+            cancelToken
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.instance.request(transformedOptions_);
+        }).catch((_error: any) => {
+            if (isAxiosError(_error) && _error.response) {
+                return _error.response;
+            } else {
+                throw _error;
+            }
+        }).then((_response: AxiosResponse) => {
+            return this.processObjectsOnMapAll(_response);
         });
     }
 
@@ -1252,6 +1252,27 @@ export class ObjectsOnMapClient extends ApiBase {
         });
     }
 
+    protected processObjectsOnMapDELETE(response: AxiosResponse): Promise<void> {
+        const status = response.status;
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (let k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
+        }
+        if (status === 200) {
+            const _responseText = response.data;
+            return Promise.resolve<void>(null as any);
+
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
     protected processObjectsOnMapGET(response: AxiosResponse): Promise<GetObjectOnMapDto> {
         const status = response.status;
         let _headers: any = {};
@@ -1274,27 +1295,6 @@ export class ObjectsOnMapClient extends ApiBase {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
         return Promise.resolve<GetObjectOnMapDto>(null as any);
-    }
-
-    protected processObjectsOnMapDELETE(response: AxiosResponse): Promise<void> {
-        const status = response.status;
-        let _headers: any = {};
-        if (response.headers && typeof response.headers === "object") {
-            for (let k in response.headers) {
-                if (response.headers.hasOwnProperty(k)) {
-                    _headers[k] = response.headers[k];
-                }
-            }
-        }
-        if (status === 200) {
-            const _responseText = response.data;
-            return Promise.resolve<void>(null as any);
-
-        } else if (status !== 200 && status !== 204) {
-            const _responseText = response.data;
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-        }
-        return Promise.resolve<void>(null as any);
     }
 
     protected processUploadFile(response: AxiosResponse): Promise<void> {
@@ -1386,6 +1386,129 @@ export class RussiaBoundsClient extends ApiBase {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
         return Promise.resolve<any>(null as any);
+    }
+}
+
+export class UserClient extends ApiBase {
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+    private instance: AxiosInstance;
+    private baseUrl: string;
+
+    constructor(baseUrl?: string, instance?: AxiosInstance) {
+
+        super();
+
+        this.instance = instance ? instance : axios.create();
+
+        this.baseUrl = baseUrl !== undefined && baseUrl !== null ? baseUrl : "";
+
+    }
+
+    /**
+     * @param body (optional)
+     * @return Success
+     */
+    updateSettings(body: UpdateUserSettingsDTO | undefined, cancelToken?: CancelToken | undefined): Promise<void> {
+        let url_ = this.baseUrl + "/api/User/UpdateSettings";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_: AxiosRequestConfig = {
+            data: content_,
+            method: "PUT",
+            url: url_,
+            headers: {
+                "Content-Type": "application/json",
+            },
+            cancelToken
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.instance.request(transformedOptions_);
+        }).catch((_error: any) => {
+            if (isAxiosError(_error) && _error.response) {
+                return _error.response;
+            } else {
+                throw _error;
+            }
+        }).then((_response: AxiosResponse) => {
+            return this.processUpdateSettings(_response);
+        });
+    }
+
+    /**
+     * @return Success
+     */
+    getSettings(cancelToken?: CancelToken | undefined): Promise<GetUserSettingsDTO> {
+        let url_ = this.baseUrl + "/api/User/GetSettings";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_: AxiosRequestConfig = {
+            method: "GET",
+            url: url_,
+            headers: {
+                "Accept": "text/plain"
+            },
+            cancelToken
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.instance.request(transformedOptions_);
+        }).catch((_error: any) => {
+            if (isAxiosError(_error) && _error.response) {
+                return _error.response;
+            } else {
+                throw _error;
+            }
+        }).then((_response: AxiosResponse) => {
+            return this.processGetSettings(_response);
+        });
+    }
+
+    protected processUpdateSettings(response: AxiosResponse): Promise<void> {
+        const status = response.status;
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (let k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
+        }
+        if (status === 200) {
+            const _responseText = response.data;
+            return Promise.resolve<void>(null as any);
+
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+        }
+        return Promise.resolve<void>(null as any);
+    }
+
+    protected processGetSettings(response: AxiosResponse): Promise<GetUserSettingsDTO> {
+        const status = response.status;
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (let k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
+        }
+        if (status === 200) {
+            const _responseText = response.data;
+            let result200: any = null;
+            let resultData200 = _responseText;
+            result200 = GetUserSettingsDTO.fromJS(resultData200);
+            return Promise.resolve<GetUserSettingsDTO>(result200);
+
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+        }
+        return Promise.resolve<GetUserSettingsDTO>(null as any);
     }
 }
 
@@ -1738,6 +1861,46 @@ export interface IGetObjectOnMapDto {
     lati?: number;
     long?: number;
     capacity?: number;
+}
+
+export class GetUserSettingsDTO implements IGetUserSettingsDTO {
+    isNeedToDrawHeatMap?: boolean;
+    radiusOfObjectWithMaxCapacityInKilometers?: number;
+
+    constructor(data?: IGetUserSettingsDTO) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    static fromJS(data: any): GetUserSettingsDTO {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetUserSettingsDTO();
+        result.init(data);
+        return result;
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.isNeedToDrawHeatMap = _data["isNeedToDrawHeatMap"];
+            this.radiusOfObjectWithMaxCapacityInKilometers = _data["radiusOfObjectWithMaxCapacityInKilometers"];
+        }
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["isNeedToDrawHeatMap"] = this.isNeedToDrawHeatMap;
+        data["radiusOfObjectWithMaxCapacityInKilometers"] = this.radiusOfObjectWithMaxCapacityInKilometers;
+        return data;
+    }
+}
+
+export interface IGetUserSettingsDTO {
+    isNeedToDrawHeatMap?: boolean;
+    radiusOfObjectWithMaxCapacityInKilometers?: number;
 }
 
 export class LoginModel implements ILoginModel {
@@ -2153,6 +2316,46 @@ export interface IUpdateObjectOnMapDto {
     lati: number;
     long: number;
     capacity: number;
+}
+
+export class UpdateUserSettingsDTO implements IUpdateUserSettingsDTO {
+    isNeedToDrawHeatMap?: boolean;
+    radiusOfObjectWithMaxCapacityInKilometers?: number;
+
+    constructor(data?: IUpdateUserSettingsDTO) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    static fromJS(data: any): UpdateUserSettingsDTO {
+        data = typeof data === 'object' ? data : {};
+        let result = new UpdateUserSettingsDTO();
+        result.init(data);
+        return result;
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.isNeedToDrawHeatMap = _data["isNeedToDrawHeatMap"];
+            this.radiusOfObjectWithMaxCapacityInKilometers = _data["radiusOfObjectWithMaxCapacityInKilometers"];
+        }
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["isNeedToDrawHeatMap"] = this.isNeedToDrawHeatMap;
+        data["radiusOfObjectWithMaxCapacityInKilometers"] = this.radiusOfObjectWithMaxCapacityInKilometers;
+        return data;
+    }
+}
+
+export interface IUpdateUserSettingsDTO {
+    isNeedToDrawHeatMap?: boolean;
+    radiusOfObjectWithMaxCapacityInKilometers?: number;
 }
 
 export interface FileParameter {
