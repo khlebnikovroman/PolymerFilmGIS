@@ -22,4 +22,4 @@ const CitiesSlice = createSlice({
 
 export const { setCities } =  CitiesSlice.actions;
 
-export default  CitiesSlice.reducer;
+export default CitiesSlice.reducer;

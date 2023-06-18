@@ -8,7 +8,13 @@ import {Content} from "antd/es/layout/layout";
 import {useContextMenu} from "../../hooks";
 import {Mapelements} from "../menu/mapelements";
 import ReactGaussHeatmapLayer from "../heatmap/ReactGaussHeatmapLayer";
-import {CreateObjectOnMapDto, GetObjectOnMapDto, ObjectsOnMapClient} from "../../services/Clients";
+import {
+    CreateObjectOnMapDto,
+    GetObjectOnMapDto,
+    GetUserSettingsDTO,
+    ObjectsOnMapClient,
+    UserClient
+} from "../../services/Clients";
 import ObjectOnMapForm from "../menu/objectsOnMap/ObjectOnMapForm";
 import {useSelector} from "react-redux";
 import {RootState, useAppDispatch} from "../../redux/store";
@@ -18,6 +24,7 @@ import {addObjectToAll, setAllObjects} from "../../redux/AllObjectSlice";
 import cityImage from "./city.png"
 import factoryImage from "./factory.png"
 import {setCities} from "../../redux/CitiesSlice";
+import {setSettings} from "../../redux/UserSettingsSlice";
 
 L.Icon.Default.imagePath = "https://unpkg.com/browse/leaflet@1.9.2/dist/images/";
 
@@ -31,6 +38,7 @@ export const MapComponent: React.FC = () => {
     const {allObjects} = useSelector((state: RootState) => state.allObjects)
     const {layers} = useSelector((state: RootState) => state.layers);
     const {cities} = useSelector((state: RootState) => state.cities);
+    const {settings} = useSelector((state: RootState) => state.settings)
     const [objects, setObjects] = useState<[number, number, number, number][]>();
 
     const [min, setMin] = useState(0);
@@ -44,8 +52,11 @@ export const MapComponent: React.FC = () => {
         objClient.objectsOnMapAll().then((res) => {
             dispatch(setAllObjects(res));
         })
+        const settingsClient = new UserClient();
+        settingsClient.getSettings().then((res) => {
+            dispatch(setSettings(res));
+        })
     }, [])
-    
     
     useEffect(() => {
         const result = layers.filter((l) => l.isSelectedByUser)

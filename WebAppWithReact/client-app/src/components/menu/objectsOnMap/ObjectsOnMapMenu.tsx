@@ -11,8 +11,6 @@ import {editObjectFromAll, removeObjectFromAll} from "../../../redux/AllObjectSl
 
 
 const ObjectsOnMapMenu: React.FC = () => {
-
-    //const [list, setList] = useState<GetObjectOnMapDto[]>([]);
     const {token} = theme.useToken();
     const {Panel} = Collapse;
     const {objects} = useSelector((state: RootState) => state.objects);
@@ -84,7 +82,6 @@ const ObjectsOnMapMenu: React.FC = () => {
         dispatch(removeObjectFromAll(item.id!));
     }
     
-    // @ts-ignore
     return (
         <>
             <div style={{ borderRadius: '15px' }}> 

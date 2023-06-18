@@ -117,7 +117,7 @@ const LayerForm: FunctionComponent<Props> = (props: OwnProps) => {
                 >
                     <Input value={layerName} onChange={handleLayerNameChange} />
                 </Form.Item>
-                <Form.Item label="Интенсивоность затухания"
+                <Form.Item label="Интенсивность затухания"
                            name="layerAlpha"
                            rules={[{
                                required: true,

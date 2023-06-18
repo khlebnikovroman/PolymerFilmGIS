@@ -4,6 +4,7 @@ import layersSlice from './LayersSlice'
 import objectSlice from "./ObjectSlice";
 import allObjectSlice from "./AllObjectSlice";
 import citiesSlice from "./CitiesSlice";
+import settingsSlice from './UserSettingsSlice'
 
 
 const store = configureStore({
@@ -11,7 +12,8 @@ const store = configureStore({
         layers: layersSlice,
         objects: objectSlice,
         allObjects: allObjectSlice,
-        cities: citiesSlice
+        cities: citiesSlice,
+        settings: settingsSlice,
     }
 })
 
