@@ -22,6 +22,6 @@ namespace DAL
         public DateTime RefreshTokenExpiryTime { get; set; }
 
         public Guid UserSettingsId { get; set; }
-        public virtual UserSettings UserSettings { get; set; }
+        public virtual UserSettings UserSettings { get; set; } = new();
     }
 }
