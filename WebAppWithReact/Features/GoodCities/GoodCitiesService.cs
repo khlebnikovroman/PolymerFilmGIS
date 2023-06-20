@@ -78,7 +78,7 @@ public class GoodCitiesService : IGoodCitiesService
         var userActiveLayers = await _layerRepository.Get(x => x.AppUserId == userId && x.IsSelectedByUser);
         var radius = (await _userSettingRepository.Get(x => x.AppUserId == userId)).First().RadiusOfObjectWithMaxCapacityInKilometers / 222;
 
-        var multiplier = GetNormalizeMultiplier(userActiveLayers, 2);
+        var multiplier = GetNormalizeMultiplier(userActiveLayers, radius);
         List<PointWithValue> minExtremums;
         List<PointWithValue> maxExtremums;
         NormalizeObjectsCapacity(userActiveLayers, multiplier);
@@ -107,6 +107,11 @@ public class GoodCitiesService : IGoodCitiesService
 
         cities = cities.DistinctBy(x => x.Name).OrderByDescending(x => x.IsRailwayNearby).ThenByDescending(x => x.Population).ToList();
 
+        foreach (var city in cities)
+        {
+            await OsmClient.CheckAndSetRailway(city);
+        }
+
         return cities;
     }
 
@@ -115,9 +120,8 @@ public class GoodCitiesService : IGoodCitiesService
         var objectWithMaxK = layers.SelectMany(x => x.ObjectsOnMap)
                                    .MaxBy(x => x.Capacity);
 
-        var a = objectWithMaxK.Layer.Alpha;
         var k = objectWithMaxK.Capacity;
-        var normK = Math.Pow(2 * Math.Pow(maxRadiusInDegrees, 2) / 9, 1 / a);
+        var normK = 2 * Math.Pow(maxRadiusInDegrees, 2) / 9;
         var multiplier = k / normK;
 
         return multiplier;
@@ -220,9 +224,9 @@ public class GoodCitiesService : IGoodCitiesService
         return Normalize(WeightInPoint(point, layers), min, max) > threshold;
     }
 
-    private double GaussFunction(double x, double y, double x0, double y0, double k, double a)
+    private double GaussFunction(double x, double y, double x0, double y0, double k)
     {
-        var exponent = -(Math.Pow(x - x0, 2) + Math.Pow(y - y0, 2) / Math.Pow(Math.Abs(k), a));
+        var exponent = -((Math.Pow(x - x0, 2) + Math.Pow(y - y0, 2)) / Math.Abs(k));
 
         return k * Math.Exp(exponent);
     }
@@ -235,7 +239,7 @@ public class GoodCitiesService : IGoodCitiesService
         {
             foreach (var objectOnMap in layer.ObjectsOnMap)
             {
-                weight += GaussFunction(point.X, point.Y, objectOnMap.Long, objectOnMap.Lati, objectOnMap.Capacity, layer.Alpha);
+                weight += GaussFunction(point.X, point.Y, objectOnMap.Long, objectOnMap.Lati, objectOnMap.Capacity);
             }
         }
 
@@ -329,24 +333,28 @@ public static class OsmClient
 
         var cities = elements.EnumerateArray().Select(e =>
         {
-            return new CityDto
+            try
             {
-                Name = e.GetProperty("tags").GetProperty("name").GetString(),
-                Lat = e.GetProperty("lat").GetDouble(),
-                Lng = e.GetProperty("lon").GetDouble(),
-                Population = int.Parse(e.GetProperty("tags").GetProperty("population").GetString()),
-            };
+                return new CityDto
+                {
+                    Name = e.GetProperty("tags").GetProperty("name").GetString(),
+                    Lat = e.GetProperty("lat").GetDouble(),
+                    Lng = e.GetProperty("lon").GetDouble(),
+                    Population = int.Parse(e.GetProperty("tags").GetProperty("population").GetString()),
+                };
+            }
+            catch (Exception exception)
+            {
+                return null;
+            }
         }).ToList();
 
-        foreach (var city in cities)
-        {
-            await CheckAndSetRailway(city);
-        }
+        cities = cities.Where(c => c is not null).ToList();
 
         return cities;
     }
 
-    private static async Task CheckAndSetRailway(CityDto city)
+    public static async Task CheckAndSetRailway(CityDto city)
     {
         var culture = new CultureInfo("en-US");
         culture.NumberFormat.NumberDecimalSeparator = ".";

@@ -8,13 +8,7 @@ import {Content} from "antd/es/layout/layout";
 import {useContextMenu} from "../../hooks";
 import {Mapelements} from "../menu/mapelements";
 import ReactGaussHeatmapLayer from "../heatmap/ReactGaussHeatmapLayer";
-import {
-    CreateObjectOnMapDto,
-    GetObjectOnMapDto,
-    GetUserSettingsDTO,
-    ObjectsOnMapClient,
-    UserClient
-} from "../../services/Clients";
+import {CreateObjectOnMapDto, GetObjectOnMapDto, ObjectsOnMapClient, UserClient} from "../../services/Clients";
 import ObjectOnMapForm from "../menu/objectsOnMap/ObjectOnMapForm";
 import {useSelector} from "react-redux";
 import {RootState, useAppDispatch} from "../../redux/store";
@@ -39,7 +33,7 @@ export const MapComponent: React.FC = () => {
     const {layers} = useSelector((state: RootState) => state.layers);
     const {cities} = useSelector((state: RootState) => state.cities);
     const {settings} = useSelector((state: RootState) => state.settings)
-    const [objects, setObjects] = useState<[number, number, number, number][]>();
+    const [objects, setObjects] = useState<[number, number, number][]>();
 
     const [min, setMin] = useState(0);
     const [max, setMax] = useState(0);
@@ -61,12 +55,12 @@ export const MapComponent: React.FC = () => {
     useEffect(() => {
         const result = layers.filter((l) => l.isSelectedByUser)
             .flatMap((layer) =>
-                layer.objects?.map(({lati, long, capacity}) => [lati, long, capacity, layer.alpha])
+                layer.objects?.map(({lati, long, capacity}) => [lati, long, capacity])
             );
         // @ts-ignore
         setObjects(result);
         dispatch(setCities([]));
-    }, [layers])
+    }, [layers, settings])
     
     const center = [lat, lng];
     const mapRef = useRef<L.Map>(null);
@@ -215,7 +209,7 @@ export const MapComponent: React.FC = () => {
                                 <ZoomControl position={'bottomright'}/>
                                 <LocationFinder/>
                                 <ReactGaussHeatmapLayer latlngs={objects}
-                                                        radiusOfMaxCapacity={500}
+                                                        radiusOfMaxCapacity={settings.radiusOfObjectWithMaxCapacityInKilometers!}
                                                         opacity={0.3}
                                                         maxZoom={18}
                                                         cellSize={10}

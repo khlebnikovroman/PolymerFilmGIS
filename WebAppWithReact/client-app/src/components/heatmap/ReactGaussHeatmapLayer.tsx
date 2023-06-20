@@ -18,7 +18,7 @@ export interface GaussHeatmapLayerOptions extends LayerProps {
 }
 
 interface GaussHeatmapLayerProps extends GaussHeatmapLayerOptions {
-    latlngs?: [number, number, number, number][]
+    latlngs?: [number, number, number][]
 }
 
 // @ts-ignore

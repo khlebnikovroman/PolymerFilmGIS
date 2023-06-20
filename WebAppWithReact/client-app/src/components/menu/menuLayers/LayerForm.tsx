@@ -1,5 +1,5 @@
 import React, {FunctionComponent, useEffect, useState} from 'react';
-import {Form, FormInstance, Input, InputNumber, Transfer} from "antd";
+import {Form, FormInstance, Input, Transfer} from "antd";
 import {CreateLayerDto, GetLayerDto, GetObjectOnMapDto, ObjectsOnMapClient} from "../../../services/Clients";
 import type {TransferDirection} from 'antd/es/transfer';
 
@@ -86,7 +86,6 @@ const LayerForm: FunctionComponent<Props> = (props: OwnProps) => {
     };
 
     const [layerName, setLayerName] = useState(props.layerDto.name || '');
-    const [layerAlpha, setLayerAlpha] = useState(props.layerDto.alpha || '');
 
     const handleLayerNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
@@ -95,7 +94,6 @@ const LayerForm: FunctionComponent<Props> = (props: OwnProps) => {
     };
 
     const handleLayerAlphaChange = (value : any) => {
-        setLayerAlpha(value);
         props.form.setFieldsValue({ layerAlpha: value });
     };
 
@@ -108,7 +106,6 @@ const LayerForm: FunctionComponent<Props> = (props: OwnProps) => {
                 wrapperCol={{span: 16}}
                 initialValues={{
                     layerName: props.layerDto.name,
-                    layerAlpha: props.layerDto.alpha,
                 }}
             >
                 <Form.Item label="Название слоя"
@@ -117,15 +114,7 @@ const LayerForm: FunctionComponent<Props> = (props: OwnProps) => {
                 >
                     <Input value={layerName} onChange={handleLayerNameChange} />
                 </Form.Item>
-                <Form.Item label="Интенсивность затухания"
-                           name="layerAlpha"
-                           rules={[{
-                               required: true,
-                               message: 'Пожалуйста, введите интенсивность затухания объектов слоя'
-                           }]}
-                >
-                    <InputNumber min={0.1} step={0.1} value={layerAlpha} onChange={handleLayerAlphaChange} />
-                </Form.Item>
+              
                 <Form.Item label="Объекты"
                            name="layerObjects">
                     <Transfer dataSource={allobjects}

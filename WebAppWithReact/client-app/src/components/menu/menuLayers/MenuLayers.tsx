@@ -1,5 +1,5 @@
 ﻿import React, {useEffect, useState} from "react";
-import {Button, Checkbox, Collapse, Form, List, Modal, Slider, theme} from 'antd';
+import {Button, Checkbox, Collapse, Form, List, Modal, theme} from 'antd';
 import {CheckboxChangeEvent} from "antd/es/checkbox";
 import {
     CreateLayerDto,
@@ -48,7 +48,6 @@ const MenuLayers = () => {
     function showEdit(item: GetLayerDto) {
         form.setFieldsValue({
            layerName: item.name,
-           layerAlpha: item.alpha,
            layerObjects: item.objects.map(x => x.id) 
         });
         confirm({
@@ -66,7 +65,6 @@ const MenuLayers = () => {
                         }
                         const model = new UpdateLayerDto({
                             id: item.id,
-                            alpha: values.layerAlpha,
                             name: values.layerName,
                             objects: values.layerObjects,
                             isSelectedByUser: item.isSelectedByUser
@@ -105,7 +103,6 @@ const MenuLayers = () => {
 
                         const model = new CreateLayerDto({
                             name: values.layerName,
-                            alpha: values.layerAlpha,
                             objects: values.layerObjects
                         });
 
@@ -185,7 +182,7 @@ const MenuLayers = () => {
                             </List.Item>}
                     />
                     <Button type="primary" shape={"default"} style={{width: "100%"}}
-                            onClick={() => showAdd(new CreateLayerDto({name: "", objects: [], alpha: 1}))}>
+                            onClick={() => showAdd(new CreateLayerDto({name: "", objects: []}))}>
                         Создать новый слой
                     </Button>
                 </Panel>

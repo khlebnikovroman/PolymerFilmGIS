@@ -204,10 +204,9 @@ export const GaussHeatMap = L.Layer.extend({
                 return max;
             }
         })
-        let a = objectWithMaxCapacity[3]
         let k = objectWithMaxCapacity[2]
         let radius = this.options.radiusOfMaxCapacity / 222 // километры в градусы, 1 градус равен 222км по вертикальнй оси
-        let normK = Math.pow(2 * Math.pow(radius, 2) / 9, 1 / a);
+        let normK = 2 * Math.pow(radius, 2) / 9;
         return k / normK;
     },
     normalizeCapacity: function (multiplier) {
@@ -338,7 +337,6 @@ export const GaussHeatMap = L.Layer.extend({
 
     _findMinMax: function () {
 
-        let a = 1
         let f = (x, y) => {
             return this._calculateWeight(L.latLng(x, y))
         }
@@ -349,7 +347,7 @@ export const GaussHeatMap = L.Layer.extend({
         let max = Number.MIN_SAFE_INTEGER
         for (let k = 0; k < this._latlngs.length; k++) {
             let latlngVal = this._latlngs[k]
-            let c = Math.sqrt(Math.pow(Math.abs(latlngVal[2]), a) / 2) * 3
+            let c = Math.sqrt(Math.abs(latlngVal[2]) / 2) * 3
             const localMax = this._findMaxOnGrid(f, latlngVal[0] - c, latlngVal[0] + c, latlngVal[1] - c, latlngVal[1] + c, 100, 3)
             const localMin = -this._findMaxOnGrid(fminus, latlngVal[0] - c, latlngVal[0] + c, latlngVal[1] - c, latlngVal[1] + c, 100, 3)
             max = Math.max(max, localMax)
@@ -486,13 +484,13 @@ export const GaussHeatMap = L.Layer.extend({
             // var ppp = this._latLngToPoint(p1)
             // var pp = this._latLngToPoint(point)
 
-            weight += this._gaussFunction(pointToCalculate.lat, pointToCalculate.lng, objectPoint.lat, objectPoint.lng, this._latlngs[k][2], this._latlngs[k][3])
+            weight += this._gaussFunction(pointToCalculate.lat, pointToCalculate.lng, objectPoint.lat, objectPoint.lng, this._latlngs[k][2])
         }
 
         return weight;
     },
-    _gaussFunction: function (x, y, x0, y0, k, a) {
-        const exponent = -(((Math.pow(x - x0, 2)) + (Math.pow(y - y0, 2))) / Math.pow(Math.abs(k), a));
+    _gaussFunction: function (x, y, x0, y0, k) {
+        const exponent = -(((Math.pow(x - x0, 2)) + (Math.pow(y - y0, 2))) / Math.abs(k));
         const ePoweExp = Math.exp(exponent)
         Math.sign()
         return k * ePoweExp;
