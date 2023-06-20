@@ -41,7 +41,7 @@ const UserSettingsForm: React.FC<props> = ({form, settings}: props) => {
             >
                 <Checkbox style={{marginLeft: "10px"}} defaultChecked={settingIsNeedToDrawHeatMap} onChange={e => handleIsNeedToDrawHeatMap(e)} />
             </Form.Item>
-            <Form.Item label="Установить радиус для объекта с максимальной мощностью"
+            <Form.Item label="Установить радиус для объекта с максимальной мощностью в км"
                        name="settingRadius"
                        rules={[{
                            required: true,
