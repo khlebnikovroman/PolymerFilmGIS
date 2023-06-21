@@ -14,11 +14,14 @@ var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 
 if (env == "Production")
 {
+    Console.WriteLine("Production");
     connectionString = Environment.GetEnvironmentVariable("PRODUCION_BASE");
+    Console.WriteLine(connectionString);
     var secret = Environment.GetEnvironmentVariable("JWT_SECRET");
 }
 else
 {
+    Console.WriteLine("DEV");
     connectionString = builder.Configuration.GetConnectionString("DevConnection");
 }
 
@@ -54,7 +57,7 @@ var app = builder.Build();
 app.UsePathBase("/adminpage");
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+if (!app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
 }
@@ -67,7 +70,6 @@ else
 }
 
 app.UseCoreAdminCustomTitle("Панель администратора");
-
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 

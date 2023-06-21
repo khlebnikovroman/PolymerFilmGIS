@@ -9,6 +9,43 @@
         <DockerServiceName>webappwithreact</DockerServiceName>
     </PropertyGroup>
     <ItemGroup>
+        <None Include="adminstatic\css\bootstrap-dark.css"/>
+        <None Include="adminstatic\css\bootstrap-dark.min.css"/>
+        <None Include="adminstatic\css\bootstrap-grid.css"/>
+        <None Include="adminstatic\css\bootstrap-grid.css.map"/>
+        <None Include="adminstatic\css\bootstrap-grid.min.css"/>
+        <None Include="adminstatic\css\bootstrap-grid.min.css.map"/>
+        <None Include="adminstatic\css\bootstrap-reboot.css"/>
+        <None Include="adminstatic\css\bootstrap-reboot.css.map"/>
+        <None Include="adminstatic\css\bootstrap-reboot.min.css"/>
+        <None Include="adminstatic\css\bootstrap-reboot.min.css.map"/>
+        <None Include="adminstatic\css\bootstrap.css"/>
+        <None Include="adminstatic\css\bootstrap.css.map"/>
+        <None Include="adminstatic\css\bootstrap.min.css"/>
+        <None Include="adminstatic\css\bootstrap.min.css.map"/>
+        <None Include="adminstatic\css\easymde\easymde-dark.css"/>
+        <None Include="adminstatic\css\easymde\easymde-dark.min.css"/>
+        <None Include="adminstatic\css\easymde\easymde.css"/>
+        <None Include="adminstatic\css\easymde\easymde.min.css"/>
+        <None Include="adminstatic\css\jquery-ui.min.css"/>
+        <None Include="adminstatic\css\mvc-grid\fonts\grid-glyphs.woff"/>
+        <None Include="adminstatic\css\mvc-grid\mvc-grid-dark.css"/>
+        <None Include="adminstatic\css\mvc-grid\mvc-grid.css"/>
+        <None Include="adminstatic\css\site.css"/>
+        <None Include="adminstatic\js\additional-methods.js"/>
+        <None Include="adminstatic\js\additional-methods.min.js"/>
+        <None Include="adminstatic\js\bootstrap.bundle.min.js"/>
+        <None Include="adminstatic\js\bootstrap.min.js"/>
+        <None Include="adminstatic\js\easymde\easymde.min.js"/>
+        <None Include="adminstatic\js\jquery-ui.min.js"/>
+        <None Include="adminstatic\js\jquery.js"/>
+        <None Include="adminstatic\js\jquery.min.js"/>
+        <None Include="adminstatic\js\jquery.min.map"/>
+        <None Include="adminstatic\js\jquery.validate.js"/>
+        <None Include="adminstatic\js\jquery.validate.unobtrusive.js"/>
+        <None Include="adminstatic\js\jquery.validate.unobtrusive.min.js"/>
+        <None Include="adminstatic\js\mvc-grid\mvc-grid.js"/>
+        <None Include="adminstatic\js\site.js"/>
         <None Include="docker-compose.yml"/>
         <None Include=".dockerignore"/>
     </ItemGroup>
