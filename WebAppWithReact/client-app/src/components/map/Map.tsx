@@ -209,6 +209,7 @@ export const MapComponent: React.FC = () => {
                                 <ZoomControl position={'bottomright'}/>
                                 <LocationFinder/>
                                 <ReactGaussHeatmapLayer latlngs={objects}
+                                                        isNeedToDraw={settings.isNeedToDrawHeatMap!}
                                                         radiusOfMaxCapacity={settings.radiusOfObjectWithMaxCapacityInKilometers!}
                                                         opacity={0.3}
                                                         maxZoom={18}

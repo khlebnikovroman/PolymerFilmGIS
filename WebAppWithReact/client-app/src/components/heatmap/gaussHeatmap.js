@@ -70,10 +70,6 @@ class heatMap {
         return this;
     }
 
-    clear() {
-        this._data = [];
-        return this;
-    }
 
     cellSize(r) {
         var cell = this._cell = document.createElement("canvas"),
@@ -323,6 +319,10 @@ export const GaussHeatMap = L.Layer.extend({
 
     _redraw: function () {
         if (!this._polygon || !this._map || !this._latlngs || this._latlngs.length === 0) {
+            return;
+        }
+        if (!this.options.isNeedToDraw) {
+            this._heatmap.clear()
             return;
         }
         var r = this._heatmap._r;
