@@ -149,7 +149,7 @@ if (app.Environment.IsProduction())
     using (var scope = app.Services.CreateScope())
     {
         var dbContext = scope.ServiceProvider.GetRequiredService<Context>();
-        dbContext.Database.Migrate();
+        dbContext.Database.EnsureCreated();
     }
 }
 
