@@ -19,6 +19,7 @@ import cityImage from "./city.png"
 import factoryImage from "./factory.png"
 import {setCities} from "../../redux/CitiesSlice";
 import {setSettings} from "../../redux/UserSettingsSlice";
+import {PlusOutlined} from "@ant-design/icons";
 
 L.Icon.Default.imagePath = "https://unpkg.com/browse/leaflet@1.9.2/dist/images/";
 
@@ -107,7 +108,9 @@ export const MapComponent: React.FC = () => {
         item.lati = Number(item.lati.toFixed(4));
         confirm({
             title: "Создание объекта",
-            icon: <div/>,
+            icon: <PlusOutlined />,
+            okText: 'Применить',
+            cancelText: 'Отмена',
             content: <ObjectOnMapForm form={form} objectDto={item}/>,
             onOk: () => {
                 form
