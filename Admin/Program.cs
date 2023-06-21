@@ -70,6 +70,7 @@ else
 }
 
 app.UseCoreAdminCustomTitle("Панель администратора");
+app.UseCoreAdminCdn("https://heatgis.ru/");
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 

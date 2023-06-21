@@ -34,7 +34,7 @@ services:
     depends_on:
       - backend
   proxy:
-    image: nginx:mainline-alpine
+    image: nginx:mainline
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
       - ./adminstatic:/var/www/admin
