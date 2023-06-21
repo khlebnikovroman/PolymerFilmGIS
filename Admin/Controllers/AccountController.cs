@@ -34,7 +34,7 @@ public class AccountController : Controller
     {
         if (User.IsInRole(UserRoles.Admin))
         {
-            return Redirect("/CoreAdmin");
+            return Redirect("/adminpage/CoreAdmin");
         }
 
         return RedirectToAction(nameof(Login));
@@ -50,7 +50,7 @@ public class AccountController : Controller
 
             if (result.Succeeded)
             {
-                return Redirect("/CoreAdmin");
+                return Redirect("/adminpage/CoreAdmin");
             }
 
             ModelState.AddModelError("", "Неправильный логин и (или) пароль");

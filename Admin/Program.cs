@@ -51,7 +51,7 @@ builder.Services.AddAuthorization();
 builder.Services.AddRazorPages();
 builder.Services.AddCoreAdmin(UserRoles.Admin);
 var app = builder.Build();
-app.UsePathBase("/admin");
+app.UsePathBase("/adminpage");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
