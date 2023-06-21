@@ -51,6 +51,7 @@ builder.Services.AddAuthorization();
 builder.Services.AddRazorPages();
 builder.Services.AddCoreAdmin(UserRoles.Admin);
 var app = builder.Build();
+app.UsePathBase("/admin");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -77,9 +78,9 @@ app.UseAuthorization();
 
 app.MapRazorPages();
 app.MapDefaultControllerRoute();
-app.UseCoreAdminCustomUrl("Admin");
 
 app.MapControllerRoute("default",
                        "{controller=Account}/{action=Login}/{id?}");
+
 
 app.Run();
