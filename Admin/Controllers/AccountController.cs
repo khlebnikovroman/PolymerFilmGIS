@@ -53,9 +53,9 @@ public class AccountController : Controller
                 return Redirect("/adminpage/CoreAdmin");
             }
 
-            ModelState.AddModelError("", "Неправильный логин и (или) пароль");
+            return Redirect("/adminpage");
         }
 
-        return View(model);
+        return Redirect("/adminpage");
     }
 }

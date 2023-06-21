@@ -156,7 +156,7 @@ public class ObjectsOnMapController : BaseAuthorizedController
 
         foreach (var layer in layers)
         {
-            var layersWithSameName = (await _layerRepository.Get(x => x.Name == layer.Name)).FirstOrDefault();
+            var layersWithSameName = (await _layerRepository.Get(x => x.Name == layer.Name && x.AppUserId == UserId)).FirstOrDefault();
 
             if (layersWithSameName is null)
             {
@@ -165,13 +165,15 @@ public class ObjectsOnMapController : BaseAuthorizedController
             }
             else
             {
+                layer.Id = layersWithSameName.Id;
                 layer.AppUserId = layersWithSameName.AppUserId;
             }
         }
 
+
         foreach (var objectOnMap in objects)
         {
-            var objectsWithSameName = await _objectOnMapRepository.Get(x => x.Name == objectOnMap.Name);
+            var objectsWithSameName = await _objectOnMapRepository.Get(x => x.Name == objectOnMap.Name && x.AppUserId == UserId);
 
             if (objectsWithSameName.Count == 0)
             {
