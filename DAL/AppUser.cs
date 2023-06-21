@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using System.ComponentModel.DataAnnotations;
+
+using Microsoft.AspNetCore.Identity;
 
 
 namespace DAL
@@ -21,7 +23,15 @@ namespace DAL
         public string? RefreshToken { get; set; }
         public DateTime RefreshTokenExpiryTime { get; set; }
 
+        [Display(AutoGenerateField = false)]
         public Guid UserSettingsId { get; set; }
+
+        [Display(AutoGenerateField = false)]
         public virtual UserSettings UserSettings { get; set; } = new();
+
+        public override string ToString()
+        {
+            return UserName;
+        }
     }
 }
