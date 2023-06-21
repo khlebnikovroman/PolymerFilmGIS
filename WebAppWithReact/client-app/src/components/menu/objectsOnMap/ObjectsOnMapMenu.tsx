@@ -46,7 +46,9 @@ const ObjectsOnMapMenu: React.FC = () => {
         confirm({
             title: "Изменение объекта",
             icon: <div/>,
-            width: "500px",
+            width: 750,
+            okText: 'Применить',
+            cancelText: 'Отмена',
             content: <ObjectOnMapForm form={form} objectDto={item}/>,
             onOk: () => {
                 form
@@ -91,7 +93,7 @@ const ObjectsOnMapMenu: React.FC = () => {
                           style={{ background: token.colorBgContainer }}>
                     <Panel header='Список объектов' key={1}>
                         <Table
-                            style={{ backgroundColor: 'white' }}
+                            style={{ backgroundColor: 'white', textAlign: 'center' }}
                             size="small"
                             bordered
                             dataSource={objects}
@@ -107,6 +109,7 @@ const ObjectsOnMapMenu: React.FC = () => {
                             <Table.Column
                                 title="Действия"
                                 dataIndex="actions"
+                                align={"center"}
                                 key="actions"
                                 render={(text, record) => (
                                     <div>

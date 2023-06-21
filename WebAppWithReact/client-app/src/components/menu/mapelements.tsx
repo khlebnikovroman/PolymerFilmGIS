@@ -72,6 +72,7 @@ export const Mapelements: React.FC = () => {
                             onClick={handleUploadFile}
                             disabled={fileList.length === 0}
                             loading={uploading}
+                            
                             style={{ flex: 1, marginLeft: "15px" }}
                         >
                             {uploading ? 'Загружается' : 'Загрузить'}

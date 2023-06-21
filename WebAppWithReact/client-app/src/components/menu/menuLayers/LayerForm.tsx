@@ -102,8 +102,8 @@ const LayerForm: FunctionComponent<Props> = (props: OwnProps) => {
         <>
             <Form
                 form={props.form}
-                labelCol={{span: 8}}
-                wrapperCol={{span: 16}}
+                // labelCol={{span: 8}}
+                // wrapperCol={{span: 16}}
                 initialValues={{
                     layerName: props.layerDto.name,
                 }}
@@ -118,7 +118,15 @@ const LayerForm: FunctionComponent<Props> = (props: OwnProps) => {
                 <Form.Item label="Объекты"
                            name="layerObjects">
                     <Transfer dataSource={allobjects}
-                              titles={['Объекты без заданного слоя', 'Объекты на слое']}
+                              titles={['Объекты без заданного слоя', 'Объекты на слое',]}
+                              locale={{itemsUnit: '', itemUnit: '', searchPlaceholder: 'Поиск объектов', notFoundContent: 'Нет объектов'}}
+                              listStyle={{
+                                  width: 300,
+                                  height: 300,
+                                  alignItems: 'flex-start'
+                              }}
+                              
+                              showSearch={true}
                               targetKeys={targetKeys}
                               selectedKeys={selectedKeys}
                               onChange={onChange}

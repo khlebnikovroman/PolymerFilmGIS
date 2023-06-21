@@ -10,22 +10,22 @@ const CitiesOnMapMenu: React.FC = () => {
     const {Panel} = Collapse;
     const {token} = theme.useToken();
     
-    const [isLoading, setLoading] = useState(false);
-    const [isShown, setShown] = useState(false);
-    
-    const dispatch = useAppDispatch();
     const {cities} = useSelector((state: RootState) => state.cities);
     const {layers} = useSelector((state: RootState) => state.layers);
     
+    const [isLoading, setLoading] = useState(false);
+    const [isShown, setShown] = useState(false);
+    const dispatch = useAppDispatch();
+    
+    
     const handleClickFindCities = async () => {
-        setLoading(true);
+        
         const isAnyLayerSelected = layers.some((layer) => layer.isSelectedByUser);
-
         const hasObjectsInSelectedLayer = layers.some(
             (layer) => layer.isSelectedByUser && layer.objects.length > 0
         );
-
         if (isAnyLayerSelected && hasObjectsInSelectedLayer) {
+            setLoading(true);
             const citiesClient = new GoodCitiesClient();
             citiesClient.getCities().then((res) => {
                 dispatch(setCities(res));
@@ -53,7 +53,7 @@ const CitiesOnMapMenu: React.FC = () => {
                         bordered
                         dataSource={cities}
                         locale={{
-                            emptyText: "Тут пусто",
+                            emptyText: "Города не найдены",
                         }}
                         columns={[
                             {

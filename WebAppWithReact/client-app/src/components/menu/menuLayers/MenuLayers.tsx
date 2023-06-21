@@ -15,6 +15,7 @@ import {RootState, useAppDispatch} from "../../../redux/store";
 import {removeLayer, setLayers, setSelection} from "../../../redux/LayersSlice";
 import {setObjects} from "../../../redux/ObjectSlice";
 import {useSelector} from "react-redux";
+import CustomEmpty from "../../CustomEmpty";
 
 const MenuLayers = () => {
 
@@ -54,6 +55,8 @@ const MenuLayers = () => {
             title: "Изменение слоя",
             icon: <EditOutlined/>,
             width: 750,
+            okText: 'Применить',
+            cancelText: 'Отмена',
             content: <LayerForm form={form} layerDto={item}/>,
             onOk: () => {
                 form
@@ -94,13 +97,17 @@ const MenuLayers = () => {
             title: "Добавление слоя",
             icon: <PlusOutlined />,
             width: 750,
+            okText: 'Применить',
+            cancelText: 'Отмена',
             content: <LayerForm form={form} layerDto={item}/>,
             onOk: () => {
                 form
                     .validateFields()
                     .then(async (values) => {
                         form.resetFields();
-
+                        if (values.layerObjects === undefined) {
+                            values.layerObjects = [];
+                        }
                         const model = new CreateLayerDto({
                             name: values.layerName,
                             objects: values.layerObjects
@@ -151,6 +158,7 @@ const MenuLayers = () => {
                     <List
                         style={{backgroundColor: 'white'}}
                         size="small"
+                        locale={{emptyText: <CustomEmpty description={'Нет слоев'}/>}}
                         bordered
                         dataSource={layers}
                         renderItem={(item: GetLayerDto, index: number) =>

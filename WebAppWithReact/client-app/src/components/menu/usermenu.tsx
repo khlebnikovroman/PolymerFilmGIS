@@ -39,6 +39,8 @@ export const UserMenu: React.FC = () => {
             title: "Настройки",
             icon: <SettingOutlined/>,
             width: 700,
+            okText: 'Применить',
+            cancelText: 'Отмена',
             content: <UserSettingsForm form={form} settings={settings}/>,
             onOk: () => {
                 form
